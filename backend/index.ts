@@ -5,7 +5,7 @@ import pgPromise from 'pg-promise';
 dotenv.config();
 
 const app = express();
-const db = pgPromise()(process.env.DATABASE_URL as string); 
+const db = pgPromise()(process.env.DATABASE_URL1 as string); 
 const port = process.env.PORT 
 
 
