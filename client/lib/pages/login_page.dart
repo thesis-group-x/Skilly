@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,26 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _registerUser() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+        'email': email,
+       
+      });
+
+      print('User registered with ID: ${userCredential.user!.uid}');
+    } catch (e) {
+      print('Registration error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +101,9 @@ class _LoginPageState extends State<LoginPage> {
               child: const Text('Login'),
             ),
             const SizedBox(height: 24.0),
-            Text(
-              'Create Account',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                color: Colors.white,
-              ),
+            ElevatedButton(
+              onPressed: _registerUser,
+              child: const Text('Register'),
             ),
           ],
         ),
