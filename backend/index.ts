@@ -9,7 +9,7 @@ const db = pgPromise()(process.env.DATABASE_URL as string);
 const port = process.env.PORT 
 
 
-db.connect()
+db.connect()    
   .then(() => {
     console.log('Database connected');
     app.listen(port, () => {
