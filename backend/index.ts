@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
   res.send('Hello, 9lewi');
 });
 
-db.connect()
+db.connect()    
   .then(() => {
     console.log('Database connected');
     app.listen(port, () => {
