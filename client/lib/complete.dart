@@ -1,15 +1,6 @@
 
 import 'package:flutter/material.dart';
 
-
-void main() {
-  runApp(
-    const MaterialApp(
-      home: Complete(),
-    ),
-  );
-}
-
 class Complete extends StatefulWidget {
   const Complete({Key? key}) : super(key: key);
 

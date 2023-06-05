@@ -1,30 +1,22 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import './landing pages/welcome.dart';
 
-import './pages/Login_page.dart';
-import './pages/Signup_page.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
+void main() {
+  runApp(const SkillyApp());
 }
 
-class MyApp extends StatelessWidget {
+class SkillyApp extends StatelessWidget {
+  const SkillyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Login App',
-            debugShowCheckedModeBanner: false, 
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LoginPage(),
-        '/signup': (context) => SignUpPage(),
-      },
+      title: 'Skilly',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      debugShowCheckedModeBanner: false, 
+      home: const LandingPage(),
     );
   }
 }
