@@ -3,30 +3,32 @@ import { PrismaClient, PostM, ReviewM, User } from '@prisma/client';
 import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
-//feed gigs
-export const getPosts = async (req: Request, res: Response): Promise<void> => {
-    
+
+//------------------------------------------------------------ TEST USER ---------------------------------------------------------------------------------
+//-------------------------------------------------------test for posting a user with id 
+export const test = async (req: Request, res: Response): Promise<void> => {
+  const { name, email, password, address, level } = req.body;
+
   try {
-    const posts = await prisma.postM.findMany();//query mtaa l find all f prisma
-    res.json(posts);
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password,
+        address,
+        level,
+      },
+    });
+
+    res.json(user);
   } catch (error) {
-    res.status(500).json({ error: 'Cant retrieve' });
+    res.status(500).json({ error: 'Error creating user' });
   }
 };
-//get post by id 
-export const searchPostsByid = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
-    console.log(id)
-    try {
-      const posts = await prisma.postM.findMany({
-        where: { id: Number(id) },
-      });
-      res.json(posts);
-    } catch (error) {
-      res.status(500).json({ error: 'Error searching posts' });
-    }
-  };
-//creation of gig
+
+//------------------------------------------------------------ POST MARKET PLACE ---------------------------------------------------------------------------------
+
+//---------------------------------------------------------creation of gig
 export const createPost = async (req: Request, res: Response): Promise<void> => {
   const { price, image, description, skill, userId } = req.body;
   console.log(req.query)
@@ -45,7 +47,45 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ error: 'Error creating post' });
   }
 };
-//update gig
+//---------------------------------------------------------feed gigs
+export const getPosts = async (req: Request, res: Response): Promise<void> => {
+    
+  try {
+    const posts = await prisma.postM.findMany();//query mtaa l find all f prisma
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ error: 'Cant retrieve' });
+  }
+};
+//---------------------------------------------------------get post by id 
+export const searchPostsByid = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    console.log(id)
+    try {
+      const posts = await prisma.postM.findMany({
+        where: { id: Number(id) },
+      });
+      res.json(posts);
+    } catch (error) {
+      res.status(500).json({ error: 'Error searching posts' });
+    }
+  };
+
+  //-------------------------------------------------search by skill posts
+export const searchPostsBySkill = async (req: Request, res: Response): Promise<void> => {
+  const { skill } = req.query;
+  console.log(skill)
+  try {
+    const posts = await prisma.postM.findMany({
+      where: { skill: { contains: skill as string } },
+    });
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ error: 'Error searching posts' });
+  }
+};
+
+//------------------------------------------------------update gig
 export const updatePost = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const { price, image, description, skill } = req.body;
@@ -64,18 +104,20 @@ export const updatePost = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ error: 'Error updating post' });
   }
 };
-//search by skill posts
-export const searchPostsBySkill = async (req: Request, res: Response): Promise<void> => {
-  const { skill } = req.query;
+ //------------------------------------------------delete post mtaa l market place
+ export const deletePost = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
   try {
-    const posts = await prisma.postM.findMany({
-      where: { skill: { contains: skill as string } },
+    const post = await prisma.postM.delete({
+      where: { id: Number(id) },
     });
-    res.json(posts);
+    res.json(post);
   } catch (error) {
-    res.status(500).json({ error: 'Error searching posts' });
+    res.status(500).json({ error: 'Error deleting post' });
   }
 };
+//------------------------------------------------------------ Reviews ---------------------------------------------------------------------------------
+
 //creation of review
 export const createReview = async (req: Request, res: Response): Promise<void> => {
     const { rating, postId, userId } = req.body;
@@ -134,15 +176,4 @@ export const createReview = async (req: Request, res: Response): Promise<void> =
       res.status(500).json({ error: 'Error deleting review' });
     }
   };
-  //delete post mtaa l market place
-  export const deletePost = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
-    try {
-      const post = await prisma.postM.delete({
-        where: { id: Number(id) },
-      });
-      res.json(post);
-    } catch (error) {
-      res.status(500).json({ error: 'Error deleting post' });
-    }
-  };
+ 

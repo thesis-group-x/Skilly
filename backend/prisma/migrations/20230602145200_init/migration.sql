@@ -15,6 +15,7 @@ CREATE TABLE "User" (
     "hobbies" TEXT[],
     "details" TEXT,
     "descriptions" TEXT,
+    
     "phoneNumber" TEXT,
     "level" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
