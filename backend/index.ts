@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import pgPromise from 'pg-promise';
 import routerMarket from './routes/market';
+import routerAuthentication from './routes/market'
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ const port = process.env.PORT
 
 app.use('/Market',routerMarket);
 
+app.use('/Authentication',routerAuthentication);
 
 app.get('/', (req, res) => {
   res.send('Hello, 9lewi');
