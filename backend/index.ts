@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import pgPromise from 'pg-promise';
 import routerMarket from './routes/market';
 import routerInterests from './routes/interests'
+import routerAuthentication from './routes/market'
 
 dotenv.config();
 
@@ -17,12 +18,13 @@ app.use('/Market',routerMarket);
 app.use('/api',routerInterests)
 
 
+app.use('/Authentication',routerAuthentication);
 
 app.get('/', (req, res) => {
   res.send('Hello, 9lewi');
 });
 
-db.connect()
+db.connect()    
   .then(() => {
     console.log('Database connected');
     app.listen(port, () => {
