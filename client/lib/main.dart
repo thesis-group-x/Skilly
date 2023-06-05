@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
-import 'market.dart';
+import './landing pages/welcome.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const SkillyApp());
 }
 
-class MyApp extends StatelessWidget {
+class SkillyApp extends StatelessWidget {
+  const SkillyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Marketplace life',
+      title: 'Skilly',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.blue,
       ),
-      home: const Market(),
+      debugShowCheckedModeBanner: false,
+      home: const LandingPage(),
     );
   }
 }

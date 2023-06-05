@@ -14,7 +14,6 @@ export const test = async (req: Request, res: Response): Promise<void> => {
       data: {
         name,
         email,
-        password,
         address,
         level,
       },

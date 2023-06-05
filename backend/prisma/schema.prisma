@@ -12,7 +12,6 @@ model User {
   id               Int          @id @default(autoincrement())
   name             String
   email            String       @unique
-  password         String
   address          String
   profileImage     String?
   budge            String?
