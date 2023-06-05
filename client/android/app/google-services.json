@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "114522356490",
+    "project_id": "skilly-d8050",
+    "storage_bucket": "skilly-d8050.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114522356490:android:eedac62116ee944b3bd8f3",
+        "android_client_info": {
+          "package_name": "com.example.client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "114522356490-aabrhp15k6o61kjn608v3mh84cb4pmds.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.client",
+            "certificate_hash": "60ea7f370a947c6ffbab4f01ac7dcf395ba9d58d"
+          }
+        },
+        {
+          "client_id": "114522356490-3ravcfkag12m0mo0td3q292mqefd383g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAz73K4VdQvJ7Gg2q-FRsFvpH7AQL5Zao4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "114522356490-3ravcfkag12m0mo0td3q292mqefd383g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

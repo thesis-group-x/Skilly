@@ -16,7 +16,7 @@ class SkillyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false, 
-      home:  const LandingPage(),
+      home: const LandingPage(),
     );
   }
 }
