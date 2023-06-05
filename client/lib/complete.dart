@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 
+
 void main() {
   runApp(
     const MaterialApp(
@@ -22,7 +23,7 @@ class _CompleteState extends State<Complete> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -35,7 +36,8 @@ class _CompleteState extends State<Complete> {
           ),
         ),
       ),
-      body: Column(
+      body:SingleChildScrollView(
+        child :Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
@@ -169,7 +171,8 @@ Padding(
   ),
 ),),
 ],
-),
+)
+,),
 );
 }
 }
