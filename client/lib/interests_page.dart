@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
 
 final List<String> hobbiesInterests = [
   "📸 Photography",
   "🎭 Theaters",
   "🖼️ Exhibitions",
-  "📐 Architecture",
   "🍳 Cooking",
   "☕ Coffee",
   "🖍️ Design",
@@ -19,6 +20,9 @@ final List<String> hobbiesInterests = [
   "🎯 Sports",
   "🎲 Board Games",
   "🌿 Gardening",
+  "🎵 Music",
+  "🧠 Mindfulness",
+  "🍳 Cooking",
 ];
 
 final List<String> skillsInterests = [
@@ -30,15 +34,55 @@ final List<String> skillsInterests = [
   "📈 Marketing",
   "📷 Photography",
   "📝 Writing",
-  "🎵 Music",
-  "🧠 Mindfulness",
-  "🍳 Cooking",
+  "📐 Architecture",
+  "🔬 Science",
+  "🧪 Chemistry",
+  "🧮 Mathematics",
+  "🌐 Web Development",
+  "📚 Research",
+  "🔌 Electrical Engineering",
 ];
 
 List<String> chosenHobbiesInterests = [];
 List<String> chosenSkillsInterests = [];
 
-class InterestsPage extends StatelessWidget {
+class InterestsPage extends StatefulWidget {
+  @override
+  _InterestsPageState createState() => _InterestsPageState();
+}
+
+class _InterestsPageState extends State<InterestsPage> {
+  bool buttonHovered = false;
+
+  void saveUserInterests() async {
+    final userId = '1'; // Replace with the actual user ID
+
+    // void saveUserInterests() async {
+    // final FirebaseAuth _auth = FirebaseAuth.instance;
+    // final User? user = _auth.currentUser;
+    // if (user != null) {
+    //   final userId = user.uid;
+
+    final interests = {
+      'hobbies': chosenHobbiesInterests,
+      'skills': chosenSkillsInterests,  
+    };
+
+    final url = Uri.parse('http://localhost:3000/api/$userId');
+    final response = await http.post(
+      url,
+      body: interests,
+    );
+
+    if (response.statusCode == 200) {
+      // Interests saved successfully
+      print('Interests saved successfully');
+    } else {
+      // Failed to save interests
+      print('Failed to save interests');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +99,7 @@ class InterestsPage extends StatelessWidget {
                 color: Colors.black,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
+                fontFamily: 'Arial', // Replace with your desired font
               ),
             ),
           ),
@@ -63,7 +107,7 @@ class InterestsPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -80,28 +124,43 @@ class InterestsPage extends StatelessWidget {
             ),
             SizedBox(height: 40),
             Align(
-              alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Handle button press
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.blue,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Text(
-                  'Next',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
+  alignment: Alignment.centerRight,
+  child: MouseRegion(
+    cursor: SystemMouseCursors.click,
+    child: GestureDetector(
+      onTap: () {
+        saveUserInterests();
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+        decoration: BoxDecoration(
+          color: buttonHovered ? Colors.grey.withOpacity(0.8) : Colors.black,
+          shape: BoxShape.rectangle, // Set the shape to rectangle
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Next',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
             ),
+            Icon(
+              Icons.double_arrow,
+              size: 18,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+    ),
+  ),
+),
+
           ],
         ),
       ),
@@ -114,12 +173,11 @@ class InterestsSection extends StatefulWidget {
   final List<String> interests;
   final List<String> chosenInterests;
 
-  InterestsSection({
-    Key? key,
+  const InterestsSection({
     required this.title,
     required this.interests,
     required this.chosenInterests,
-  }) : super(key: key);
+  });
 
   @override
   _InterestsSectionState createState() => _InterestsSectionState();
@@ -131,58 +189,39 @@ class _InterestsSectionState extends State<InterestsSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Text(
-            widget.title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-              color: Colors.black,
-            ),
+        Text(
+          widget.title,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Arial', // Replace with your desired font
           ),
         ),
+        SizedBox(height: 16),
         Wrap(
-          spacing: 12,
-          runSpacing: 12,
+          spacing: 8,
+          runSpacing: 8,
           children: widget.interests.map((interest) {
-            bool isChosen = widget.chosenInterests.contains(interest);
-
+            final isSelected = widget.chosenInterests.contains(interest);
             return GestureDetector(
               onTap: () {
                 setState(() {
-                  if (isChosen) {
+                  if (isSelected) {
                     widget.chosenInterests.remove(interest);
                   } else {
                     widget.chosenInterests.add(interest);
                   }
                 });
               },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: isChosen
-                      ? const Color.fromARGB(255, 14, 41, 64)
-                      : Colors.grey.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(9),
+              child: Chip(
+                label: Text(
+                  interest,
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : Colors.black,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      interest.substring(2), // Remove the emoji from the interest text
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      ' ${interest.substring(0, 2)}', // Extract the emoji from the interest text
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ],
-                ),
+                backgroundColor: isSelected ? Color.fromARGB(255, 23, 6, 54) : Colors.grey[300],
               ),
             );
           }).toList(),
@@ -190,4 +229,11 @@ class _InterestsSectionState extends State<InterestsSection> {
       ],
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    title: 'SKILLY',
+    home: InterestsPage(),
+  ));
 }

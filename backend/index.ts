@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import pgPromise from 'pg-promise';
 import routerMarket from './routes/market';
+import routerInterests from './routes/interests'
 
 dotenv.config();
 
@@ -13,6 +14,8 @@ const port = process.env.PORT
 app.use(express.json());
 
 app.use('/Market',routerMarket);
+app.use('/api',routerInterests)
+
 
 
 app.get('/', (req, res) => {
