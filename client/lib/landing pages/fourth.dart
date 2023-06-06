@@ -30,11 +30,11 @@ class FourthPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Complete()),
+                      MaterialPageRoute(builder: (context) => FeedPage()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: const Color(0xFF284855),
+                    backgroundColor: const Color(0xFF284855),
                   ),
                   child: const Text('Skip'),
                 ),

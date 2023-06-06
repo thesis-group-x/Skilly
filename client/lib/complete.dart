@@ -1,169 +1,151 @@
-
 import 'package:flutter/material.dart';
 
-class Complete extends StatefulWidget {
-  const Complete({Key? key}) : super(key: key);
-
+class FeedPage extends StatelessWidget {
   @override
-  _CompleteState createState() => _CompleteState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Feed App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Feed'),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.business),
+              label: 'Business',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.school),
+              label: 'School',
+            ),
+          ],
+        ),
+        body: PageView(
+          children: [
+            ProductItem(),
+            ProductItem(),
+            ProductItem(),
+            ProductItem(),
+            ProductItem(),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _CompleteState extends State<Complete> {
-  String _selectedGender = 'Gender';
-  String _selectedLocation = 'Location';
+class ProductItem extends StatefulWidget {
+  @override
+  _ProductItemState createState() => _ProductItemState();
+}
+
+class _ProductItemState extends State<ProductItem> {
+  int likesCount = 0;
+  bool isLiked = false;
+
+  void toggleLike() {
+    setState(() {
+      if (isLiked) {
+        likesCount--;
+      } else {
+        likesCount++;
+      }
+      isLiked = !isLiked;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          'Complete your profile',
-          style: TextStyle(
-            fontSize: 24,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      body:SingleChildScrollView(
-        child :Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      margin: EdgeInsets.all(16),
+      child: Column(
         children: [
-          CircleAvatar(
-            backgroundColor: Colors.black,
-            radius: 50,
-            backgroundImage: NetworkImage(
-              'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=',
-            ),
-          ),
-          SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: TextField(
-              decoration: InputDecoration(
-                fillColor: Color.fromARGB(255, 168, 175, 238),
-                filled: true,
-                prefixIcon: Icon(
-                  Icons.person,
-                  color: Colors.black,
-                ),
-                hintText: 'username',
-                hintStyle: TextStyle(color: Colors.black),
+          Expanded(
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.6,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
               ),
-            ),
-          ),
-           SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: TextField(
-              decoration: InputDecoration(
-                fillColor: Color.fromARGB(255, 168, 175, 238),
-                filled: true,
-                prefixIcon: Icon(
-                  Icons.calendar_month,
-                  color: Colors.black,
-                ),
-                hintText: ' age',
-                hintStyle: TextStyle(color: Colors.black),
-              ),
-            ),
-          ),
-          SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                fillColor: Color.fromARGB(255, 168, 175, 238),
-                filled: true,
-                prefixIcon: Icon(
-                  Icons.group,
-                  color: Colors.black,
-                ),
-                hintText: 'Select your gender',
-                hintStyle: TextStyle(color: Colors.grey),
-              ),
-              value: _selectedGender,
-              items: <String>['Gender', 'Male', 'Female','Other']
-                  .map<DropdownMenuItem<String>>(
-                    (String value) => DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: AssetImage('assets/images/feed.png'),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'Product Title',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(75),
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/feed.png'),
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  )
-                  .toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedGender = newValue ?? '';
-                });
-              },
-            ),
-          ),
-          SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                fillColor: Color.fromARGB(255, 168, 175, 238),
-                filled: true,
-                prefixIcon: Icon(
-                  Icons.location_on,
-                  color: Colors.black,
-                ),
-                hintText: 'Select your location',
-                hintStyle: TextStyle(color: Colors.grey),
-              ),
-              value: _selectedLocation,
-              items: <String>['Location', 'Tunis', 'Ariana','Beja','Sousse','Sfax','Ben Arous','Jandouba','Nabeul','Siliana',
-              'Kef','Zaghouan','Monastir','Kairouan','Mahdia','Kasserine','Sidi Bou Zid','Gafsa','Touzer','Sfax',
-              'Kbeli','Mednine','Tatouine','Bizerte' ]
-                  .map<DropdownMenuItem<String>>(
-                    (String value) => DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    ),
-                  )
-              .toList(),
-onChanged: (String? newValue) {
-setState(() {
-_selectedLocation = newValue ?? '';
-});
-},
-),
-),
-
-          SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: TextField(
-               maxLines: 5,
-              decoration: InputDecoration(
-                fillColor: Color.fromARGB(255, 168, 175, 238),
-                filled: true,
-               
-                hintText: ' bio',
-                hintStyle: TextStyle(color: Colors.black),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: Colors.red,
+                        ),
+                        onPressed: toggleLike,
+                      ),
+                      Text(
+                        '$likesCount Likes',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text(
+                        '200\$',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                ],
               ),
             ),
           ),
-          SizedBox(height: 16),
-Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 30),
-  child:Center(
-  child: ElevatedButton(
-    onPressed: () {
-      // Perform an action when the button is pressed
-    },
-      style: ElevatedButton.styleFrom(
-      primary: Color.fromARGB(255, 168, 175, 238), // Set the background color
-    ),
-    child: Text('Finish'),
-  ),
-),),
-],
-)
-,),
-);
+        ],
+      ),
+    );
+  }
 }
+
+void main() {
+  runApp(FeedPage());
 }

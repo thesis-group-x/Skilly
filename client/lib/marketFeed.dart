@@ -1,96 +1,106 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
-void main() {
-  runApp(const FeedM());
+class FeedPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Feed'),
+      ),
+      body: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return PostItem();
+        },
+      ),
+    );
+  }
 }
 
-class FeedM extends StatelessWidget {
-  const FeedM({Key? key});
+class PostItem extends StatefulWidget {
+  @override
+  _PostItemState createState() => _PostItemState();
+}
 
+class _PostItemState extends State<PostItem> {
+  int likesCount = 0;
+  int commentsCount = 0;
+  bool isLiked = false;
+
+  void toggleLike() {
+    setState(() {
+      if (isLiked) {
+        likesCount--;
+      } else {
+        likesCount++;
+      }
+      isLiked = !isLiked;
+    });
+  }
+
+  void addComment() {
+    setState(() {
+      commentsCount++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // User profile picture
+          CircleAvatar(
+            radius: 24,
+            backgroundImage: AssetImage('assets/profile_picture.png'),
+          ),
+          SizedBox(height: 8),
+          // Post image
+          Image.asset(
+            'assets/post_image.png',
+            fit: BoxFit.cover,
+          ),
+          SizedBox(height: 8),
+          // Likes and comments count
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(
+                  isLiked ? Icons.favorite : Icons.favorite_border,
+                  color: Colors.red,
+                ),
+                onPressed: toggleLike,
+              ),
+              Text('$likesCount Likes'),
+              SizedBox(width: 16),
+              IconButton(
+                icon: Icon(Icons.comment),
+                onPressed: addComment,
+              ),
+              Text('$commentsCount Comments'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Marketplace',
+      title: 'Feed App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
-      routes: {
-        '/marketFeed': (context) =>
-            const MarketFeed(), // Add route for MarketFeed widget
-      },
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key});
-
-  Future<List> fetchPosts() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:3001/Market/posts'));
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      throw Exception('Failed to load posts');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Marketplace'),
-      ),
-      body: FutureBuilder<List>(
-        future: fetchPosts(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(child: Text('An error has occurred!'));
-          } else if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data?.length,
-              itemBuilder: (context, index) {
-                var post = snapshot.data?[index];
-                return ListTile(
-                  leading: Image.network(post['image']),
-                  title: Text(post['description']),
-                  subtitle: Text('Price: ${post['price']}'),
-                  trailing: Text('Skill: ${post['skill']}'),
-                );
-              },
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(
-              context, '/marketFeed'); // Navigate to marketFeed.dart
-        },
-        child: const Icon(Icons.post_add),
-      ),
-    );
-  }
-}
-
-class MarketFeed extends StatelessWidget {
-  const MarketFeed({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Market Feed'),
-      ),
-      body: const Center(
-        child: Text('This is the Market Feed page'),
-      ),
+      home: FeedPage(),
     );
   }
 }
