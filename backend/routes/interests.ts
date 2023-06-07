@@ -1,19 +1,19 @@
-import express from 'express';
-import { getUserList, getUserInterests, updateUserInterests, createUser } from '../controller/interests';
+// import express from 'express';
+// import { getUserList, getUserInterests, updateUserInterests, createUser } from '../controller/interests';
 
-const router = express.Router();
+// const router = express.Router();
 
-//Create user
-router.post('/user', createUser)
+// //Create user
+// router.post('/user', createUser)
 
 
-// Get all users
-router.get('/a', getUserList);
+// // Get all users
+// router.get('/a', getUserList);
 
-// Get user interests
-router.get('/:userId', getUserInterests);
+// // Get user interests
+// router.get('/:userId', getUserInterests);
 
-// Update user interests
-router.post('/:userId', updateUserInterests);
+// // Update user interests
+// router.post('/:userId', updateUserInterests);
 
-export default router;
+// export default router;

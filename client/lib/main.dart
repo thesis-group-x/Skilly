@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import './landing pages/welcome.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const SkillyApp());
 }
 
 class SkillyApp extends StatelessWidget {
-  const SkillyApp({super.key});
+  const SkillyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,7 @@ class SkillyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      debugShowCheckedModeBanner: false, 
+      debugShowCheckedModeBanner: false,
       home: const LandingPage(),
     );
   }
