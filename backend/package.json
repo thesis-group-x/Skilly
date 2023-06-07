@@ -21,11 +21,15 @@
   },
   "dependencies": {
     "@types/react": "~18.0.27",
+<<<<<<< HEAD
+=======
     "axios": "^1.4.0",
+>>>>>>> 8cd16a737003f5d8043f48283c9752df9f72c649
     "cors": "^2.8.5",
     "dotenv": "^16.1.3",
     "expo": "^48.0.19",
     "express": "^4.18.2",
+    "firebase-admin": "^11.9.0",
     "pg": "^8.11.0",
     "pg-promise": "^11.5.0",
     "typescript": "^4.9.4"

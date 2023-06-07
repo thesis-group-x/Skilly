@@ -1,7 +1,6 @@
-// ignore_for_file: depend_on_referenced_packages, use_key_in_widget_constructors, prefer_final_fields, unnecessary_null_comparison, deprecated_member_use, avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'Signup_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,6 +9,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
@@ -19,19 +21,80 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+          await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       if (userCredential != null) {
-        // Login successful, perform any additional logic here
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Success'),
+              content: Text('Logged in successfully!'),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+
         print('User ID: ${userCredential.user!.uid}');
+        _emailController.clear();
+        _passwordController.clear();
       } else {
         print('User is null');
       }
     } catch (e) {
       print('Login error: $e');
+    }
+  }
+
+  Future<void> _loginWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      if (userCredential != null) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Success'),
+              content: Text('Logged in successfully!'),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+
+        print('User ID: ${userCredential.user!.uid}');
+      } else {
+        print('User is null');
+      }
+    } catch (e) {
+      print('Google login error: $e');
     }
   }
 
@@ -113,6 +176,35 @@ class _LoginPageState extends State<LoginPage> {
                   child: Container(
                     alignment: Alignment.center,
                     child: const Text('Login'),
+                  ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              SizedBox(
+                width: 211,
+                height: 46,
+                child: ElevatedButton(
+                  onPressed: _loginWithGoogle,
+                  style: ElevatedButton.styleFrom(
+                    primary: const Color(0xFF284855),
+                    onPrimary: Colors.white,
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/images/google_logo.png',
+                        width: 24.0,
+                        height: 24.0,
+                      ),
+                      SizedBox(width: 10.0),
+                      Text('Sign in with Google'),
+                    ],
                   ),
                 ),
               ),
