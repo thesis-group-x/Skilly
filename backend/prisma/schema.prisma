@@ -10,6 +10,7 @@ datasource db {
 //user details
 model User {
   id               Int          @id @default(autoincrement())
+  uid              String       @unique
   name             String
   email            String       @unique
   address          String

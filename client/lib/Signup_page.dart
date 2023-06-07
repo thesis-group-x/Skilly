@@ -1,9 +1,29 @@
-// ignore_for_file: depend_on_referenced_packages, prefer_final_fields, deprecated_member_use, use_key_in_widget_constructors
-
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'login_page.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Firebase Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: SignUpPage(),
+    );
+  }
+}
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -15,10 +35,22 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
+  String _errorMessage = "";
+
   Future<void> _registerUser() async {
+    setState(() {
+      _errorMessage = "";
+    });
     String fullName = _fullNameController.text;
-    String email = _emailController.text;
+    String email = _emailController.text.trim();
     String password = _passwordController.text;
+
+    if (fullName.isEmpty || email.isEmpty || password.isEmpty) {
+      setState(() {
+        _errorMessage = "All fields must be filled.";
+      });
+      return;
+    }
 
     try {
       UserCredential userCredential =
@@ -26,17 +58,39 @@ class _SignUpPageState extends State<SignUpPage> {
         email: email,
         password: password,
       );
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .set({
-        'fullName': fullName,
-        'email': email,
-      });
 
-      print('User registered with ID: ${userCredential.user!.uid}');
+      User? user = userCredential.user;
+      await user?.updateProfile(displayName: fullName);
+      user?.reload();
+
+      Map<String, dynamic> userData = {
+        'name': fullName,
+        'email': email,
+        'uid': user?.uid,
+      };
+
+      var response = await http.post(
+        Uri.parse('http://10.0.2.2:3001/user/adduser'),
+        body: jsonEncode(userData),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        _fullNameController.clear();
+        _emailController.clear();
+        _passwordController.clear();
+        print('User created: ${response.body}');
+      } else {
+        print('Error creating user: ${response.statusCode}');
+        setState(() {
+          _errorMessage = "Error creating user. Please try again later.";
+        });
+      }
     } catch (e) {
-      print('Registration error: $e');
+      print('Error creating user: $e');
+      setState(() {
+        _errorMessage = "Error creating user. Please try again later.";
+      });
     }
   }
 
