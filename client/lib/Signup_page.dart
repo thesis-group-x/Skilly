@@ -21,11 +21,15 @@ class _SignUpPageState extends State<SignUpPage> {
     String password = _passwordController.text;
 
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
         'fullName': fullName,
         'email': email,
       });
@@ -39,19 +43,18 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-     Image.asset(
-  'assets/images/signup.png',
-  width: 250.0,
-  height: 250.0, 
-),
-const SizedBox(height: 20.0),
+              Image.asset(
+                'assets/images/signup.png',
+                width: 250.0,
+                height: 250.0,
+              ),
+              const SizedBox(height: 20.0),
               const Text(
                 'Create your account',
                 style: TextStyle(
@@ -75,7 +78,6 @@ const SizedBox(height: 20.0),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.zero,
                     prefixIcon: Icon(Icons.person),
-                    
                   ),
                 ),
               ),
@@ -137,13 +139,13 @@ const SizedBox(height: 20.0),
                   ),
                 ),
               ),
-               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               TextButton(
                 onPressed: () {
-                   Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginPage ()),
-                    );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
                 },
                 child: const Text('Already have an account? Sign In'),
               ),

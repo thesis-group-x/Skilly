@@ -1,7 +1,6 @@
-name: skilly
+name: client
 description: A new Flutter project.
-publish_to: 'none'
-
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
@@ -10,19 +9,27 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
-  http: ^1.0.0
-  country_icons: ^2.0.0
-
-dev_dependencies:
+  image_picker: ^0.8.7+5
+  flutter_datetime_picker: ^1.5.1
+  flutter_typeahead: ^4.6.1
+  http: ^0.13.4
   cloud_firestore: ^4.8.0
   firebase_auth: ^4.6.2
   firebase_core: ^2.13.1
   flutter_lints: ^2.0.0
+  shared_preferences: ^2.1.1
+  flutter_rating_bar: ^4.0.1
+  font_awesome_flutter: ^10.4.0
+  bottom_navy_bar: ^6.0.0
+  carousel_slider: ^4.2.1
+  flutter_svg: ^2.0.6
+
+dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
   assets:
-    - assets/images/
-  uses-material-design: true
+  - assets/icons/
+  - assets/images/
+uses-material-design: true
