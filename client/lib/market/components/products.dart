@@ -12,7 +12,7 @@ class Products extends StatelessWidget {
           RecomendPlantCard(
             key: UniqueKey(),
             image: "assets/images/feed.png",
-            title: "Samantha",
+            title: "Ines",
             country: "Tunisia",
             price: 440,
             press: () {},
@@ -20,7 +20,7 @@ class Products extends StatelessWidget {
           RecomendPlantCard(
             key: UniqueKey(),
             image: "assets/images/market.png",
-            title: "Angelica",
+            title: "9lewi",
             country: "Tunis",
             price: 440,
             press: () {},
@@ -28,8 +28,8 @@ class Products extends StatelessWidget {
           RecomendPlantCard(
             key: UniqueKey(),
             image: "assets/images/market2.png",
-            title: "Samantha",
-            country: "Tunis",
+            title: "islem",
+            country: "Beja",
             price: 440,
             press: () {},
           ),

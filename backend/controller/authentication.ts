@@ -8,7 +8,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     const { name, email, uid } = req.body;
 
     if (!name || !email || !uid) {
-      res.status(400).json({ error: "Name, email, and uid are required." });
+      res.status(400).json({ error: "Name, email, uid are required." });
       return;
     }
 

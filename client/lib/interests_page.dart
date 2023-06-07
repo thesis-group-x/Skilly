@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'complete.dart';
 
 final List<String> hobbiesInterests = [
@@ -47,7 +46,7 @@ List<String> chosenHobbiesInterests = [];
 List<String> chosenSkillsInterests = [];
 
 class InterestsPage extends StatefulWidget {
-  const InterestsPage({super.key});
+  const InterestsPage({Key? key}) : super(key: key);
 
   @override
   _InterestsPageState createState() => _InterestsPageState();
@@ -56,35 +55,8 @@ class InterestsPage extends StatefulWidget {
 class _InterestsPageState extends State<InterestsPage> {
   bool buttonHovered = false;
 
-  void saveUserInterests() async {
-    const userId = '1'; 
 
-    final interests = {
-      'hobbies': chosenHobbiesInterests,
-      'skills': chosenSkillsInterests,
-    };
-
-    final url = Uri.parse('http://localhost:3000/api/$userId');
-    final response = await http.post(
-      url,
-      body: interests,
-    );
-
-    if (response.statusCode == 200) {
-      // Interests saved successfully
-      print('Interests saved successfully');
-    } else {
-      // Failed to save interests
-      print('Failed to save interests');
-    }
-  }
-
-  void navigateToCompletePage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Complete()),
-    );
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -132,16 +104,17 @@ class _InterestsPageState extends State<InterestsPage> {
                 cursor: SystemMouseCursors.click,
                 child: ElevatedButton(
                   onPressed: () {
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Complete ()),
-                    );
-                  },
+                    Navigator.push(
+                     context,
+                   MaterialPageRoute(builder: (context) => const Complete()),
+                            );
+                     },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: buttonHovered
                         ? Colors.grey.withOpacity(0.8)
                         : const Color(0xFF284855),
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 24),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
@@ -174,11 +147,12 @@ class InterestsSection extends StatefulWidget {
   final List<String> interests;
   final List<String> chosenInterests;
 
-  const InterestsSection({super.key, 
+  const InterestsSection({
+    Key? key,
     required this.title,
     required this.interests,
     required this.chosenInterests,
-  });
+  }) : super(key: key);
 
   @override
   _InterestsSectionState createState() => _InterestsSectionState();

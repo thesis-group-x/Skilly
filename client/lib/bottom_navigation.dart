@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'feed.dart';
+import './market/market.dart';
+import 'user-profile.dart';
 
 class CustomBottomNavigation extends StatefulWidget {
   final int currentIndex;
@@ -14,14 +17,55 @@ class CustomBottomNavigation extends StatefulWidget {
 }
 
 class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    _currentIndex = widget.currentIndex;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: Colors.white,
       selectedItemColor: Color(0xFF284855),
       unselectedItemColor: Colors.grey,
-      currentIndex: widget.currentIndex,
-      onTap: widget.onTabSelected,
+      currentIndex: _currentIndex,
+      onTap: (index) {
+        setState(() {
+          _currentIndex = index;
+        });
+
+        switch (index) {
+          case 0:
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => FeedPage()),
+              (route) => false,
+            );
+            break;
+          case 1:
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+              (route) => false,
+            );
+            break;
+          case 2:
+            // Add logic for the Match page
+            break;
+          case 3:
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => UserProfilePage()),
+              (route) => false,
+            );
+            break;
+        }
+
+        widget.onTabSelected(index);
+      },
       items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
@@ -43,3 +87,4 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
     );
   }
 }
+

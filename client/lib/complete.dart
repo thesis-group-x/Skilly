@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'user-profile.dart';
 
 class Complete extends StatefulWidget {
   const Complete({Key? key}) : super(key: key);
@@ -22,7 +23,8 @@ class _CompleteState extends State<Complete> {
   }
 
   Future<void> fetchCountries() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3001/countries'));
+    final response =
+        await http.get(Uri.parse('http://10.0.2.2:3001/countries'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -176,10 +178,14 @@ class _CompleteState extends State<Complete> {
               child: Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Perform an action when the button is pressed
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserProfilePage()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFFAFAFA), // Set the button color
+                    primary: Color(0xFF284855), // Set the button color
                   ),
                   child: const Text('Finish'),
                 ),
