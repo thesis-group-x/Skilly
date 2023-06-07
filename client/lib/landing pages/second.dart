@@ -41,11 +41,11 @@ class SecondPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20.0),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
-                  backgroundColor: const Color(0xFF284855), // Change circle color here
+                  backgroundColor: Color(0xFF284855), // Change circle color here
                   radius: 6.0,
                 ),
                 SizedBox(width: 5.0),

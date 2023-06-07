@@ -1,5 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
-import '../Signup_page.dart';
+// import '../Signup_page.dart';
 import '../complete.dart';
 
 class FourthPage extends StatelessWidget {
@@ -28,23 +30,22 @@ class FourthPage extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                  Navigator.push(
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Complete ()),
+                      MaterialPageRoute(builder: (context) => const Complete ()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: const Color(0xFF284855), 
+                    backgroundColor: const Color(0xFF284855),
                   ),
                   child: const Text('Skip'),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignUpPage ()),
-                    );
-
+                    //   Navigator.push(
+                    //   // context,
+                    //   // MaterialPageRoute(builder: (context) => SignUpPage ()),
+                    // );
                   },
                   style: ElevatedButton.styleFrom(
                     primary: const Color(0xFF284855), // Change button color here
