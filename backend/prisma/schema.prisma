@@ -41,7 +41,6 @@ model Community {
   name        String
   skill       String
   memberships Membership[] // updated community
-  posts       Post[]
 }
 
 model Post {
@@ -55,8 +54,6 @@ model Post {
   reviews     Review[]
   userId      Int
   user        User      @relation(fields: [userId], references: [id])
-  communityId Int
-  community   Community @relation(fields: [communityId], references: [id])
 }
 
 model Comment {
@@ -126,6 +123,12 @@ model ReviewM {
   post   PostM @relation(fields: [postId], references: [id])
   userId Int
   user   User  @relation(fields: [userId], references: [id])
+}
+
+model Country {
+  id    Int    @id @default(autoincrement())
+  name  String
+  @@map("countries")
 }
 
 //still the admin and the chat and groupe community and and groupe chat still dont know how 

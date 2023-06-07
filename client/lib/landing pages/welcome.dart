@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'second.dart';
 
@@ -16,7 +18,7 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void startTimer() async {
-    await Future.delayed(const Duration(seconds: 9));
+    await Future.delayed(const Duration(seconds: 2));
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const SecondPage()),
@@ -44,8 +46,8 @@ class _LandingPageState extends State<LandingPage> {
 
 void main() {
   runApp(
-    MaterialApp(
-      home: const LandingPage(),
+    const MaterialApp(
+      home: LandingPage(),
     ),
   );
 }

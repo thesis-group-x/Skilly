@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import '../Signup_page.dart';
 import '../complete.dart';
@@ -30,7 +32,7 @@ class FourthPage extends StatelessWidget {
                   onPressed: () {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Complete ()),
+                      MaterialPageRoute(builder: (context) => const Complete ()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -47,7 +49,7 @@ class FourthPage extends StatelessWidget {
 
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: const Color(0xFF284855), // Change button color here
+                    primary: const Color(0xFF284855), 
                   ),
                   child: const Text('Next'),
                 ),
@@ -59,17 +61,17 @@ class FourthPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
-                  backgroundColor: const Color(0xFF284855), // Change circle color here
+                  backgroundColor: Color(0xFF284855), 
                   radius: 6.0,
                 ),
                 SizedBox(width: 5.0),
                 CircleAvatar(
-                  backgroundColor: const Color(0xFF284855), // Change circle color here
+                  backgroundColor: Color(0xFF284855), 
                   radius: 6.0,
                 ),
                 SizedBox(width: 5.0),
                 CircleAvatar(
-                  backgroundColor: const Color(0xFF284855), // Change circle color here
+                  backgroundColor: Color(0xFF284855), 
                   radius: 6.0,
                 ),
               ],
