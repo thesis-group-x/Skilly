@@ -10,9 +10,11 @@ import {
   updateReview,
   deleteReview,
   deletePost,
+  test
 } from '../controller/market'
 
 const router = express.Router();
+router.post('/test',test)//post user fake /
 router.get('/posts', getPosts);
 router.get('/post/:id',searchPostsByid);
 router.post('/posts', createPost);

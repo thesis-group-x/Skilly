@@ -16,15 +16,13 @@ app.use(express.json());
 
 app.use('/Market',routerMarket);
 app.use('/api',routerInterests)
-
-
 app.use('/Authentication',routerAuthentication);
 
 app.get('/', (req, res) => {
   res.send('Hello, 9lewi');
 });
 
-db.connect()    
+db.connect()
   .then(() => {
     console.log('Database connected');
     app.listen(port, () => {

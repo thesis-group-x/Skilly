@@ -12,7 +12,6 @@ export const createUser = async (req: Request, res: Response) => {
       data: {
         name,
         email,
-        password,
         address,
         skills,
         hobbies,
