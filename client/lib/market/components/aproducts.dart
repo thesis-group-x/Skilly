@@ -12,12 +12,12 @@ class Aproducts extends StatelessWidget {
       child: Row(
         children: <Widget>[
           FeaturePlantCard(
-            image: "assets/images/bottom_img_1.png",
+            image: "assets/images/feed.png",
             press: () {},
             key: UniqueKey(),
           ),
           FeaturePlantCard(
-            image: "assets/images/bottom_img_2.png",
+            image: "assets/images/feed.png",
             press: () {},
             key: UniqueKey(),
           ),

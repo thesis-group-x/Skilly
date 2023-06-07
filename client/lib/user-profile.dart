@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'bottom_navigation.dart'; 
+
 class UserProfilePage extends StatefulWidget {
   @override
   _UserProfilePageState createState() => _UserProfilePageState();
@@ -62,6 +64,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
           SizedBox(height: 24),
           buildReviewsSection(),
         ],
+      ),
+      bottomNavigationBar: CustomBottomNavigation(
+        currentIndex: 3, // Replace with the actual current index
+        onTabSelected: (index) {
+          // Handle tab selection here
+        },
       ),
     );
   }

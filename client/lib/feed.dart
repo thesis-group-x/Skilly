@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import "bottom_navigation.dart";
+import 'bottom_navigation.dart';
 
 void main() {
   runApp(const FeedApp());
@@ -149,7 +149,12 @@ class _FeedPageState extends State<FeedPage> {
           );
         },
       ),
-
+      bottomNavigationBar: CustomBottomNavigation(
+        currentIndex: 0, // Set the initial index for the current page
+        onTabSelected: (index) {
+          // Add functionality for the bottom navigation bar item selection
+        },
+      ),
     );
   }
 }
