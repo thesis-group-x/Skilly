@@ -86,7 +86,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
-                  color: Color(0xFFFAFAFA),
+                  color: const Color(0xFFFAFAFA),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: TextField(
@@ -102,9 +102,9 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(height: MediaQuery.of(context).size.height * 0.0206),
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
-                  color: Color(0xFFFAFAFA),
+                  color: const Color(0xFFFAFAFA),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: TextField(
