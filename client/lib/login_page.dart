@@ -1,8 +1,7 @@
-// ignore_for_file: depend_on_referenced_packages, use_key_in_widget_constructors, prefer_final_fields, unnecessary_null_comparison, deprecated_member_use, avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'Signup_page.dart';
+import 'interests_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -25,8 +24,11 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (userCredential != null) {
-        // Login successful, perform any additional logic here
-        print('User ID: ${userCredential.user!.uid}');
+        // Login successful, navigate to InterestsPage
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => InterestsPage()),
+        );
       } else {
         print('User is null');
       }

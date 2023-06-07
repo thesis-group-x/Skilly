@@ -4,28 +4,29 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 // Create a new user
-export const createUser = async (req: Request, res: Response) => {
-  const { name, email, password, address, skills, hobbies, phoneNumber } = req.body;
+// export const createUser = async (req: Request, res: Response) => {
+//   const { name, email, address, skills, hobbies,profileImage, phoneNumber } = req.body;
 
-  try {
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        address,
-        skills,
-        hobbies,
-        phoneNumber,
-        level: 1, 
-      },
-    });
+//   try {
+//     const user = await prisma.user.create({
+//       data: {
+//         name,
+//         email,
+//         address,
+//         skills,
+//         hobbies,
+//         profileImage,
+//         phoneNumber,
+//         level: 1, 
+//       },
+//     });
 
-    res.json({ message: 'User created successfully', user });
-  } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
+//     res.json({ message: 'User created successfully', user });
+//   } catch (error) {
+//     console.error('Error creating user:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
 
 
 

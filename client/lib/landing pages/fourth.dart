@@ -1,6 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
-// import '../Signup_page.dart';
-import '../complete.dart';
+import '../Signup_page.dart';
 
 class FourthPage extends StatelessWidget {
   const FourthPage({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class FourthPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => FeedPage()),
+                      MaterialPageRoute(builder: (context) => SignUpPage()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -40,10 +41,10 @@ class FourthPage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    //   Navigator.push(
-                    //   // context,
-                    //   // MaterialPageRoute(builder: (context) => SignUpPage ()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignUpPage()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     primary:

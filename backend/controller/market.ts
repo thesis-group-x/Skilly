@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 
 //------------------------------------------------------------ TEST USER ---------------------------------------------------------------------------------
 //-------------------------------------------------------test for posting a user with id 
-export const test = async (req: Request, res: Response): Promise<void> => {
-  const { name, email, password, address, level } = req.body;
+/* export const test = async (req: Request, res: Response): Promise<void> => {
+  const { name, email, address, level } = req.body;
 
   try {
     const user = await prisma.user.create({
@@ -23,7 +23,7 @@ export const test = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     res.status(500).json({ error: 'Error creating user' });
   }
-};
+}; */
 
 //------------------------------------------------------------ POST MARKET PLACE ---------------------------------------------------------------------------------
 
