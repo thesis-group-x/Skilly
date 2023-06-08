@@ -1,41 +1,94 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class Products extends StatelessWidget {
+class Products extends StatefulWidget {
   const Products({required Key key}) : super(key: key);
 
   @override
+  _ProductsState createState() => _ProductsState();
+}
+
+class _ProductsState extends State<Products> {
+  List<ProductData> products = [];
+  bool isLoading = true;
+  String errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final response =
+          await http.get(Uri.parse('http://192.168.1.169:3001/Market/posts'));
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData is List) {
+          List<ProductData> productList = [];
+          for (var item in jsonData) {
+            String image = item['image'];
+            String title = item['title'];
+            int price = item['price'];
+            String skill = item['skill'];
+            ProductData productData = ProductData(
+              image: image,
+              title: title,
+              price: price,
+              skill: skill,
+            );
+            productList.add(productData);
+          }
+          setState(() {
+            products = productList;
+            isLoading = false;
+          });
+        } else {
+          setState(() {
+            isLoading = false;
+            errorMessage = 'Invalid API response';
+          });
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+          errorMessage = 'Failed to fetch product data';
+        });
+      }
+    } catch (error) {
+      setState(() {
+        isLoading = false;
+        errorMessage = 'An error occurred: $error';
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: <Widget>[
-          RecomendPlantCard(
-            key: UniqueKey(),
-            image: "assets/images/feed.png",
-            title: "Ines",
-            country: "Tunisia",
-            price: 440,
-            press: () {},
-          ),
-          RecomendPlantCard(
-            key: UniqueKey(),
-            image: "assets/images/market.png",
-            title: "9lewi",
-            country: "Tunis",
-            price: 440,
-            press: () {},
-          ),
-          RecomendPlantCard(
-            key: UniqueKey(),
-            image: "assets/images/market2.png",
-            title: "islem",
-            country: "Beja",
-            price: 440,
-            press: () {},
-          ),
-        ],
-      ),
-    );
+    if (isLoading) {
+      return CircularProgressIndicator();
+    } else if (errorMessage.isNotEmpty) {
+      return Text(errorMessage);
+    } else {
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: products.map((product) {
+            return RecomendPlantCard(
+              key: UniqueKey(),
+              image: product.image,
+              title: product.title,
+              skill: product.skill,
+              price: product.price,
+              press: () {},
+            );
+          }).toList(),
+        ),
+      );
+    }
   }
 }
 
@@ -44,12 +97,12 @@ class RecomendPlantCard extends StatelessWidget {
     required Key key,
     required this.image,
     required this.title,
-    required this.country,
+    required this.skill,
     required this.price,
     required this.press,
   }) : super(key: key);
 
-  final String image, title, country;
+  final String image, title, skill;
   final int price;
   final void Function() press;
 
@@ -65,7 +118,7 @@ class RecomendPlantCard extends StatelessWidget {
       width: size.width * 0.4,
       child: Column(
         children: <Widget>[
-          Image.asset(image),
+          Image.network(image),
           GestureDetector(
             onTap: press,
             child: Container(
@@ -96,7 +149,7 @@ class RecomendPlantCard extends StatelessWidget {
                               ),
                         ),
                         TextSpan(
-                          text: "$country".toUpperCase(),
+                          text: "$skill".toUpperCase(),
                           style: TextStyle(
                             color: kPrimaryColor.withOpacity(0.5),
                           ),
@@ -120,6 +173,20 @@ class RecomendPlantCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class ProductData {
+  final String image;
+  final String title;
+  final String skill;
+  final int price;
+
+  ProductData({
+    required this.image,
+    required this.title,
+    required this.skill,
+    required this.price,
+  });
 }
 
 const kPrimaryColor = Colors.blue; // Replace with your desired primary color
