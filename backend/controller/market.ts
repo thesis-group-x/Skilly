@@ -29,13 +29,14 @@ const prisma = new PrismaClient();
 
 //---------------------------------------------------------creation of gig
 export const createPost = async (req: Request, res: Response): Promise<void> => {
-  const { price, image, description, skill, userId } = req.body;
+  const { price, image, title, description, skill, userId } = req.body;
   console.log(req.query)
   try {
     const post = await prisma.postM.create({
       data: {
         price,
         image,
+        title,
         description,
         skill,
         userId,

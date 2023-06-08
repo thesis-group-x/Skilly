@@ -44,16 +44,16 @@ model Community {
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
-  image       String
-  title       String
-  skill       String
-  desc        String
-  comments    Comment[]
-  likes       Int
-  reviews     Review[]
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id])
+  id       Int       @id @default(autoincrement())
+  image    String
+  title    String
+  skill    String
+  desc     String
+  comments Comment[]
+  likes    Int
+  reviews  Review[]
+  userId   Int
+  user     User      @relation(fields: [userId], references: [id])
 }
 
 model Comment {
@@ -106,6 +106,7 @@ enum FriendshipStatus {
 //post market place
 model PostM {
   id          Int       @id @default(autoincrement())
+  title       String
   price       Float
   image       String
   description String
@@ -126,8 +127,9 @@ model ReviewM {
 }
 
 model Country {
-  id    Int    @id @default(autoincrement())
-  name  String
+  id   Int    @id @default(autoincrement())
+  name String
+
   @@map("countries")
 }
 

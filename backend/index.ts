@@ -7,7 +7,7 @@ import routerFeed from './routes/feed';
 import routerCountry from './routes/country';
 import routerAuthentication from './routes/authenticaion';
 import cors from 'cors';
-import axios from 'axios';
+// import axios from 'axios';
 import { PrismaClient } from '@prisma/client';
 
 
@@ -37,39 +37,39 @@ app.get('/', (req, res) => {
   res.send('Hello, 9lewi');
 });
 
-async function insertCountriesData() {
-  try {
-    const response = await axios.get('https://restcountries.com/v3.1/all');
-    const countriesData = response.data;
+// async function insertCountriesData() {
+//   try {
+//     const response = await axios.get('https://restcountries.com/v3.1/all');
+//     const countriesData = response.data;
 
-    for (const countryData of countriesData) {
-      const { name } = countryData;
+//     for (const countryData of countriesData) {
+//       const { name } = countryData;
       
-      await prisma.country.create({
-        data: {
-          name: name.common,
-        },
-      });      
-    }
+//       await prisma.country.create({
+//         data: {
+//           name: name.common,
+//         },
+//       });      
+//     }
 
-    console.log('Countries data inserted successfully.');
-  } catch (error) {
-    console.error('Error inserting countries data:', error);
-  }
-}
+//     console.log('Countries data inserted successfully.');
+//   } catch (error) {
+//     console.error('Error inserting countries data:', error);
+//   }
+// }
 
-async function main() {
-  await prisma.$connect();
-  await insertCountriesData();
-}
+// async function main() {
+//   await prisma.$connect();
+//   await insertCountriesData();
+// }
 
-main()
-  .catch((error) => {
-    console.error('Error starting the server:', error);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+// main()
+//   .catch((error) => {
+//     console.error('Error starting the server:', error);
+//   })
+//   .finally(async () => {
+//     await prisma.$disconnect();
+  // });
 
 
 db.connect()
