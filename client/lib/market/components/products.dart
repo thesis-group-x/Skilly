@@ -1,3 +1,4 @@
+import 'package:client/market/components/api.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -10,6 +11,7 @@ class Products extends StatefulWidget {
 }
 
 class _ProductsState extends State<Products> {
+  //states
   List<ProductData> products = [];
   bool isLoading = true;
   String errorMessage = '';
@@ -23,12 +25,11 @@ class _ProductsState extends State<Products> {
   Future<void> fetchData() async {
     try {
       final response =
-          await http.get(Uri.parse('http://192.168.1.169:3001/Market/posts'));
-
+          await http.get(Uri.parse('http://${localhost}:3001/Market/posts'));
       if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
+        final jsonData = json.decode(response.body); //data from the response
         if (jsonData is List) {
-          List<ProductData> productList = [];
+          List<ProductData> productList = []; //refile the array
           for (var item in jsonData) {
             String image = item['image'];
             String title = item['title'];
@@ -40,7 +41,7 @@ class _ProductsState extends State<Products> {
               price: price,
               skill: skill,
             );
-            productList.add(productData);
+            productList.add(productData); //refile the array with data
           }
           setState(() {
             products = productList;
@@ -77,6 +78,7 @@ class _ProductsState extends State<Products> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: products.map((product) {
+            //here we return the data from the array and map throught it
             return RecomendPlantCard(
               key: UniqueKey(),
               image: product.image,
@@ -112,7 +114,7 @@ class RecomendPlantCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(
         left: kDefaultPadding,
-        top: kDefaultPadding / 2,
+        top: kDefaultPadding / 1.4,
         bottom: kDefaultPadding * 2.5,
       ),
       width: size.width * 0.4,

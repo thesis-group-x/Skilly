@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:client/market/components/oneP.dart';
 
+import 'api.dart';
+
 class Aproducts extends StatefulWidget {
   const Aproducts({
     required Key key,
@@ -23,7 +25,7 @@ class _AproductsState extends State<Aproducts> {
 
   Future<void> fetchData() async {
     final response =
-        await http.get(Uri.parse('http://192.168.1.169:3001/Market/posts'));
+        await http.get(Uri.parse('http://${localhost}:3001/Market/posts'));
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       setState(() {
@@ -47,8 +49,7 @@ class _AproductsState extends State<Aproducts> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      ProductItemScreen(productId: product.id),
+                  builder: (context) => ProductItemScreen(product: product),
                 ),
               );
             },
