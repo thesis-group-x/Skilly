@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'complete.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 
 final List<String> hobbiesInterests = [
   "📸 Photography",
@@ -46,17 +48,44 @@ List<String> chosenHobbiesInterests = [];
 List<String> chosenSkillsInterests = [];
 
 class InterestsPage extends StatefulWidget {
-  const InterestsPage({Key? key}) : super(key: key);
-
   @override
   _InterestsPageState createState() => _InterestsPageState();
 }
 
 class _InterestsPageState extends State<InterestsPage> {
   bool buttonHovered = false;
+  String _errorMessage = '';
 
+  Future<void> saveUserInterests() async {
+    final user = FirebaseAuth.instance.currentUser;
+    print(FirebaseAuth.instance.currentUser);
+    if (user != null) {
+       final userId = user.email;
 
-  
+      final interestsData = {
+        'hobbies': chosenHobbiesInterests,
+        'skills': chosenSkillsInterests,
+      };
+
+      final url = Uri.parse('http://10.0.2.2:3001/api/$userId');
+      final response = await http.put(
+        url,
+        body: jsonEncode(interestsData),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        // Interests saved successfully
+        print('Interests saved successfully');
+      } else {
+        // Failed to save interests
+        print('Failed to save interests');
+        setState(() {
+          _errorMessage = "Failed to save interests. Please try again later.";
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +97,13 @@ class _InterestsPageState extends State<InterestsPage> {
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             onTap: () {},
-            child: const Text(
+            child: Text(
               'Choose Your Interests',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Arial', // Replace with your desired font
+                fontFamily: 'Arial', 
               ),
             ),
           ),
@@ -82,58 +111,67 @@ class _InterestsPageState extends State<InterestsPage> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InterestsSection(
               title: 'Hobbies',
               interests: hobbiesInterests,
-              chosenInterests: chosenHobbiesInterests,
+              selectedInterests: chosenHobbiesInterests,
+              onInterestSelected: (interest) {
+                setState(() {
+                  if (chosenHobbiesInterests.contains(interest)) {
+                    chosenHobbiesInterests.remove(interest);
+                  } else {
+                    chosenHobbiesInterests.add(interest);
+                  }
+                });
+              },
             ),
-            const SizedBox(height: 40),
             InterestsSection(
               title: 'Skills',
               interests: skillsInterests,
-              chosenInterests: chosenSkillsInterests,
+              selectedInterests: chosenSkillsInterests,
+              onInterestSelected: (interest) {
+                setState(() {
+                  if (chosenSkillsInterests.contains(interest)) {
+                    chosenSkillsInterests.remove(interest);
+                  } else {
+                    chosenSkillsInterests.add(interest);
+                  }
+                });
+              },
             ),
-            const SizedBox(height: 40),
-            Align(
-              alignment: Alignment.centerRight,
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                     context,
-                   MaterialPageRoute(builder: (context) => const Complete()),
-                            );
-                     },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonHovered
-                        ? Colors.grey.withOpacity(0.8)
-                        : const Color(0xFF284855),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 24),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Next',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+            SizedBox(height: 20),
+            if (_errorMessage.isNotEmpty)
+              Text(
+                _errorMessage,
+                style: TextStyle(color: Colors.red),
+              ),
+            ElevatedButton(
+              onPressed: () {
+                saveUserInterests();
+                print(FirebaseAuth.instance.currentUser?.uid);
+              },
+              style: ElevatedButton.styleFrom(
+                primary: buttonHovered ? Colors.blue : Colors.black,
+                elevation: 2,
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              ),
+              child: Text(
+                'Save Interests',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
+              onHover: (value) {
+                setState(() {
+                  buttonHovered = value;
+                });
+              },
             ),
           ],
         ),
@@ -142,68 +180,53 @@ class _InterestsPageState extends State<InterestsPage> {
   }
 }
 
-class InterestsSection extends StatefulWidget {
+class InterestsSection extends StatelessWidget {
   final String title;
   final List<String> interests;
-  final List<String> chosenInterests;
+  final List<String> selectedInterests;
+  final Function(String) onInterestSelected;
 
-  const InterestsSection({
-    Key? key,
+  InterestsSection({
     required this.title,
     required this.interests,
-    required this.chosenInterests,
-  }) : super(key: key);
+    required this.selectedInterests,
+    required this.onInterestSelected,
+  });
 
-  @override
-  _InterestsSectionState createState() => _InterestsSectionState();
-}
-
-class _InterestsSectionState extends State<InterestsSection> {
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          widget.title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Arial', // Replace with your desired font
-          ),
+          title,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 10),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: widget.interests.map((interest) {
-            final isSelected = widget.chosenInterests.contains(interest);
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (isSelected) {
-                    widget.chosenInterests.remove(interest);
-                  } else {
-                    widget.chosenInterests.add(interest);
-                  }
-                });
-              },
-              child: Chip(
-                label: Text(
-                  interest,
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : const Color(0xFF284855),
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.normal,
-                  ),
-                ),
-                backgroundColor:
-                    isSelected ? const Color(0xFF284855) : Colors.grey[300],
+          spacing: 10,
+          children: interests.map((interest) {
+            final isSelected = selectedInterests.contains(interest);
+            return ChoiceChip(
+              label: Text(interest),
+              selected: isSelected,
+              onSelected: (_) => onInterestSelected(interest),
+              selectedColor: Colors.blue,
+              labelStyle: TextStyle(
+                color: isSelected ? Colors.white : Colors.black,
               ),
             );
           }).toList(),
         ),
+        SizedBox(height: 20),
       ],
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    title: 'SKILLY',
+    home: InterestsPage(),
+  ));
 }

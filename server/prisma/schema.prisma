@@ -14,14 +14,14 @@ model User {
   name             String
   email            String       @unique
   address          String
-  profileImage     String?
-  budge            String?
+  profileImage     String
+  budge            String
   points           Int          @default(0)
   skills           String[]
   hobbies          String[]
-  details          String?
-  descriptions     String?
-  phoneNumber      String?
+  details          String
+  descriptions     String
+  phoneNumber      String
   level            Int
   createdAt        DateTime     @default(now())
   sentRequests     Friendship[] @relation("FriendshipRequests")

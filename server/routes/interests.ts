@@ -14,6 +14,6 @@ const router = express.Router();
  router.get('/:userId', getUserInterests);
 
 // // Update user interests
- router.post('/:userId', updateUserInterests);
+ router.put('/:userId', updateUserInterests);
 
 export default router;

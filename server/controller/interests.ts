@@ -69,7 +69,7 @@ export const updateUserInterests = async (req: Request, res: Response) => {
 
   try {
     const user = await prisma.user.update({
-      where: { id: Number(userId) },
+      where: { email: userId },
       data: { hobbies, skills },
     });
 

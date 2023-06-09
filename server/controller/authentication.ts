@@ -74,3 +74,71 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({ error: "An error occurred while fetching the user." });
   }
 };
+
+export const updateUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = Number(req.params.id);
+    const { name, email, address, profileImage, budge, phoneNumber } = req.body;
+
+    if (isNaN(userId)) {
+      res.status(400).json({ error: "Invalid user ID." });
+      return;
+    }
+
+    const existingUser: User | null = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!existingUser) {
+      res.status(404).json({ error: "User not found." });
+      return;
+    }
+
+    const updatedUser: User = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        name: name || existingUser.name,
+        email: email || existingUser.email,
+        address: address || existingUser.address,
+        profileImage: profileImage || existingUser.profileImage,
+        budge: budge || existingUser.budge,
+        phoneNumber: phoneNumber || existingUser.phoneNumber,
+      },
+    });
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while updating the user." });
+  }
+};
+
+export const getUserByUid = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const uid = Number(req.params.uid);
+
+    if (isNaN(uid)) {
+      res.status(400).json({ error: "Invalid user UID." });
+      return;
+    }
+
+    const user: User | null = await prisma.user.findUnique({
+      where: {
+        id: uid,
+      },
+    });
+
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ error: "User not found." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching the user." });
+  }
+};
