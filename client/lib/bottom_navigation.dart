@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'feed.dart';
+import 'feed/feed.dart';
 import './market/market.dart';
 import 'user-profile.dart';
 
