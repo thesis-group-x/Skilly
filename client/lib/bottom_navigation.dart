@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'feed.dart';
 import './market/market.dart';
+import 'market/components/create.dart';
 import 'user-profile.dart';
 
 class CustomBottomNavigation extends StatefulWidget {
@@ -58,7 +59,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
           case 3:
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => UserProfilePage()),
+              MaterialPageRoute(builder: (context) => CreatePostScreen()),
               (route) => false,
             );
             break;
@@ -87,4 +88,3 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
     );
   }
 }
-

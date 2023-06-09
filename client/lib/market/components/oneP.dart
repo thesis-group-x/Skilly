@@ -13,47 +13,53 @@ class ProductItemScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Stack(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              child: Image.asset("assets/images/R.png"),
-            ),
-            buttonArrow(context),
-            scroll(),
-          ],
+        body: Center(
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height /
+                      3, //third of the picture
+                  width: MediaQuery.of(context).size.width / 1,
+                  child: Image.network(
+                    product.image,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              buttonArrow(context),
+              scroll(),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  buttonArrow(BuildContext context) {
+  Widget buttonArrow(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(10.0),
       child: InkWell(
         onTap: () {
           Navigator.pop(context);
         },
         child: Container(
-          clipBehavior: Clip.hardEdge,
           height: 55,
           width: 55,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25),
           ),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              height: 55,
-              width: 55,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: const Icon(
-                Icons.arrow_back_ios,
-                size: 20,
-                color: Colors.white,
-              ),
+          child: Container(
+            height: 55,
+            width: 55,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: const Icon(
+              Icons.arrow_back_ios,
+              size: 20,
+              color: Color.fromARGB(255, 204, 195, 195),
             ),
           ),
         ),
@@ -61,7 +67,7 @@ class ProductItemScreen extends StatelessWidget {
     );
   }
 
-  scroll() {
+  Widget scroll() {
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
       maxChildSize: 1.0,
@@ -69,7 +75,6 @@ class ProductItemScreen extends StatelessWidget {
       builder: (context, scrollController) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          clipBehavior: Clip.hardEdge,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -97,7 +102,7 @@ class ProductItemScreen extends StatelessWidget {
                 ),
                 Text(
                   product.title,
-                  style: Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.headline4,
                 ),
                 const SizedBox(
                   height: 10,
@@ -107,7 +112,7 @@ class ProductItemScreen extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .bodyText2!
-                      .copyWith(color: SecondaryText),
+                      .copyWith(color: SecondaryText, fontSize: 14),
                 ),
                 const SizedBox(
                   height: 15,
@@ -125,8 +130,8 @@ class ProductItemScreen extends StatelessWidget {
                       product.title,
                       style: Theme.of(context)
                           .textTheme
-                          .headline3!
-                          .copyWith(color: mainText),
+                          .headline5!
+                          .copyWith(color: mainText, fontSize: 18),
                     ),
                     const Spacer(),
                     CircleAvatar(
@@ -144,8 +149,8 @@ class ProductItemScreen extends StatelessWidget {
                       "273 Likes",
                       style: Theme.of(context)
                           .textTheme
-                          .headline3!
-                          .copyWith(color: mainText),
+                          .headline5!
+                          .copyWith(color: mainText, fontSize: 18),
                     ),
                   ],
                 ),
@@ -157,7 +162,7 @@ class ProductItemScreen extends StatelessWidget {
                 ),
                 Text(
                   product.title,
-                  style: Theme.of(context).textTheme.headline1,
+                  style: Theme.of(context).textTheme.headline3,
                 ),
                 const SizedBox(
                   height: 10,
@@ -167,7 +172,7 @@ class ProductItemScreen extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .bodyText2!
-                      .copyWith(color: SecondaryText),
+                      .copyWith(color: SecondaryText, fontSize: 14),
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
@@ -176,8 +181,8 @@ class ProductItemScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "Ingredients",
-                  style: Theme.of(context).textTheme.headline1,
+                  "Descriptions",
+                  style: Theme.of(context).textTheme.headline3,
                 ),
                 const SizedBox(
                   height: 10,
@@ -185,7 +190,7 @@ class ProductItemScreen extends StatelessWidget {
                 ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: product.id,
+                  itemCount: product.skill.length,
                   itemBuilder: (context, index) =>
                       ingredients(context, product.skill[index]),
                 ),
@@ -196,8 +201,8 @@ class ProductItemScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "Steps",
-                  style: Theme.of(context).textTheme.headline1,
+                  "Reviews",
+                  style: Theme.of(context).textTheme.headline3,
                 ),
                 const SizedBox(
                   height: 10,
@@ -205,7 +210,7 @@ class ProductItemScreen extends StatelessWidget {
                 ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: product.id,
+                  itemCount: 3,
                   itemBuilder: (context, index) =>
                       steps(context, index, product.skill),
                 ),
@@ -217,7 +222,7 @@ class ProductItemScreen extends StatelessWidget {
     );
   }
 
-  ingredients(BuildContext context, String ingredient) {
+  Widget ingredients(BuildContext context, String ingredient) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -236,14 +241,15 @@ class ProductItemScreen extends StatelessWidget {
           ),
           Text(
             ingredient,
-            style: Theme.of(context).textTheme.bodyText2,
+            style:
+                Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 14),
           ),
         ],
       ),
     );
   }
 
-  steps(BuildContext context, int index, String step) {
+  Widget steps(BuildContext context, int index, String step) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Row(
@@ -253,7 +259,10 @@ class ProductItemScreen extends StatelessWidget {
           CircleAvatar(
             backgroundColor: mainText,
             radius: 12,
-            child: Text("${index + 1}"),
+            child: Text(
+              "${index + 1}",
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
           ),
           Column(
             children: [
@@ -265,7 +274,7 @@ class ProductItemScreen extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .bodyText2!
-                      .copyWith(color: mainText),
+                      .copyWith(color: mainText, fontSize: 16),
                 ),
               ),
               const SizedBox(

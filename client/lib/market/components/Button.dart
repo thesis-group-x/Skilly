@@ -18,32 +18,6 @@ class TitleWithMoreBtn extends StatelessWidget {
         children: <Widget>[
           TitleWithCustomUnderline(text: title),
           const Spacer(),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              primary: kPrimaryColor,
-            ),
-            onPressed: press,
-            child: const Text(
-              "More",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              primary: kPrimaryColor,
-            ),
-            onPressed: press,
-            child: const Text(
-              "Likes",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
         ],
       ),
     );
