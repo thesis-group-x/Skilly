@@ -10,9 +10,9 @@ datasource db {
 //user details
 model User {
   id               Int          @id @default(autoincrement())
+  uid              String       @unique
   name             String
   email            String       @unique
-  password         String
   address          String
   profileImage     String?
   budge            String?
@@ -41,22 +41,19 @@ model Community {
   name        String
   skill       String
   memberships Membership[] // updated community
-  posts       Post[]
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
-  image       String
-  title       String
-  skill       String
-  desc        String
-  comments    Comment[]
-  likes       Int
-  reviews     Review[]
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id])
-  communityId Int
-  community   Community @relation(fields: [communityId], references: [id])
+  id       Int       @id @default(autoincrement())
+  image    String
+  title    String
+  skill    String
+  desc     String
+  comments Comment[]
+  likes    Int
+  reviews  Review[]
+  userId   Int
+  user     User      @relation(fields: [userId], references: [id])
 }
 
 model Comment {
@@ -109,6 +106,7 @@ enum FriendshipStatus {
 //post market place
 model PostM {
   id          Int       @id @default(autoincrement())
+  title       String
   price       Float
   image       String
   description String
@@ -128,5 +126,11 @@ model ReviewM {
   user   User  @relation(fields: [userId], references: [id])
 }
 
-//still the admin and the chat and groupe community and and groupe chat still dont know how 
+model Country {
+  id   Int    @id @default(autoincrement())
+  name String
 
+  @@map("countries")
+}
+
+//still the admin and the chat and groupe community and and groupe chat still dont know how 
