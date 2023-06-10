@@ -53,7 +53,6 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
             );
             break;
           case 2:
-            // Add logic for the Match page
             break;
           case 3:
             Navigator.pushAndRemoveUntil(

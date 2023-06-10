@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../bottom_navigation.dart';
 import '../market/components/search.dart';
-import 'onepost.dart';
+import 'post_item_screen.dart';
+
+
 
 void main() {
   runApp(const FeedApp());
@@ -150,16 +152,22 @@ class _FeedPageState extends State<FeedPage> {
                     }
                     final user = snapshot.data;
                     return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PostItemScreen(
-                              postId: post['id'],
-                            ),
-                          ),
-                        );
-                      },
+   onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => PostItemScreen(
+        postId: post['id'],
+        imageUrl: post['image'],
+        title: post['title'],
+        skill: post['skill'],
+        description: post['desc'],
+        likes: post['likes'],
+        userId: post['userId'],
+      ),
+    ),
+  );
+},
                       child: Container(
                         margin: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 16),
@@ -213,10 +221,10 @@ class _FeedPageState extends State<FeedPage> {
                             ],
                             Padding(
                               padding: const EdgeInsets.only(
-                                  top: 8.0), // Adjust the top padding
+                                  top: 8.0), 
                               child: Text(
                                 post['title'],
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.normal,
                                 ),
@@ -253,6 +261,12 @@ class _FeedPageState extends State<FeedPage> {
             ),
           ),
         ],
+      ),
+       bottomNavigationBar: CustomBottomNavigation(
+        currentIndex: 0,
+        onTabSelected: (index) {
+          // Add your logic here based on the selected index
+        },
       ),
     );
   }
