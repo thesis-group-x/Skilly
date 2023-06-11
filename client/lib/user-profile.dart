@@ -92,12 +92,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
           buildReviewsSection(),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavigation(
-        currentIndex: 3, // Replace with the actual current index
-        onTabSelected: (index) {
-          // Handle tab selection here
-        },
-      ),
     );
   }
 
@@ -178,7 +172,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ),
         SizedBox(height: 16),
         ListView.builder(
-          shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemCount: showAllPosts ? posts.length : 3,
           itemBuilder: (context, index) {
@@ -217,7 +210,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ),
         SizedBox(height: 16),
         ListView.builder(
-          shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemCount: showAllReviews ? reviews.length : 3,
           itemBuilder: (context, index) {
