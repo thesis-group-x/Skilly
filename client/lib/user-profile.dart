@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+//import 'package:firebase_auth/firebase_auth.dart';
+
+import 'bottom_navigation.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -15,93 +18,64 @@ class _UserProfilePageState extends State<UserProfilePage> {
   int numberOfPosts = 0;
   int numberOfMatches = 0;
   String level = '';
-  List<dynamic> posts = [];
-  List<dynamic> reviews = [];
+
+  final List<String> posts = [
+    'Post 1',
+    'Post 2',
+    'Post 3',
+    'Post 4',
+    'Post 5',
+    'Post 6',
+    'Post 7',
+    'Post 8',
+    'Post 9',
+    'Post 10',
+    'Post 11',
+    'Post 12',
+  ];
+
+  final List<String> reviews = [
+    'Review 1',
+    'Review 2',
+    'Review 3',
+    'Review 4',
+    'Review 5',
+    'Review 6',
+    'Review 7',
+    'Review 8',
+    'Review 9',
+    'Review 10',
+    'Review 11',
+    'Review 12',
+  ];
+
   bool showAllPosts = false;
   bool showAllReviews = false;
 
   @override
   void initState() {
     super.initState();
-    fetchUserProfile();
-    fetchPosts();
-    fetchReviews();
-    fetchUserFeedPosts();
-    fetchUserMarketPosts();
+    fetchUserInfo();
   }
 
-  Future<void> fetchUserProfile() async {
-    try {
-      final response =
-          await http.get(Uri.parse('http://10.0.2.2:3001/user/byid/1'));
-      final userData = json.decode(response.body);
+  Future<void> fetchUserInfo() async {
+  final userId = 2;
 
-      setState(() {
-        imagePath = userData['profileImage'];
-        name = userData['name'];
-        email = userData['email'];
-        numberOfPosts = userData['posts'].length;
-        numberOfMatches = userData['memberships'].length;
-        level = userData['level'];
-      });
-    } catch (error) {
-      print('Error fetching user profile: $error');
-    }
+  final response = await http.get(Uri.parse('http://10.0.2.2:3001/user/byid/$userId'));
+  if (response.statusCode == 200) {
+    final userData = json.decode(response.body);
+    setState(() {
+      name = userData['name'];
+      email = userData['email'];
+      numberOfPosts = userData['numberOfPosts'] ?? 0;
+      numberOfMatches = userData['numberOfMatches'] ?? 0;
+      level = userData['level'];
+      imagePath = userData['profileImage'];
+    });
+  } else {
+    throw Exception('Failed to fetch user information');
   }
-
-  Future<void> fetchPosts() async {
-    try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:3001/feed'));
-      final postData = json.decode(response.body);
-
-      setState(() {
-        posts = postData['data'];
-      });
-    } catch (error) {
-      print('Error fetching posts: $error');
-    }
-  }
-
-  Future<void> fetchReviews() async {
-    try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:3001/market'));
-      final marketData = json.decode(response.body);
-
-      setState(() {
-        reviews = marketData['data'];
-      });
-    } catch (error) {
-      print('Error fetching reviews: $error');
-    }
-  }
-
-  Future<void> fetchUserFeedPosts() async {
-    try {
-      final response =
-          await http.get(Uri.parse('http://10.0.2.2:3001/user/1/feed/posts'));
-      final feedPostsData = json.decode(response.body);
-
-      setState(() {
-        posts = feedPostsData['data'];
-      });
-    } catch (error) {
-      print('Error fetching user feed posts: $error');
-    }
-  }
-
-  Future<void> fetchUserMarketPosts() async {
-    try {
-      final response =
-          await http.get(Uri.parse('http://10.0.2.2:3001/user/1/market/posts'));
-      final marketPostsData = json.decode(response.body);
-
-      setState(() {
-        posts = marketPostsData['data'];
-      });
-    } catch (error) {
-      print('Error fetching user market posts: $error');
-    }
-  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +116,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       children: [
         CircleAvatar(
           radius: 64,
-          backgroundImage: NetworkImage(imagePath),
+          backgroundImage: NetworkImage(imagePath ?? ''),
         ),
         SizedBox(height: 16),
         Text(
@@ -153,21 +127,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
         ),
         SizedBox(height: 8),
-        Text(
-          email,
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 16,
-          ),
-        ),
+        Text(email),
         SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             buildInfoItem('Posts', numberOfPosts.toString()),
-            SizedBox(width: 24),
+            SizedBox(width: 32),
             buildInfoItem('Matches', numberOfMatches.toString()),
-            SizedBox(width: 24),
+            SizedBox(width: 32),
             buildInfoItem('Level', level),
           ],
         ),
@@ -182,24 +150,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
           value,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: 18,
           ),
         ),
         SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 14,
-          ),
-        ),
+        Text(label),
       ],
     );
   }
 
   Widget buildPostsSection() {
-    final visiblePosts = showAllPosts ? posts : posts.take(3).toList();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -210,26 +170,34 @@ class _UserProfilePageState extends State<UserProfilePage> {
             fontSize: 20,
           ),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 16),
         ListView.builder(
           physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: visiblePosts.length,
+          itemCount: showAllPosts ? posts.length : 3,
           itemBuilder: (context, index) {
+            final post = posts[index];
             return ListTile(
-              title: Text(visiblePosts[index]['title']),
+              title: Text(post),
             );
           },
         ),
-        buildShowMoreButton(posts.length > 3),
-        buildShowLessButton(showAllPosts),
+        if (!showAllPosts && posts.length > 3)
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {
+                setState(() {
+                  showAllPosts = true;
+                });
+              },
+              child: Text('Show all'),
+            ),
+          ),
       ],
     );
   }
 
   Widget buildReviewsSection() {
-    final visibleReviews = showAllReviews ? reviews : reviews.take(3).toList();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -240,66 +208,30 @@ class _UserProfilePageState extends State<UserProfilePage> {
             fontSize: 20,
           ),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 16),
         ListView.builder(
           physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: visibleReviews.length,
+          itemCount: showAllReviews ? reviews.length : 3,
           itemBuilder: (context, index) {
+            final review = reviews[index];
             return ListTile(
-              title: Text(visibleReviews[index]['title']),
+              title: Text(review),
             );
           },
         ),
-        buildShowMoreButton(reviews.length > 3),
-        buildShowLessButton(showAllReviews),
+        if (!showAllReviews && reviews.length > 3)
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {
+                setState(() {
+                  showAllReviews = true;
+                });
+              },
+              child: Text('Show all'),
+            ),
+          ),
       ],
-    );
-  }
-
-  Widget buildShowMoreButton(bool visible) {
-    return Visibility(
-      visible: visible,
-      child: TextButton(
-        onPressed: () {
-          setState(() {
-            if (showAllPosts) {
-              showAllReviews = true;
-            } else {
-              showAllPosts = true;
-            }
-          });
-        },
-        child: Text(
-          'Show More',
-          style: TextStyle(
-            color: Colors.blue,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildShowLessButton(bool visible) {
-    return Visibility(
-      visible: visible,
-      child: TextButton(
-        onPressed: () {
-          setState(() {
-            if (showAllPosts) {
-              showAllReviews = false;
-            } else {
-              showAllPosts = false;
-            }
-          });
-        },
-        child: Text(
-          'Show Less',
-          style: TextStyle(
-            color: Colors.blue,
-          ),
-        ),
-      ),
     );
   }
 }

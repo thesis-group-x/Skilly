@@ -23,7 +23,7 @@ final List<String> hobbiesInterests = [
   "🌿 Gardening",
   "🎵 Music",
   "🧠 Mindfulness",
-  "🍳 Cooking",
+  
 ];
 
 final List<String> skillsInterests = [
@@ -60,7 +60,7 @@ class _InterestsPageState extends State<InterestsPage> {
     final user = FirebaseAuth.instance.currentUser;
     print(FirebaseAuth.instance.currentUser);
     if (user != null) {
-       final userId = user.email;
+      final userId = user.email;
 
       final interestsData = {
         'hobbies': chosenHobbiesInterests,
@@ -103,7 +103,7 @@ class _InterestsPageState extends State<InterestsPage> {
                 color: Colors.black,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Arial', 
+                fontFamily: 'Arial',
               ),
             ),
           ),
@@ -154,18 +154,37 @@ class _InterestsPageState extends State<InterestsPage> {
                 saveUserInterests();
                 print(FirebaseAuth.instance.currentUser?.uid);
               },
-              style: ElevatedButton.styleFrom(
-                primary: buttonHovered ? Colors.blue : Colors.black,
-                elevation: 2,
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-              ),
-              child: Text(
-                'Save Interests',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                  buttonHovered ? Colors.grey.withOpacity(0.8) : Color.fromARGB(255, 20, 3, 46),
                 ),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                  EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Next',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Icon(
+                    Icons.double_arrow,
+                    size: 18,
+                    color: Colors.white,
+                  ),
+                ],
+              
               ),
               onHover: (value) {
                 setState(() {
@@ -211,7 +230,7 @@ class InterestsSection extends StatelessWidget {
               label: Text(interest),
               selected: isSelected,
               onSelected: (_) => onInterestSelected(interest),
-              selectedColor: Colors.blue,
+              selectedColor: Color.fromARGB(255, 7, 52, 88),
               labelStyle: TextStyle(
                 color: isSelected ? Colors.white : Colors.black,
               ),
