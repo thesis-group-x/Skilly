@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'login_page.dart';
 
 void main() async {
@@ -34,8 +35,8 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController _fullNameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-
   String _errorMessage = "";
+  bool _isPasswordVisible = false;
 
   Future<void> _registerUser() async {
     setState(() {
@@ -80,6 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
         _emailController.clear();
         _passwordController.clear();
         print('User created: ${response.body}');
+        await _showSuccessDialog();
       } else {
         print('Error creating user: ${response.statusCode}');
         setState(() {
@@ -92,6 +94,26 @@ class _SignUpPageState extends State<SignUpPage> {
         _errorMessage = "Error creating user. Please try again later.";
       });
     }
+  }
+
+  Future<void> _showSuccessDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Account Created'),
+          content: Text('Your account has been created successfully.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -163,13 +185,30 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 child: TextField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Password',
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.zero,
                     prefixIcon: Icon(Icons.lock),
+                    suffixIcon: Container(
+                      width: 40,
+                      height: 40,
+                      child: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? FontAwesomeIcons.eye
+                              : FontAwesomeIcons.eyeSlash,
+                        ),
+                        iconSize: 20,
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: !_isPasswordVisible,
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.046),
