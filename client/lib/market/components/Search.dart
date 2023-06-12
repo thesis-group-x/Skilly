@@ -13,7 +13,7 @@ class HeaderWithSearchBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: kDefaultPadding * 2.5),
-      // It will cover 20% of our total height
+      //20%
       height: size.height * 0.2,
       child: Stack(
         children: <Widget>[
@@ -75,9 +75,6 @@ class HeaderWithSearchBox extends StatelessWidget {
                         ),
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        // surffix isn't working properly  with SVG
-                        // thats why we use row
-                        // suffixIcon: SvgPicture.asset("assets/icons/search.svg"),
                       ),
                     ),
                   ),
@@ -92,5 +89,5 @@ class HeaderWithSearchBox extends StatelessWidget {
   }
 }
 
-const kPrimaryColor = Colors.blue; // Replace with your desired primary color
+const kPrimaryColor = Color(0xFF284855); // Replace with your desired primary color
 const kDefaultPadding = 20.0; // Replace with your desired default padding value
