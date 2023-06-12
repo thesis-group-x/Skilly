@@ -19,7 +19,7 @@ class _ProductsState extends State<Products> {
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchData(); 
   }
 
   Future<void> fetchData() async {

@@ -142,3 +142,44 @@ export const getUserByUid = async (req: Request, res: Response): Promise<void> =
     res.status(500).json({ error: "An error occurred while fetching the user." });
   }
 };
+
+export const getUserFeedPosts = async (req: Request, res:Response) => {
+  const userId = parseInt(req.params.id);
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { posts: true },
+    });
+
+    if (user) {
+      res.json(user.posts);
+    } else {
+      res.status(404).json({ error: "User not found." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching the user feed posts." });
+  }
+};
+
+export const getUserMarketPosts = async (req: Request, res:Response) => {
+  const userId = parseInt(req.params.id);
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { PostM: true },
+    });
+
+    if (user) {
+      res.json(user.PostM);
+    } else {
+      res.status(404).json({ error: "User not found." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching the user market posts." });
+  }
+};
+
