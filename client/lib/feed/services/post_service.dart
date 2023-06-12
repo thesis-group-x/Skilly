@@ -35,39 +35,36 @@ class PostService {
     }
   }
 
-  static Future<void> likePost(int postId) async {
+ 
+  static Future<int> likePost(int postId) async {
     try {
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:3001/feed/$postId'),
+        Uri.parse('http://192.168.1.18:3001/feed/$postId'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, bool>{'like': true}),
       );
+      
+      return response.statusCode;
 
-      if (response.statusCode == 200) {
-      } else {
-        throw Exception('Failed to like the post');
-      }
     } catch (error) {
       throw Exception('Failed to like the post');
     }
   }
 
-  static Future<void> unlikePost(int postId) async {
+  static Future<int> unlikePost(int postId) async {
     try {
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:3001/feed/$postId'),
+        Uri.parse('http://192.168.1.18:3001/feed/$postId'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, bool>{'like': false}),
       );
-
-      if (response.statusCode == 200) {
-      } else {
-        throw Exception('Failed to unlike the post');
-      }
+      
+      return response.statusCode;
+      
     } catch (error) {
       throw Exception('Failed to unlike the post');
     }

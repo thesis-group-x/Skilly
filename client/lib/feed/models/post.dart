@@ -6,7 +6,7 @@ class Post {
   final String title;
   final String desc;
   final User user;
-  late final int likes;
+  int likes;
 
   Post({
     required this.id,

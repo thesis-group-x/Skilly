@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-/* import 'feed/feed.dart'; */
+import 'feed/feed.dart';
 import './market/market.dart';
 import 'market/components/create.dart';
 import 'user-profile.dart';
@@ -40,11 +40,11 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
 
         switch (index) {
           case 0:
-           /*  Navigator.pushAndRemoveUntil(
+           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => FeedPage()),
+              MaterialPageRoute(builder: (context) => Feed()),
               (route) => false,
-            ); */
+            ); 
             break;
           case 1:
             Navigator.pushAndRemoveUntil(
@@ -58,7 +58,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
           case 3:
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => CreatePostScreen()),
+              MaterialPageRoute(builder: (context) => UserProfilePage()),
               (route) => false,
             );
             break;
