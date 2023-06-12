@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'messages.dart';
+import '../bottom_navigation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +21,7 @@ class ChatApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Color(0xFF284855),
-        scaffoldBackgroundColor: Color.fromARGB(255, 243, 242, 236) ,
+        scaffoldBackgroundColor: Color.fromARGB(255, 243, 242, 236),
         fontFamily: 'Roboto',
       ),
       home: UserListPage(),
@@ -52,7 +53,8 @@ class _UserListPageState extends State<UserListPage> {
   }
 
   Future<List<String>> fetchUsers() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3001/user/getuser'));
+    final response =
+        await http.get(Uri.parse('http://10.0.2.2:3001/user/getuser'));
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       final currentUser = FirebaseAuth.instance.currentUser?.displayName;
@@ -213,8 +215,14 @@ class _UserListPageState extends State<UserListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        child: Icon( FontAwesomeIcons.add),
+        child: Icon(FontAwesomeIcons.add),
         backgroundColor: Theme.of(context).primaryColor,
+      ),
+      bottomNavigationBar: CustomBottomNavigation(
+        currentIndex: 2,
+        onTabSelected: (index) {
+          // Add your logic here based on the selected index
+        },
       ),
     );
   }

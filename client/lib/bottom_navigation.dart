@@ -3,6 +3,7 @@ import 'feed/feed.dart';
 import './market/market.dart';
 import 'market/components/create.dart';
 import 'user-profile.dart';
+import 'package:client/chat pages/home.dart';
 
 class CustomBottomNavigation extends StatefulWidget {
   final int currentIndex;
@@ -30,7 +31,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: Colors.white,
-      selectedItemColor: Color(0xFF284855),
+      selectedItemColor: const Color(0xFF284855),
       unselectedItemColor: Colors.grey,
       currentIndex: _currentIndex,
       onTap: (index) {
@@ -40,20 +41,25 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
 
         switch (index) {
           case 0:
-           Navigator.pushAndRemoveUntil(
+            Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => Feed()),
+              MaterialPageRoute(builder: (context) => const Feed()),
               (route) => false,
-            ); 
+            );
             break;
           case 1:
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
               (route) => false,
             );
             break;
           case 2:
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => ChatApp()),
+              (route) => false,
+            );
             break;
           case 3:
             Navigator.pushAndRemoveUntil(
@@ -66,7 +72,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
 
         widget.onTabSelected(index);
       },
-      items: [
+      items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
@@ -76,8 +82,8 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
           label: 'Market',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: 'Match',
+          icon: Icon(Icons.chat),
+          label: 'Chat',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
