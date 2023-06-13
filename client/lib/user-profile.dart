@@ -319,7 +319,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class UserProfilePage extends StatefulWidget {
-  final int userId;
+ final String userId;
 
   UserProfilePage({required this.userId});
 
@@ -506,7 +506,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: [   
           if (post['image'] != null)
           Image.network(
             post['image'],
@@ -529,7 +529,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
           SizedBox(height: 8),
           Text(
-            'Posted on ${post['date']?? ''}',
+            'Posted on ${post['createdAt']?? ''}',
             style: TextStyle(
               color: Colors.grey,
               fontSize: 14,
@@ -647,11 +647,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
 
 
-void main() {
-  runApp(MaterialApp(
-    title: 'SKILLY',
-    home: UserProfilePage(userId: 2),
-  ));
-}
+
 
 

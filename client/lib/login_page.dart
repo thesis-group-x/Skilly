@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'Signup_page.dart';
 import 'interests_page.dart';
+import './feed/feed.dart';
+import 'user-profile.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'user-profile.dart';
 final List<String> hobbiesInterests = [
   "📸 Photography",
   "🎭 Theaters",
@@ -77,6 +77,12 @@ class _InterestsPageState extends State<InterestsPage> {
       if (response.statusCode == 200) {
         // Interests saved successfully
         print('Interests saved successfully');
+         Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserProfilePage(userId: userId!),
+        ),
+      );
       } else {
         // Failed to save interests
         print('Failed to save interests');

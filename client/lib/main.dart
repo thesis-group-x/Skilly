@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'feed/feed.dart';
 import './landing pages/welcome.dart';
 
 void main() async {

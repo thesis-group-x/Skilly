@@ -39,15 +39,6 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ error: "An error occurred while creating the user." });
   }
 };
-export const getUsers = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const users = await prisma.user.findMany();
-    res.json(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "An error occurred while retrieving users." });
-  }
-};
 
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -143,6 +134,31 @@ export const getUserByUid = async (req: Request, res: Response): Promise<void> =
   }
 };
 
+export const getUsers = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { searchQuery } = req.query;
+
+    let users: User[];
+
+    if (searchQuery) {
+      users = await prisma.user.findMany({
+        where: {
+          OR: [
+            { name: { contains: searchQuery as string, mode: "insensitive" } },
+            { email: { contains: searchQuery as string, mode: "insensitive" } },
+          ],
+        },
+      });
+    } else {
+      users = await prisma.user.findMany();
+    }
+
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while retrieving users." });
+  }
+};
 export const getUserFeedPosts = async (req: Request, res:Response) => {
   const userId = parseInt(req.params.id);
 
@@ -182,4 +198,5 @@ export const getUserMarketPosts = async (req: Request, res:Response) => {
     res.status(500).json({ error: "An error occurred while fetching the user market posts." });
   }
 };
+
 
