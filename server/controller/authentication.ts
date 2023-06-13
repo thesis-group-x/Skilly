@@ -21,6 +21,8 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
         profileImage: '',
         budge: '',
         points: 0,
+        age: 0,
+        gender:'',
         skills: [],
         hobbies: [],
         details: '',
