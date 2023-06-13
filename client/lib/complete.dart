@@ -355,6 +355,7 @@ import 'dart:convert';
 import 'user-profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -401,50 +402,56 @@ class _CompleteState extends State<Complete> {
   }
 
   Future<void> sendUpdateRequest() async {
-    final String name = nameController.text;
-    final int age = int.tryParse(ageController.text) ?? 0;
-    final String gender = _selectedGender;
-    final String location = _selectedLocation;
-    final String bio = detailsController.text;
+    final user = FirebaseAuth.instance.currentUser;
+    print(FirebaseAuth.instance.currentUser);
+    if (user != null) {
+      
+      final userId = user.email;
+      final String name = nameController.text;
+      final int age = int.tryParse(ageController.text) ?? 0;
+      final String gender = _selectedGender;
+      final String location = _selectedLocation;
+      final String bio = detailsController.text;
 
-    // Prepare the request body
-    final Map<String, dynamic> requestBody = {
-      'name': name,
-      'age': age,
-      'gender': gender,
-      'location': location,
-      'details': bio,
-    };
+      // Prepare the request body
+      final Map<String, dynamic> requestBody = {
+        'name': name,
+        'age': age,
+        'gender': gender,
+        'location': location,
+        'details': bio,
+      };
 
-    final response = await http.put(
-      Uri.parse('http://10.0.2.2:3001/up/updateuser/ayoubnfaidh@gmail.com'),
-      body: json.encode(requestBody),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode == 200) {
-      // Update successful
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => UserProfilePage()),
+      final response = await http.put(
+        Uri.parse('http://10.0.2.2:3001/up/updateuser/$userId'),
+        body: json.encode(requestBody),
+        headers: {'Content-Type': 'application/json'},
       );
-    } else {
-      // Update failed
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text('Update Failed'),
-          content: const Text('Unable to update user profile.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+
+      if (response.statusCode == 200) {
+        // Update successful
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UserProfilePage()),
+        );
+      } else {
+        // Update failed
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Update Failed'),
+            content: const Text('Unable to update user profile.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 
