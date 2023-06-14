@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'Signup_page.dart';
 import 'interests_page.dart';
 import './feed/feed.dart';
+import './complete.dart';
+import 'interests_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -28,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
         // Login successful, navigate to InterestsPage
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Feed()),
+          MaterialPageRoute(builder: (context) => InterestsPage()),
         );
       } else {
         print('User is null');

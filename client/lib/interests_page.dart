@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
+import './complete.dart';
 
 final List<String> hobbiesInterests = [
   "📸 Photography",
@@ -23,7 +24,6 @@ final List<String> hobbiesInterests = [
   "🌿 Gardening",
   "🎵 Music",
   "🧠 Mindfulness",
-  
 ];
 
 final List<String> skillsInterests = [
@@ -75,8 +75,15 @@ class _InterestsPageState extends State<InterestsPage> {
       );
 
       if (response.statusCode == 200) {
+
         // Interests saved successfully
         print('Interests saved successfully');
+        Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Complete(),
+        ),
+      );
       } else {
         // Failed to save interests
         print('Failed to save interests');
@@ -156,7 +163,9 @@ class _InterestsPageState extends State<InterestsPage> {
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                  buttonHovered ? Colors.grey.withOpacity(0.8) : Color.fromARGB(255, 20, 3, 46),
+                  buttonHovered
+                      ? Colors.grey.withOpacity(0.8)
+                      : Color.fromARGB(255, 20, 3, 46),
                 ),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
@@ -184,7 +193,6 @@ class _InterestsPageState extends State<InterestsPage> {
                     color: Colors.white,
                   ),
                 ],
-              
               ),
               onHover: (value) {
                 setState(() {
