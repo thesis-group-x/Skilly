@@ -3,10 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:client/market/components/body.dart';
 import '../bottom_navigation.dart';
 
-void main() {
-  runApp(HomeScreen());
-}
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -15,7 +11,7 @@ class HomeScreen extends StatelessWidget {
     return MaterialApp(
       title: 'Home Screen',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
       ),
       home: Scaffold(
         appBar: buildAppBar(),

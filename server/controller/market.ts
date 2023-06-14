@@ -142,7 +142,8 @@ export const createReview = async (req: Request, res: Response): Promise<void> =
         select: {
           rating: true,
           comment: true,
-          userId:true
+          userId:true,
+          postId:true,
         },
       });
   

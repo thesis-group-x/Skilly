@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'package:client/market/components/One.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:client/market/components/oneP.dart';
 
 import 'api.dart';
 
@@ -48,7 +48,7 @@ class _AproductsState extends State<Aproducts> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProductItemScreen(product: product),
+                  builder: (context) => Details(product: product),
                 ),
               );
             },
@@ -172,6 +172,7 @@ class Product {
   final int id;
   final String image;
   final String title;
+  final String description;
   final String skill;
   final double price;
   final int userId;
@@ -180,6 +181,7 @@ class Product {
       {required this.id,
       required this.image,
       required this.title,
+      required this.description,
       required this.skill,
       required this.price,
       required this.userId});
@@ -189,6 +191,7 @@ class Product {
         id: json['id'],
         image: json['image'],
         title: json['title'],
+        description: json['description'],
         skill: json['skill'],
         price: json['price'].toDouble(),
         userId: json['userId']);
