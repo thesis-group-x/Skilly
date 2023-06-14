@@ -1,52 +1,47 @@
-import { PrismaClient, PostM, ReviewM, User } from '@prisma/client';
 
+import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
+const cloudinary = require('cloudinary').v2;
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: 'dwtho2kip',
+  api_key: '629975817477331',
+  api_secret: 'a6PFr92otxe7aXA8Vwc2M2ndon4',
+});
 
 const prisma = new PrismaClient();
-
-//------------------------------------------------------------ TEST USER ---------------------------------------------------------------------------------
-//-------------------------------------------------------test for posting a user with id 
-/* export const test = async (req: Request, res: Response): Promise<void> => {
-  const { name, email, address, level } = req.body;
-
-  try {
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        address,
-        level,
-      },
-    });
-
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ error: 'Error creating user' });
-  }
-}; */
 
 //------------------------------------------------------------ POST MARKET PLACE ---------------------------------------------------------------------------------
 
 //---------------------------------------------------------creation of gig
 export const createPost = async (req: Request, res: Response): Promise<void> => {
-  const { price, image, title, description, skill, userId } = req.body;
-  console.log(req.query)
+  const {  title, description, skill } = req.body;
+  const userId=1
+  const price=23
+
   try {
+   
+    const result = await cloudinary.uploader.upload("https://images.unsplash.com/photo-1617396900799-f4ec2b43c7ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8d2FsbHBhcGVyJTIwNGt8ZW58MHx8MHx8fDA%3D&w=1000&q=80", { upload_preset: 'kusldcry' });
+
     const post = await prisma.postM.create({
       data: {
         price,
-        image,
+        image: result.secure_url,
         title,
         description,
         skill,
         userId,
       },
     });
+
     res.json(post);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: 'Error creating post' });
   }
 };
+
 //---------------------------------------------------------feed gigs
 export const getPosts = async (req: Request, res: Response): Promise<void> => {
     
@@ -120,11 +115,12 @@ export const updatePost = async (req: Request, res: Response): Promise<void> => 
 
 //creation of review
 export const createReview = async (req: Request, res: Response): Promise<void> => {
-    const { rating, postId, userId } = req.body;
+    const { rating,comment, postId, userId } = req.body;
     try {
       const review = await prisma.reviewM.create({
         data: {
           rating,
+          comment,
           postId,
           userId,
         },
@@ -137,17 +133,26 @@ export const createReview = async (req: Request, res: Response): Promise<void> =
   //geting them
   export const getReviews = async (req: Request, res: Response): Promise<void> => {
     try {
+      const { id } = req.params;
+  
       const reviews = await prisma.reviewM.findMany({
-        include: {
-          post: true,
-          user: true,
+        where: {
+          postId: Number(id), // Assuming postId is a number
+        },
+        select: {
+          rating: true,
+          comment: true,
+          userId:true
         },
       });
+  
       res.json(reviews);
     } catch (error) {
       res.status(500).json({ error: 'Error retrieving reviews' });
     }
   };
+  
+  
   //update review 
   export const updateReview = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;

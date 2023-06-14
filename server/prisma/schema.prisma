@@ -38,8 +38,6 @@ model User {
   ReviewM          ReviewM[]
 }
 
-
-
 model Community {
   id          Int          @id @default(autoincrement())
   name        String
@@ -122,12 +120,13 @@ model PostM {
 
 //market place
 model ReviewM {
-  id     Int   @id @default(autoincrement())
-  rating Int
-  postId Int
-  post   PostM @relation(fields: [postId], references: [id])
-  userId Int
-  user   User  @relation(fields: [userId], references: [id])
+  id      Int    @id @default(autoincrement())
+  comment String
+  rating  Int
+  postId  Int
+  post    PostM  @relation(fields: [postId], references: [id])
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
 }
 
 model Country {

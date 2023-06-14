@@ -32,7 +32,6 @@ class _AproductsState extends State<Aproducts> {
         products = data.map((item) => Product.fromJson(item)).toList();
       });
     } else {
-      // Handle error response
       print('Failed to fetch data from API');
     }
   }
@@ -175,23 +174,24 @@ class Product {
   final String title;
   final String skill;
   final double price;
+  final int userId;
 
-  Product({
-    required this.id,
-    required this.image,
-    required this.title,
-    required this.skill,
-    required this.price,
-  });
+  Product(
+      {required this.id,
+      required this.image,
+      required this.title,
+      required this.skill,
+      required this.price,
+      required this.userId});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
-      image: json['image'],
-      title: json['title'],
-      skill: json['skill'],
-      price: json['price'].toDouble(),
-    );
+        id: json['id'],
+        image: json['image'],
+        title: json['title'],
+        skill: json['skill'],
+        price: json['price'].toDouble(),
+        userId: json['userId']);
   }
 }
 
