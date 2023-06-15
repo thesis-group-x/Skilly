@@ -69,33 +69,34 @@ class PostService {
       throw Exception('Failed to unlike the post');
     }
   }
-    static Future<List<Post>> getPostsBySkill(String skill) async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3001/feed?skill=$skill'));
+static Future<List<Post>> getPostsBySkill(String skill) async {
+  final response = await http.get(Uri.parse('http://10.0.2.2:3001/feed/skill/$skill')); 
 
-    if (response.statusCode == 200) {
-      final responseData = response.body;
-      if (responseData != null) {
-        final List<dynamic> decodedData = json.decode(responseData);
-        final List<Post> fetchedPosts = [];
+  if (response.statusCode == 200) {
+    final responseData = response.body;
+    if (responseData != null) {
+      final List<dynamic> decodedData = json.decode(responseData);
+      final List<Post> fetchedPosts = [];
 
-        for (var postJson in decodedData) {
-          final userResponse = await http.get(Uri.parse(
-              'http://10.0.2.2:3001/user/byid/${postJson['userId']}'));
-          final userData = json.decode(userResponse.body);
+      for (var postJson in decodedData) {
+        final userResponse = await http.get(Uri.parse(
+            'http://10.0.2.2:3001/user/byid/${postJson['userId']}'));
+        final userData = json.decode(userResponse.body);
 
-          postJson['user'] = userData;
+        postJson['user'] = userData;
 
-          fetchedPosts.add(Post.fromJson(postJson));
-        }
-
-        return fetchedPosts;
-      } else {
-        throw Exception('Invalid API response');
+        fetchedPosts.add(Post.fromJson(postJson));
       }
+
+      return fetchedPosts;
     } else {
-      throw Exception('Failed to fetch posts by skill');
+      throw Exception('Invalid API response');
     }
+  } else {
+    throw Exception('Failed to fetch posts by skill');
   }
+}
+
   static Future<Post> createPost(String image, String title, String skill, String desc, String userId) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -123,6 +124,89 @@ class PostService {
       throw Exception('Failed to create post');
     }
   }
+
+   static Future<List<Post>> getPostsBySkillOrTitle(String searchQuery) async {
+    final response = await http.get(Uri.parse('http://10.0.2.2:3001/feed?search=$searchQuery'));
+
+    if (response.statusCode == 200) {
+      final responseData = response.body;
+      if (responseData != null) {
+        final List<dynamic> decodedData = json.decode(responseData);
+        final List<Post> fetchedPosts = [];
+
+        for (var postJson in decodedData) {
+          final userResponse = await http.get(Uri.parse(
+              'http://10.0.2.2:3001/user/byid/${postJson['userId']}'));
+          final userData = json.decode(userResponse.body);
+
+          postJson['user'] = userData;
+
+          fetchedPosts.add(Post.fromJson(postJson));
+        }
+
+        return fetchedPosts;
+      } else {
+        throw Exception('Invalid API response');
+      }
+    } else {
+      throw Exception('Failed to fetch posts by skill or title');
+    }
+  }
+
+static Future<List<Post>> getPostsByUserSkillsAndHobbies() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception('User not authenticated');
+    }
+
+    final idToken = await user.getIdToken(); 
+
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:3001/feed'),
+      headers: {'Authorization': 'Bearer $idToken'},
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = response.body;
+      if (responseData != null) {
+        final List<dynamic> decodedData = json.decode(responseData);
+        final List<Post> fetchedPosts = [];
+
+        // Fetch user's skills and hobbies
+        final userResponse = await http.get(
+          Uri.parse('http://10.0.2.2:3001/user/byid/${user.uid}'),
+          headers: {'Authorization': 'Bearer $idToken'},
+        );
+        final userData = json.decode(userResponse.body);
+        final List<String> userSkills = List<String>.from(userData['skills']);
+        final List<String> userHobbies = List<String>.from(userData['hobbies']);
+
+        for (var postJson in decodedData) {
+          final postSkills = List<String>.from(postJson['skills']);
+          final postHobbies = List<String>.from(postJson['hobbies']);
+
+          // Check if any of the post's skills or hobbies match the user's skills or hobbies
+          if (postSkills.any((skill) => userSkills.contains(skill)) ||
+              postHobbies.any((hobby) => userHobbies.contains(hobby))) {
+            final userResponse = await http.get(Uri.parse(
+                'http://10.0.2.2:3001/user/byid/${postJson['userId']}'));
+            final userData = json.decode(userResponse.body);
+
+            postJson['user'] = userData;
+
+            fetchedPosts.add(Post.fromJson(postJson));
+          }
+        }
+
+        return fetchedPosts;
+      } else {
+        throw Exception('Invalid API response');
+      }
+    } else {
+      throw Exception('Failed to fetch posts');
+    }
+  }
+
 }
 
 

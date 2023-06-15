@@ -12,7 +12,6 @@ class Feed extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Roboto'),
       home: const HomePage(),
-      
     );
     
   }
