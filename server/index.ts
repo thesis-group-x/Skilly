@@ -4,11 +4,12 @@ import pgPromise from 'pg-promise';
 import routerMarket from './routes/market';
 import routerInterests from './routes/interests'
 import routerFeed from './routes/feed';
-import routerCountry from './routes/country';
+
 import routerAuthentication from './routes/authenticaion';
 import routerfc from './routes/feedComments';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
+import routerProfile  from './routes/profile';
 
 
 
@@ -28,10 +29,10 @@ const port = process.env.PORT;
 app.use(express.json());
 app.use(cors()); 
 app.use('/feedCom', routerfc)
-app.use('/countries' , routerCountry)
 app.use('/Market', routerMarket);
 app.use('/api', routerInterests);
 app.use('/feed', routerFeed);
+app.use('/up',routerProfile);
 app.use('/user', routerAuthentication);
 
 app.get('/', (req, res) => {

@@ -1,10 +1,13 @@
-import 'dart:convert';
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-//import 'package:firebase_auth/firebase_auth.dart';
-
+import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 import 'bottom_navigation.dart';
+import 'edit_profile.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -12,134 +15,265 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  String imagePath = '';
-  String name = '';
-  String email = '';
-  int numberOfPosts = 0;
-  int numberOfMatches = 0;
-  String level = '';
-
-  final List<String> posts = [
-    'Post 1',
-    'Post 2',
-    'Post 3',
-    'Post 4',
-    'Post 5',
-    'Post 6',
-    'Post 7',
-    'Post 8',
-    'Post 9',
-    'Post 10',
-    'Post 11',
-    'Post 12',
-  ];
-
-  final List<String> reviews = [
-    'Review 1',
-    'Review 2',
-    'Review 3',
-    'Review 4',
-    'Review 5',
-    'Review 6',
-    'Review 7',
-    'Review 8',
-    'Review 9',
-    'Review 10',
-    'Review 11',
-    'Review 12',
-  ];
-
-  bool showAllPosts = false;
-  bool showAllReviews = false;
+  Map<String, dynamic> user = {};
+  List<dynamic> feedPosts = [];
+  List<dynamic> marketPosts = [];
+  List<dynamic> reviews = [];
 
   @override
   void initState() {
     super.initState();
-    fetchUserInfo();
+    if (FirebaseAuth.instance.currentUser != null) {
+      fetchUser();
+      fetchFeedPosts();
+      fetchMarketPosts();
+      fetchReviews();
+    } else {
+      // Handle user not authenticated
+    }
   }
 
-  Future<void> fetchUserInfo() async {
-  final userId = 2;
+  Future<void> fetchUser() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    print('Current User: $currentUser');
+    if (currentUser != null) {
+      final uid = currentUser.uid;
+      print('Fetching user: $uid');
+      final response =
+          await http.get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid'));
+      if (response.statusCode == 200) {
+        setState(() {
+          user = json.decode(response.body);
+        });
+        print('User fetched successfully: $user');
+      } else {
+        print('Failed to fetch user. Status code: ${response.statusCode}');
+      }
+    } else {
+      throw Exception('Undefined user');
+    }
+  }
 
-  final response = await http.get(Uri.parse('http://10.0.2.2:3001/user/byid/$userId'));
-  if (response.statusCode == 200) {
-    final userData = json.decode(response.body);
-    setState(() {
-      name = userData['name'];
-      email = userData['email'];
-      numberOfPosts = userData['numberOfPosts'] ?? 0;
-      numberOfMatches = userData['numberOfMatches'] ?? 0;
-      level = userData['level'];
-      imagePath = userData['profileImage'];
+  Future<void> fetchFeedPosts() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final uid = currentUser.uid;
+      final response = await http
+          .get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid/feed/posts'));
+      if (response.statusCode == 200) {
+        setState(() {
+          feedPosts = json.decode(response.body);
+        });
+      } else {
+        // Handle error
+      }
+    }
+  }
+
+  Future<void> fetchMarketPosts() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final uid = currentUser.uid;
+      final response = await http
+          .get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid/market/posts'));
+      if (response.statusCode == 200) {
+        setState(() {
+          marketPosts = json.decode(response.body);
+        });
+      } else {
+        // Handle error
+      }
+    }
+  }
+
+  Future<void> fetchReviews() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final uid = currentUser.uid;
+      final response = await http
+          .get(Uri.parse('http://10.0.2.2:3001/user/$uid/$uid/market/reviews'));
+      if (response.statusCode == 200) {
+        setState(() {
+          reviews = json.decode(response.body);
+        });
+      } else {
+        // Handle error
+      }
+    }
+  }
+
+  File? _image;
+
+  Future<void> _getImage(ImageSource source) async {
+    final imagePicker = ImagePicker();
+    final pickedImage = await imagePicker.getImage(source: source);
+
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+      _updateProfileImage();
+    }
+  }
+
+  Future<void> _updateProfileImage() async {
+    if (_image == null) {
+      return;
+    }
+
+    final cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dwtho2kip/upload';
+    final cloudinaryPreset = 'kusldcry';
+
+    final dio = Dio();
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(_image!.path),
+      'upload_preset': cloudinaryPreset,
     });
-  } else {
-    throw Exception('Failed to fetch user information');
+
+    final user = FirebaseAuth.instance.currentUser;
+    print('User: $user');
+    if (user != null) {
+      final uid = user.uid;
+      print('User ID: $uid');
+
+      try {
+        final cloudinaryResponse =
+            await dio.post(cloudinaryUrl, data: formData);
+        final imageUrl = cloudinaryResponse.data['secure_url'];
+
+        // Prepare the request body
+        final body = {
+          'profileImage': imageUrl,
+        };
+
+        final updateResponse = await http.put(
+          Uri.parse('http://10.0.2.2:3001/user/upd/$uid'),
+          body: json.encode(body),
+          headers: {'Content-Type': 'application/json'},
+        );
+
+        // Handle the response here, e.g., show a success message
+      } catch (error) {
+        // Handle the error here
+      }
+    }
   }
-}
+
+  int getTotalPosts() {
+    return feedPosts.length + marketPosts.length;
+  }
+
+  void updateUserProfile(Map<String, dynamic> updatedUser) {
+    setState(() {
+      user = updatedUser;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: AppBar(
+        title: Text('Profile'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            color: Colors.black,
+            onPressed: () async {
+              final updatedUser = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProfilePage(
+                    onProfileUpdated: updateUserProfile,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: ListView(
         physics: BouncingScrollPhysics(),
         padding: EdgeInsets.all(16),
         children: [
-          buildProfileInfo(),
+          Column(
+            children: [
+              GestureDetector(
+                onTap: () => _getImage(ImageSource.gallery),
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(user['profileImage'] ?? ''),
+                      radius: 64,
+                    ),
+                    Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          width: 0,
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                        ),
+                        color: Color(0xFF284855),
+                      ),
+                      child: Center(
+                        child: IconButton(
+                          iconSize: 16,
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                          ),
+                          onPressed: () => _getImage(ImageSource.gallery),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 16),
+              Text(
+                user['name'] ?? '',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                user['email'] ?? '',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  buildInfoItem('Posts', getTotalPosts().toString()),
+                  SizedBox(width: 24),
+                  buildInfoItem('Matches', '0'),
+                  SizedBox(width: 24),
+                  buildInfoItem('Level', '1'),
+                ],
+              ),
+            ],
+          ),
           SizedBox(height: 24),
           buildPostsSection(),
           SizedBox(height: 24),
           buildReviewsSection(),
         ],
       ),
-    );
-  }
-
-  AppBar buildAppBar(BuildContext context) {
-    final icon = CupertinoIcons.moon_stars;
-
-    return AppBar(
-      leading: BackButton(),
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      actions: [
-        IconButton(
-          icon: Icon(icon),
-          onPressed: () {},
-        ),
-      ],
-    );
-  }
-
-  Widget buildProfileInfo() {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 64,
-          backgroundImage: NetworkImage(imagePath ?? ''),
-        ),
-        SizedBox(height: 16),
-        Text(
-          name,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
-        ),
-        SizedBox(height: 8),
-        Text(email),
-        SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            buildInfoItem('Posts', numberOfPosts.toString()),
-            SizedBox(width: 32),
-            buildInfoItem('Matches', numberOfMatches.toString()),
-            SizedBox(width: 32),
-            buildInfoItem('Level', level),
-          ],
-        ),
-      ],
+      bottomNavigationBar: CustomBottomNavigation(
+        currentIndex: 3,
+        onTabSelected: (index) {
+          // Add your logic here based on the selected index
+        },
+      ),
     );
   }
 
@@ -150,56 +284,168 @@ class _UserProfilePageState extends State<UserProfilePage> {
           value,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: 24,
           ),
         ),
         SizedBox(height: 4),
-        Text(label),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 16,
+          ),
+        ),
       ],
     );
   }
 
   Widget buildPostsSection() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Posts',
+          'Feed Posts',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
-        SizedBox(height: 16),
-        ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: showAllPosts ? posts.length : 3,
-          itemBuilder: (context, index) {
-            final post = posts[index];
-            return ListTile(
-              title: Text(post),
-            );
-          },
-        ),
-        if (!showAllPosts && posts.length > 3)
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                setState(() {
-                  showAllPosts = true;
-                });
-              },
-              child: Text('Show all'),
+        SizedBox(height: 8),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: List.generate(
+              feedPosts.length,
+              (index) => buildFeedPostItem(feedPosts[index]),
             ),
           ),
+        ),
+        SizedBox(height: 24),
+        Text(
+          'Market Posts',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        SizedBox(height: 8),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: List.generate(
+              marketPosts.length,
+              (index) => buildMarketPostItem(marketPosts[index]),
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  Widget buildFeedPostItem(dynamic post) {
+    return Container(
+      width: 300,
+      padding: EdgeInsets.all(16),
+      margin: EdgeInsets.only(right: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (post['image'] != null)
+            Image.network(
+              post['image'],
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          SizedBox(height: 8),
+          Text(
+            post['title'] ?? '',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            post['content'] ?? '',
+            style: TextStyle(fontSize: 16),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Posted on ${post['createdAt'] ?? ''}',
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildMarketPostItem(dynamic post) {
+    return Container(
+      width: 300,
+      padding: EdgeInsets.all(16),
+      margin: EdgeInsets.only(right: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (post['image'] != null)
+            Image.network(
+              post['image'],
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          SizedBox(height: 8),
+          Text(
+            post['title'] ?? '',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            post['skill'] ?? '',
+            style: TextStyle(fontSize: 16),
+          ),
+          SizedBox(height: 8),
+          Text(
+            post['description'] ?? '',
+            style: TextStyle(fontSize: 16),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Price: \$${post['price'] ?? ''}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Posted on ${post['createdAt'] ?? ''}',
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildReviewsSection() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Reviews',
@@ -208,37 +454,49 @@ class _UserProfilePageState extends State<UserProfilePage> {
             fontSize: 20,
           ),
         ),
-        SizedBox(height: 16),
+        SizedBox(height: 8),
         ListView.builder(
+          shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          itemCount: showAllReviews ? reviews.length : 3,
+          itemCount: reviews.length,
           itemBuilder: (context, index) {
             final review = reviews[index];
-            return ListTile(
-              title: Text(review),
+            return Container(
+              padding: EdgeInsets.all(16),
+              margin: EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Rating: ${review['rating'] ?? ''}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    review['comment'] ?? '',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Posted by ${review['postedBy'] ?? ''}',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         ),
-        if (!showAllReviews && reviews.length > 3)
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                setState(() {
-                  showAllReviews = true;
-                });
-              },
-              child: Text('Show all'),
-            ),
-          ),
       ],
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    title: 'SKILLY',
-    home: UserProfilePage(),
-  ));
 }

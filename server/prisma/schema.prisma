@@ -14,14 +14,16 @@ model User {
   name             String
   email            String       @unique
   address          String
-  profileImage     String
-  budge            String
+  profileImage     String?
+  budge            String?
   points           Int          @default(0)
+  age              Int
   skills           String[]
   hobbies          String[]
-  details          String
-  descriptions     String
-  phoneNumber      String
+  details          String?
+  descriptions     String?
+  phoneNumber      String?
+  gender           String?
   level            Int
   createdAt        DateTime     @default(now())
   sentRequests     Friendship[] @relation("FriendshipRequests")
@@ -118,12 +120,13 @@ model PostM {
 
 //market place
 model ReviewM {
-  id     Int   @id @default(autoincrement())
-  rating Int
-  postId Int
-  post   PostM @relation(fields: [postId], references: [id])
-  userId Int
-  user   User  @relation(fields: [userId], references: [id])
+  id      Int    @id @default(autoincrement())
+  comment String
+  rating  Int
+  postId  Int
+  post    PostM  @relation(fields: [postId], references: [id])
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
 }
 
 model Country {

@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import 'api.dart';
 
@@ -11,36 +15,65 @@ class CreatePostScreen extends StatefulWidget {
 
 class _CreatePostScreenState extends State<CreatePostScreen> {
   final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _imageController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _skillController = TextEditingController();
 
+  File? _image;
+
+  Future<void> _getImage(ImageSource source) async {
+    final imagePicker = ImagePicker();
+    final pickedImage = await imagePicker.getImage(source: source);
+
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+    }
+  }
+
   Future<void> _createPost() async {
-    final url = Uri.parse('http://$localhost:3001/Market/posts');
-    final data = {
-      'price': int.parse(_priceController.text),
-      'image': _imageController.text,
-      'title': _titleController.text,
-      'description': _descriptionController.text,
-      'skill': _skillController.text,
-      'userId': 1, // Replace with the actual user ID
-    };
+    if (_image == null) {
+      return;
+    }
 
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(data),
-    );
+    final cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dwtho2kip/upload';
+    final cloudinaryPreset = 'kusldcry';
 
-    if (response.statusCode == 200) {
-      // Post created successfully
-      final responseData = jsonDecode(response.body);
-      print('Post created: $responseData');
-      // Perform any additional actions after successful creation
-    } else {
-      // Error creating post
-      print('Error creating post: ${response.statusCode}');
+    final dio = Dio();
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(_image!.path),
+      'upload_preset': cloudinaryPreset,
+    });
+
+    try {
+      final response = await dio.post(cloudinaryUrl, data: formData);
+      final imageUrl = response.data['secure_url'];
+
+      final postUrl = Uri.parse('http://${localhost}:3001/Market/posts');
+      final data = {
+        'price': int.parse(_priceController.text),
+        'title': _titleController.text,
+        'description': _descriptionController.text,
+        'skill': _skillController.text,
+        'userId': int.parse('1'),
+        'image': imageUrl,
+      };
+
+      final postResponse = await http.post(
+        postUrl,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(data),
+      );
+
+      if (postResponse.statusCode == 200) {
+        final decodedPostResponse = jsonDecode(postResponse.body);
+        print('Post created: $decodedPostResponse');
+      } else {
+        print('Error creating post: ${postResponse.statusCode}');
+      }
+    } catch (error) {
+      print('Error uploading image: $error');
     }
   }
 
@@ -51,10 +84,14 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => CreatePostScreen()),
+              (route) => false,
+            );
           },
         ),
-        title: const Text('Create Post'),
+        title: Text('Create Post'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -63,29 +100,36 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           children: [
             TextField(
               controller: _priceController,
-              keyboardType: TextInputType.number, // Set keyboard type to number
-              decoration: const InputDecoration(labelText: 'Price'),
-            ),
-            TextField(
-              controller: _imageController,
-              decoration: const InputDecoration(labelText: 'Image URL'),
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: 'Price'),
             ),
             TextField(
               controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
+              decoration: InputDecoration(labelText: 'Title'),
             ),
             TextField(
               controller: _descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
+              decoration: InputDecoration(labelText: 'Description'),
             ),
             TextField(
               controller: _skillController,
-              decoration: const InputDecoration(labelText: 'Skill'),
+              decoration: InputDecoration(labelText: 'Skill'),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _getImage(ImageSource.camera),
+              child: Text('Take Photo'),
+            ),
+            ElevatedButton(
+              onPressed: () => _getImage(ImageSource.gallery),
+              child: Text('Choose from Gallery'),
+            ),
+            SizedBox(height: 16),
+            if (_image != null) Image.file(_image!),
+            SizedBox(height: 16),
             ElevatedButton(
               onPressed: _createPost,
-              child: const Text('Create Post'),
+              child: Text('Create Post'),
             ),
           ],
         ),

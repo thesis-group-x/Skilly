@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'feed/feed.dart';
 import './market/market.dart';
 import 'market/components/create.dart';
+// import 'feed/create_feed.dart';
 import 'user-profile.dart';
 import 'package:client/chat pages/home.dart';
 
@@ -29,67 +30,104 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      backgroundColor: Colors.white,
-      selectedItemColor: const Color(0xFF284855),
-      unselectedItemColor: Colors.grey,
-      currentIndex: _currentIndex,
-      onTap: (index) {
-        setState(() {
-          _currentIndex = index;
-        });
-
-        switch (index) {
-          case 0:
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const Feed()),
-              (route) => false,
-            );
-            break;
-          case 1:
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-              (route) => false,
-            );
-            break;
-          case 2:
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => ChatApp()),
-              (route) => false,
-            );
-            break;
-          case 3:
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => UserProfilePage()),
-              (route) => false,
-            );
-            break;
-        }
-
-        widget.onTabSelected(index);
-      },
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_cart),
-          label: 'Market',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.chat),
-          label: 'Chat',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-        ),
-      ],
+    return BottomAppBar(
+      color: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          IconButton(
+            icon: Icon(Icons.home),
+            color: _currentIndex == 0 ? const Color(0xFF284855) : Colors.grey,
+            onPressed: () {
+              setState(() {
+                _currentIndex = 0;
+              });
+              widget.onTabSelected(0);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Feed()),
+                (route) => false,
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.shopping_cart),
+            color: _currentIndex == 1 ? const Color(0xFF284855) : Colors.grey,
+            onPressed: () {
+              setState(() {
+                _currentIndex = 1;
+              });
+              widget.onTabSelected(1);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                (route) => false,
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.chat),
+            color: _currentIndex == 2 ? const Color(0xFF284855) : Colors.grey,
+            onPressed: () {
+              setState(() {
+                _currentIndex = 2;
+              });
+              widget.onTabSelected(2);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => ChatApp()),
+                (route) => false,
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.person),
+            color: _currentIndex == 3 ? const Color(0xFF284855) : Colors.grey,
+            onPressed: () {
+              setState(() {
+                _currentIndex = 3;
+              });
+              widget.onTabSelected(3);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => UserProfilePage()),
+                (route) => false,
+              );
+            },
+          ),
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(
+                  child: Text('Create Market'),
+                  value: 0,
+                ),
+                PopupMenuItem(
+                  child: Text('Create Feed'),
+                  value: 1,
+                ),
+              ];
+            },
+            onSelected: (value) {
+              if (value == 0) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CreatePostScreen(),
+                  ),
+                );
+              } else if (value == 1) {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => CreateFeedScreen(),
+                //   ),
+                // );
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 }

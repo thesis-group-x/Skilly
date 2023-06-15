@@ -1,6 +1,8 @@
+import 'package:client/landing%20pages/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import './landing pages/welcome.dart';
+// import './landing pages/welcome.dart';
+// import 'market/market.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,9 +17,9 @@ class SkillyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Skilly',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      // theme: ThemeData(
+      //   primarySwatch: Colors.deepOrange,
+      // ),
       debugShowCheckedModeBanner: false,
       home: const LandingPage(),
     );

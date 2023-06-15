@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'package:client/market/components/One.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:client/market/components/oneP.dart';
 
 import 'api.dart';
 
@@ -23,6 +23,7 @@ class _AproductsState extends State<Aproducts> {
     fetchData();
   }
 
+//getting data of the post
   Future<void> fetchData() async {
     final response =
         await http.get(Uri.parse('http://${localhost}:3001/Market/posts'));
@@ -32,7 +33,6 @@ class _AproductsState extends State<Aproducts> {
         products = data.map((item) => Product.fromJson(item)).toList();
       });
     } else {
-      // Handle error response
       print('Failed to fetch data from API');
     }
   }
@@ -40,7 +40,8 @@ class _AproductsState extends State<Aproducts> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+      scrollDirection: Axis.horizontal, //scroll horiz
+      //widget of the product
       child: Row(
         children: products.map((product) {
           return FeaturePlantCard(
@@ -49,7 +50,7 @@ class _AproductsState extends State<Aproducts> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProductItemScreen(product: product),
+                  builder: (context) => Details(product: product),
                 ),
               );
             },
@@ -153,46 +154,36 @@ class FeaturePlantCard extends StatelessWidget {
   }
 }
 
-class OtherComponent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Other Component'),
-      ),
-      body: Center(
-        child: Text('This is the other component.'),
-      ),
-    );
-  }
-}
-
 const kDefaultPadding = 20.0;
 
 class Product {
   final int id;
   final String image;
   final String title;
+  final String description;
   final String skill;
   final double price;
+  final int userId;
 
-  Product({
-    required this.id,
-    required this.image,
-    required this.title,
-    required this.skill,
-    required this.price,
-  });
+  Product(
+      {required this.id,
+      required this.image,
+      required this.title,
+      required this.description,
+      required this.skill,
+      required this.price,
+      required this.userId});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
-      image: json['image'],
-      title: json['title'],
-      skill: json['skill'],
-      price: json['price'].toDouble(),
-    );
+        id: json['id'],
+        image: json['image'],
+        title: json['title'],
+        description: json['description'],
+        skill: json['skill'],
+        price: json['price'].toDouble(),
+        userId: json['userId']);
   }
 }
 
-const kPrimaryColor = Colors.blue; // Replace with your desired primary color
+const kPrimaryColor = Colors.blue;

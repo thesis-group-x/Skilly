@@ -1,18 +1,20 @@
-import 'package:client/market/components/api.dart';
+import 'package:client/market/components/one1.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'api.dart';
+
 class Products extends StatefulWidget {
-  const Products({required Key key}) : super(key: key);
+  const Products({Key? key}) : super(key: key);
 
   @override
   _ProductsState createState() => _ProductsState();
 }
 
 class _ProductsState extends State<Products> {
-  //states
-  List<ProductData> products = [];
+  // States
+  List<Map<String, dynamic>> products = [];
   bool isLoading = true;
   String errorMessage = '';
 
@@ -27,21 +29,21 @@ class _ProductsState extends State<Products> {
       final response =
           await http.get(Uri.parse('http://${localhost}:3001/Market/posts'));
       if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body); //data from the response
+        final jsonData = json.decode(response.body);
         if (jsonData is List) {
-          List<ProductData> productList = []; //refile the array
+          List<Map<String, dynamic>> productList = [];
           for (var item in jsonData) {
             String image = item['image'];
             String title = item['title'];
             int price = item['price'];
             String skill = item['skill'];
-            ProductData productData = ProductData(
-              image: image,
-              title: title,
-              price: price,
-              skill: skill,
-            );
-            productList.add(productData); //refile the array with data
+            Map<String, dynamic> productData = {
+              'image': image,
+              'title': title,
+              'price': price,
+              'skill': skill,
+            };
+            productList.add(productData);
           }
           setState(() {
             products = productList;
@@ -77,16 +79,8 @@ class _ProductsState extends State<Products> {
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: products.map((product) {
-            //here we return the data from the array and map throught it
-            return RecomendPlantCard(
-              key: UniqueKey(),
-              image: product.image,
-              title: product.title,
-              skill: product.skill,
-              price: product.price,
-              press: () {},
-            );
+          children: products.reversed.map((product) {
+            return HorizontalProductItem(product: product);
           }).toList(),
         ),
       );
@@ -94,102 +88,131 @@ class _ProductsState extends State<Products> {
   }
 }
 
-class RecomendPlantCard extends StatelessWidget {
-  const RecomendPlantCard({
-    required Key key,
-    required this.image,
-    required this.title,
-    required this.skill,
-    required this.price,
-    required this.press,
-  }) : super(key: key);
+class HorizontalProductItem extends StatelessWidget {
+  final Map<String, dynamic> product;
 
-  final String image, title, skill;
-  final int price;
-  final void Function() press;
+  HorizontalProductItem({required this.product});
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      margin: EdgeInsets.only(
-        left: kDefaultPadding,
-        top: kDefaultPadding / 1.4,
-        bottom: kDefaultPadding * 2.5,
-      ),
-      width: size.width * 0.4,
-      child: Column(
-        children: <Widget>[
-          Image.network(image),
-          GestureDetector(
-            onTap: press,
-            child: Container(
-              padding: EdgeInsets.all(kDefaultPadding / 2),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
+    return Padding(
+      padding: EdgeInsets.only(right: 10.0, left: 20.0, top: 10),
+      child: InkWell(
+        child: Container(
+          height: 230.0,
+          width: 140.0,
+          child: Column(
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: GestureDetector(
+                  onTap: () {
+                    Productsi productObject = Productsi(
+                      id: product['id'] ?? 8,
+                      image: product['image'] ?? '',
+                      title: product['title'] ?? '',
+                      description: product['description'] ?? '',
+                      skill: product['skill'] ?? '',
+                      price: product['price'] != null
+                          ? product['price'].toDouble()
+                          : 0.0,
+                      userId: product['userId'] ?? 8,
+                    );
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Details1(product: productObject),
+                      ),
+                    );
+                  },
+                  child: Image.network(
+                    product["image"],
+                    height: 160.0,
+                    width: 180.0,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    offset: Offset(0, 10),
-                    blurRadius: 50,
-                    color: kPrimaryColor.withOpacity(0.23),
-                  ),
-                ],
               ),
-              child: Row(
-                children: <Widget>[
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "$title\n".toUpperCase(),
-                          style: Theme.of(context).textTheme.button?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+              SizedBox(height: 7.0),
+              Container(
+                alignment: Alignment.centerRight,
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        "\$${product["price"]}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15.0,
                         ),
-                        TextSpan(
-                          text: "$skill".toUpperCase(),
-                          style: TextStyle(
-                            color: kPrimaryColor.withOpacity(0.5),
-                          ),
-                        ),
-                      ],
+                        textAlign: TextAlign.left,
+                      ),
                     ),
-                  ),
-                  Spacer(),
-                  Text(
-                    '\$$price',
-                    style: Theme.of(context)
-                        .textTheme
-                        .button
-                        ?.copyWith(color: kPrimaryColor),
-                  ),
-                ],
+                    SizedBox(width: 5.0),
+                    Flexible(
+                      child: Text(
+                        product["title"],
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15.0,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+              SizedBox(height: 3.0),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  product["skill"].toUpperCase(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13.0,
+                    color: Colors.blueGrey[300],
+                  ),
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class ProductData {
+class Productsi {
+  final int id;
   final String image;
   final String title;
+  final String description;
   final String skill;
-  final int price;
+  final double price;
+  final int userId;
 
-  ProductData({
-    required this.image,
-    required this.title,
-    required this.skill,
-    required this.price,
-  });
+  Productsi(
+      {required this.id,
+      required this.image,
+      required this.title,
+      required this.description,
+      required this.skill,
+      required this.price,
+      required this.userId});
+
+  factory Productsi.fromJson(Map<String, dynamic> json) {
+    return Productsi(
+        id: json['id'],
+        image: json['image'],
+        title: json['title'],
+        description: json['description'],
+        skill: json['skill'],
+        price: json['price'].toDouble(),
+        userId: json['userId']);
+  }
 }
-
-const kPrimaryColor = Colors.blue; // Replace with your desired primary color
-const kDefaultPadding = 20.0; // Replace with your desired default padding value

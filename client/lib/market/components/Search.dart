@@ -34,7 +34,7 @@ class HeaderWithSearchBox extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Text(
-                  'Hi Alaa!',
+                  'What you are ?',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
@@ -89,5 +89,5 @@ class HeaderWithSearchBox extends StatelessWidget {
   }
 }
 
-const kPrimaryColor = Color(0xFF284855); // Replace with your desired primary color
-const kDefaultPadding = 20.0; // Replace with your desired default padding value
+const kPrimaryColor = Colors.blueGrey;
+const kDefaultPadding = 20.0;

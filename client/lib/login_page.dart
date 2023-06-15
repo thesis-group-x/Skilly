@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
         // Login successful, navigate to InterestsPage
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Feed()),
+          MaterialPageRoute(builder: (context) => InterestsPage()),
         );
       } else {
         print('User is null');
