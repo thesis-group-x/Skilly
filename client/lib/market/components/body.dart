@@ -14,9 +14,9 @@ class MyWidget extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(children: <Widget>[
         HeaderWithSearchBox(size: size),
-        TitleWithMoreBtn(title: "Recomended", press: () {}),
+        SkillsList(),
         Products(key: UniqueKey()),
-        TitleWithMoreBtn(title: "Last Gigs", press: () {}),
+        // TitleWithMoreBtn(title: "Last Gigs", press: () {}),
         Aproducts(key: UniqueKey()),
       ]),
     );

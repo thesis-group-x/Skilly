@@ -154,20 +154,6 @@ class FeaturePlantCard extends StatelessWidget {
   }
 }
 
-// class OtherComponent extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Other Component'),
-//       ),
-//       body: Center(
-//         child: Text('This is the other component.'),
-//       ),
-//     );
-//   }
-// }
-
 const kDefaultPadding = 20.0;
 
 class Product {
@@ -200,4 +186,4 @@ class Product {
   }
 }
 
-const kPrimaryColor = Colors.blue; // Replace with your desired primary color
+const kPrimaryColor = Colors.blue;
