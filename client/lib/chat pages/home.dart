@@ -48,24 +48,26 @@ class _UserListPageState extends State<UserListPage> {
         filteredUsers = fetchedUsers;
       });
     }).catchError((error) {
-      print('Error fetching users: $error');
+      print('errorr: $error');
     });
   }
 
-  Future<List<String>> fetchUsers() async {
-    final response =
-        await http.get(Uri.parse('http://10.0.2.2:3001/user/getuser'));
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      final currentUser = FirebaseAuth.instance.currentUser?.displayName;
-      return data
-          .map((user) => user['name'] as String)
-          .where((user) => user != currentUser)
-          .toList();
-    } else {
-      throw Exception('Failed to fetch users');
-    }
+Future<List<String>> fetchUsers() async {
+  final response = await http.get(Uri.parse('http://10.0.2.2:3001/user/getuser'));
+  if (response.statusCode == 200) {
+    final List<dynamic> data = jsonDecode(response.body);
+    final currentUser = FirebaseAuth.instance.currentUser?.displayName;
+    return data
+        .map((user) => user['name'] as String)
+        .where((user) => user != currentUser)
+        .toList();
+  } else {
+    throw Exception('error fetching users ');
   }
+}
+
+
+
 
   void filterUsers(String query) {
     final lowercaseQuery = query.toLowerCase();
@@ -90,32 +92,39 @@ class _UserListPageState extends State<UserListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 70.0,
+        toolbarHeight: 100.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20.0),
-            bottomRight: Radius.circular(20.0),
-          ),
+  borderRadius: BorderRadius.only(
+    bottomLeft: Radius.circular(100.0),
+    bottomRight: Radius.circular(100.0),
+  ),
         ),
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 12.0,
         title: Row(
           children: [
             SizedBox(width: 20.0),
-            Text(
-              'Messages',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 30.0,
-                color: Colors.white,
-              ),
-            ),
+            
+           Container(
+  margin: EdgeInsets.only(left: 100.0),
+  child: Text(
+    '',
+    style: TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 30.0,
+      color: Colors.white,
+      fontStyle: FontStyle.italic,
+    ),
+  ),
+)
+        
           ],
         ),
         centerTitle: true,
       ),
       body: Column(
         children: [
+          
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
@@ -221,7 +230,6 @@ class _UserListPageState extends State<UserListPage> {
       bottomNavigationBar: CustomBottomNavigation(
         currentIndex: 2,
         onTabSelected: (index) {
-          // Add your logic here based on the selected index
         },
       ),
     );
