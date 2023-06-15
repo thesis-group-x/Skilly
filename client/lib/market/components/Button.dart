@@ -11,8 +11,8 @@ class SkillsList extends StatelessWidget {
   final List<Skill> skills = [
     Skill(name: "Programming", emoji: "💻"),
     Skill(name: "Design", emoji: "🎨"),
-    Skill(name: "Solving", emoji: "🔍"),
-    Skill(name: "Communication", emoji: "🗣️"),
+    Skill(name: "Solving", emoji: "✅"),
+    Skill(name: "Communication", emoji: "🌐"),
     Skill(name: "Teamwork", emoji: "🤝"),
     Skill(name: "Leadership", emoji: "👨‍💼"),
     Skill(name: "Creativity", emoji: "💡"),
@@ -87,5 +87,5 @@ class SkillButton extends StatelessWidget {
   }
 }
 
-const kPrimaryColor = Colors.blue; // Replace with your desired primary color
-const kDefaultPadding = 20.0; // Replace with your desired default padding value
+const kPrimaryColor = Colors.blue;
+const kDefaultPadding = 20.0;

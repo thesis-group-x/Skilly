@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'user-profile.dart';
 import './complete.dart';
 
 final List<String> hobbiesInterests = [
@@ -75,15 +76,14 @@ class _InterestsPageState extends State<InterestsPage> {
       );
 
       if (response.statusCode == 200) {
-
         // Interests saved successfully
         print('Interests saved successfully');
         Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Complete(),
-        ),
-      );
+          context,
+          MaterialPageRoute(
+            builder: (context) => Complete(),
+          ),
+        );
       } else {
         // Failed to save interests
         print('Failed to save interests');
@@ -156,49 +156,42 @@ class _InterestsPageState extends State<InterestsPage> {
                 _errorMessage,
                 style: TextStyle(color: Colors.red),
               ),
-            ElevatedButton(
-              onPressed: () {
-                saveUserInterests();
-                print(FirebaseAuth.instance.currentUser?.uid);
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  buttonHovered
-                      ? Colors.grey.withOpacity(0.8)
-                      : Color.fromARGB(255, 20, 3, 46),
-                ),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                onPressed: () {
+                  saveUserInterests();
+                  print(FirebaseAuth.instance.currentUser?.uid);
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    buttonHovered
+                        ? Colors.grey.withOpacity(0.8)
+                        : Color(0xFF284855),
                   ),
-                ),
-                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                  EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Next',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  Icon(
-                    Icons.double_arrow,
-                    size: 18,
-                    color: Colors.white,
+                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                    EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                   ),
-                ],
+                ),
+                child: Text(
+                  'Next',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onHover: (value) {
+                  setState(() {
+                    buttonHovered = value;
+                  });
+                },
               ),
-              onHover: (value) {
-                setState(() {
-                  buttonHovered = value;
-                });
-              },
             ),
           ],
         ),
@@ -238,7 +231,7 @@ class InterestsSection extends StatelessWidget {
               label: Text(interest),
               selected: isSelected,
               onSelected: (_) => onInterestSelected(interest),
-              selectedColor: Color.fromARGB(255, 7, 52, 88),
+              selectedColor: Color(0xFF284855),
               labelStyle: TextStyle(
                 color: isSelected ? Colors.white : Colors.black,
               ),
@@ -249,11 +242,4 @@ class InterestsSection extends StatelessWidget {
       ],
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    title: 'SKILLY',
-    home: InterestsPage(),
-  ));
 }
