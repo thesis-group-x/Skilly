@@ -7,7 +7,8 @@ import {
     updateUser,
     getUserByUid,
     getUserFeedPosts,
-    getUserMarketPosts
+    getUserMarketPosts,
+    updateUserByUid,
     }from '../controller/authentication'
 
     const router = express.Router();
@@ -16,7 +17,9 @@ import {
     router.get('/byid/:id', getUserById);
     router.get('/uid/:uid',getUserByUid)
     router.put('/update/:id' ,updateUser);
-    router.get('/users', getUsers);
-    router.get('/:id/feed/posts', getUserFeedPosts);
-   router.get('/:id/market/posts', getUserMarketPosts);
+ 
+    router.get('/uid/:uid/feed/posts', getUserFeedPosts); 
+    router.get('/uid/:uid/market/posts', getUserMarketPosts); 
+    router.put('/upd/:uid', updateUserByUid);
+    
     export default router;

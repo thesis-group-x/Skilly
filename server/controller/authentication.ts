@@ -68,6 +68,32 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
+// export const getUserById = async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     const userEmail = req.params.id;
+
+//     // if (isNaN(userId)) {
+//     //   res.status(400).json({ error: "Invalid user ID." });
+//     //   return;
+//     // }
+
+//     const user: User | null = await prisma.user.findUnique({
+//       where: {
+//         email: userEmail,
+//       },
+//     });
+
+//     if (user) {
+//       res.json(user);
+//     } else {
+//       res.status(404).json({ error: "User not found." });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "An error occurred while fetching the user." });
+//   }
+// };
+
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = Number(req.params.id);
@@ -112,16 +138,16 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 
 export const getUserByUid = async (req: Request, res: Response): Promise<void> => {
   try {
-    const uid = Number(req.params.uid);
+    const uid = req.params.uid; 
 
-    if (isNaN(uid)) {
+    if (!uid) {
       res.status(400).json({ error: "Invalid user UID." });
       return;
     }
 
     const user: User | null = await prisma.user.findUnique({
       where: {
-        id: uid,
+        uid: uid, 
       },
     });
 
@@ -135,6 +161,7 @@ export const getUserByUid = async (req: Request, res: Response): Promise<void> =
     res.status(500).json({ error: "An error occurred while fetching the user." });
   }
 };
+
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -161,12 +188,12 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ error: "An error occurred while retrieving users." });
   }
 };
-export const getUserFeedPosts = async (req: Request, res:Response) => {
-  const userId = parseInt(req.params.id);
+export const getUserFeedPosts = async (req: Request, res: Response) => {
+  const uid = req.params.uid; 
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { uid }, 
       include: { posts: true },
     });
 
@@ -181,12 +208,12 @@ export const getUserFeedPosts = async (req: Request, res:Response) => {
   }
 };
 
-export const getUserMarketPosts = async (req: Request, res:Response) => {
-  const userId = parseInt(req.params.id);
+export const getUserMarketPosts = async (req: Request, res: Response) => {
+  const uid = req.params.uid; 
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { uid }, 
       include: { PostM: true },
     });
 
@@ -198,6 +225,43 @@ export const getUserMarketPosts = async (req: Request, res:Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "An error occurred while fetching the user market posts." });
+  }
+};
+
+export const updateUserByUid = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const {uid} = req.params ;
+    const { name, email, address, profileImage, budge, phoneNumber } = req.body;
+
+    const existingUser: User | null = await prisma.user.findUnique({
+      where: {
+        uid: uid,
+      },
+    });
+
+    if (!existingUser) {
+      res.status(404).json({ error: "User not found." });
+      return;
+    }
+
+    const updatedUser: User = await prisma.user.update({
+      where: {
+        uid: uid,
+      },
+      data: {
+        name: name || existingUser.name,
+        email: email || existingUser.email,
+        address: address || existingUser.address,
+        profileImage: profileImage || existingUser.profileImage,
+        budge: budge || existingUser.budge,
+        phoneNumber: phoneNumber || existingUser.phoneNumber,
+      },
+    });
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while updating the user." });
   }
 };
 

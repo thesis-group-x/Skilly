@@ -84,7 +84,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => CreatePostScreen()),
+              (route) => false,
+            );
           },
         ),
         title: Text('Create Post'),

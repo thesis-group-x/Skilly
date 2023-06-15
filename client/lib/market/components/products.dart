@@ -118,7 +118,7 @@ class HorizontalProductItem extends StatelessWidget {
                           : 0.0,
                       userId: product['userId'] ?? 8,
                     );
-                    print(productObject);
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
