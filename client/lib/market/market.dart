@@ -3,10 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:client/market/components/body.dart';
 import '../bottom_navigation.dart';
 
-void main() {
-  runApp(HomeScreen());
-}
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -15,16 +11,14 @@ class HomeScreen extends StatelessWidget {
     return MaterialApp(
       title: 'Home Screen',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
       ),
       home: Scaffold(
         appBar: buildAppBar(),
         body: MyWidget(),
         bottomNavigationBar: CustomBottomNavigation(
           currentIndex: 1,
-          onTabSelected: (index) {
-            // Add your logic here based on the selected index
-          },
+          onTabSelected: (index) {},
         ),
       ),
     );
@@ -35,7 +29,7 @@ class HomeScreen extends StatelessWidget {
       elevation: 0,
       leading: IconButton(
         icon: SvgPicture.asset(
-          'assets/icons/menu.svg', // Replace 'assetName' with your actual asset path
+          'assets/icons/menu.svg',
         ),
         onPressed: () {
           // Add functionality for the menu button

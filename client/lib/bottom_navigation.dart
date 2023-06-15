@@ -64,7 +64,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
           case 3:
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => UserProfilePage()),
+              MaterialPageRoute(builder: (context) => CreatePostScreen()),
               (route) => false,
             );
             break;
