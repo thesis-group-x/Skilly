@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'aproducts.dart';
-import 'reviews.dart';
 
 class Details extends StatefulWidget {
   final Product product;
@@ -65,19 +64,7 @@ class _DetailsState extends State<Details> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Reviews(
-                                    review: Review(
-                                  postId: widget.product.id,
-                                  userId: widget.product.userId,
-                                  comment: '',
-                                  rating: 0,
-                                ))),
-                      );
-                    },
+                    onTap: () {},
                     child: Row(
                       children: [
                         Text(
