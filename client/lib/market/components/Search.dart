@@ -89,6 +89,5 @@ class HeaderWithSearchBox extends StatelessWidget {
   }
 }
 
-const kPrimaryColor =
-    Colors.blueGrey; // Replace with your desired primary color
-const kDefaultPadding = 20.0; // Replace with your desired default padding value
+const kPrimaryColor = Colors.blueGrey;
+const kDefaultPadding = 20.0;

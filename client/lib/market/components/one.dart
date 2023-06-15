@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'api.dart';
 import 'aproducts.dart';
+import 'reviews.dart';
 
 class Details extends StatefulWidget {
   final Product product;
@@ -32,7 +34,7 @@ class _DetailsState extends State<Details> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.notifications_none),
+            icon: Icon(Icons.notifications_active),
             onPressed: () {},
           ),
         ],
@@ -64,21 +66,31 @@ class _DetailsState extends State<Details> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
-                    child: Row(
-                      children: [
-                        Text(
-                          '${finalRating}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Reviews(
+                            review: Div(
+                              comment: '',
+                              rating: finalRating,
+                              postId: widget.product.id,
+                              userId: widget.product.userId,
+                            ),
                           ),
                         ),
-                        Icon(
+                      );
+                    },
+                    child: Row(
+                      children: List.generate(
+                        5,
+                        (index) => Icon(
                           Icons.star,
-                          color: Colors.yellow,
+                          color:
+                              index < finalRating ? Colors.yellow : Colors.grey,
+                          size: 27,
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
@@ -150,10 +162,45 @@ class _DetailsState extends State<Details> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.airplanemode_active,
-        ),
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Rate Product'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text('Select your rating:'),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          5,
+                          (index) => IconButton(
+                            onPressed: () {
+                              setState(() {
+                                finalRating = index + 1;
+                              });
+                              Navigator.of(context).pop();
+                            },
+                            icon: Icon(
+                              Icons.star,
+                              color: index < finalRating
+                                  ? Colors.yellow
+                                  : Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+        child: Icon(Icons.star),
       ),
     );
   }
@@ -175,7 +222,8 @@ class _DetailsState extends State<Details> {
   }
 
   void fetchReviews(int postId) async {
-    final url = 'http://localhost:3001/Market/reviews/$postId';
+    final url = 'http://${localhost}:3001/Market/reviews/$postId';
+    print(postId);
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -212,8 +260,8 @@ class _DetailsState extends State<Details> {
 }
 
 class Review {
-  final String comment;
-  final int rating;
+  late final String comment;
+  late final int rating;
   final int userId;
   final int postId;
 

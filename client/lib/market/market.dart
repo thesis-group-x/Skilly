@@ -18,9 +18,7 @@ class HomeScreen extends StatelessWidget {
         body: MyWidget(),
         bottomNavigationBar: CustomBottomNavigation(
           currentIndex: 1,
-          onTabSelected: (index) {
-            // Add your logic here based on the selected index
-          },
+          onTabSelected: (index) {},
         ),
       ),
     );
@@ -31,7 +29,7 @@ class HomeScreen extends StatelessWidget {
       elevation: 0,
       leading: IconButton(
         icon: SvgPicture.asset(
-          'assets/icons/menu.svg', // Replace 'assetName' with your actual asset path
+          'assets/icons/menu.svg',
         ),
         onPressed: () {
           // Add functionality for the menu button

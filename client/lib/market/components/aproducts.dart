@@ -23,6 +23,7 @@ class _AproductsState extends State<Aproducts> {
     fetchData();
   }
 
+//getting data of the post
   Future<void> fetchData() async {
     final response =
         await http.get(Uri.parse('http://${localhost}:3001/Market/posts'));
@@ -39,7 +40,8 @@ class _AproductsState extends State<Aproducts> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+      scrollDirection: Axis.horizontal, //scroll horiz
+      //widget of the product
       child: Row(
         children: products.map((product) {
           return FeaturePlantCard(
@@ -152,19 +154,19 @@ class FeaturePlantCard extends StatelessWidget {
   }
 }
 
-class OtherComponent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Other Component'),
-      ),
-      body: Center(
-        child: Text('This is the other component.'),
-      ),
-    );
-  }
-}
+// class OtherComponent extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Other Component'),
+//       ),
+//       body: Center(
+//         child: Text('This is the other component.'),
+//       ),
+//     );
+//   }
+// }
 
 const kDefaultPadding = 20.0;
 

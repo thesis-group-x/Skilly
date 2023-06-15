@@ -15,14 +15,14 @@ const prisma = new PrismaClient();
 //------------------------------------------------------------ POST MARKET PLACE ---------------------------------------------------------------------------------
 
 //---------------------------------------------------------creation of gig
-export const createPost = async (req: Request, res: Response): Promise<void> => {
-  const {  title, description, skill } = req.body;
-  const userId=1
-  const price=23
 
+
+export const createPost = async (req: Request, res: Response): Promise<void> => {
+  const { price, title, description, skill, image } = req.body;
+const userId=1
+console.log(req.body)
   try {
-   
-    const result = await cloudinary.uploader.upload("https://images.unsplash.com/photo-1617396900799-f4ec2b43c7ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8d2FsbHBhcGVyJTIwNGt8ZW58MHx8MHx8fDA%3D&w=1000&q=80", { upload_preset: 'kusldcry' });
+    const result = await cloudinary.uploader.upload(image, { upload_preset: 'kusldcry' });
 
     const post = await prisma.postM.create({
       data: {
@@ -37,10 +37,11 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
 
     res.json(post);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ error: 'Error creating post' });
   }
 };
+
 
 //---------------------------------------------------------feed gigs
 export const getPosts = async (req: Request, res: Response): Promise<void> => {
