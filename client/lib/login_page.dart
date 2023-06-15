@@ -5,6 +5,8 @@ import 'interests_page.dart';
 import './feed/feed.dart';
 import 'user-profile.dart';
 
+import './complete.dart';
+import 'interests_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override

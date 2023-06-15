@@ -7,6 +7,7 @@ import 'create_post.dart';
 import '../models/post.dart';
 import '../services/post_service.dart';
 import '../../market/market.dart';
+import '../../bottom_navigation.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -58,7 +59,10 @@ class _HomePageState extends State<HomePage> {
       await PostService.likePost(postId);
       setState(() {
         likedPosts[postId] = true;
-        posts.firstWhere((post) => post.id == postId).likes++;
+        final postIndex = posts.indexWhere((post) => post.id == postId);
+        if (postIndex != -1) {
+          posts[postIndex].likes++;
+        }
       });
     } catch (error) {
       print('Failed to like the post: $error');
@@ -70,7 +74,10 @@ class _HomePageState extends State<HomePage> {
       await PostService.unlikePost(postId);
       setState(() {
         likedPosts[postId] = false;
-        posts.firstWhere((post) => post.id == postId).likes--;
+        final postIndex = posts.indexWhere((post) => post.id == postId);
+        if (postIndex != -1) {
+          posts[postIndex].likes--;
+        }
       });
     } catch (error) {
       print('Failed to unlike the post: $error');
@@ -106,7 +113,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {},
         ),
         actions: [
-            IconButton(
+          IconButton(
             icon: const Icon(
               Icons.add,
               color: Colors.black87,
@@ -124,6 +131,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         centerTitle: true,
+       
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -456,6 +464,12 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+       bottomNavigationBar: CustomBottomNavigation(
+          currentIndex: 0,
+          onTabSelected: (index) {
+            // Add your logic here based on the selected index
+          },
+        ),
     );
   }
 
