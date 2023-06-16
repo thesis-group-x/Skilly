@@ -19,7 +19,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
         uid,
         address: '',
         profileImage: '',
-        budge: '',
+        budge: 'https://www.flaticon.com/free-icon/medal_2838625?term=badge&page=2&position=50&origin=tag&related_id=2838625',
         points: 0,
         age: 0,
         gender:'',

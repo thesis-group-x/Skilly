@@ -26,6 +26,7 @@ model User {
   gender           String?
   level            Int
   createdAt        DateTime     @default(now())
+  cards            Card[]
   sentRequests     Friendship[] @relation("FriendshipRequests")
   receivedRequests Friendship[] @relation("FriendshipResponses")
   posts            Post[]
@@ -36,6 +37,23 @@ model User {
   isAdmin          Boolean      @default(false) //admin 
   PostM            PostM[]
   ReviewM          ReviewM[]
+}
+
+model Card {
+  id              Int     @id @default(autoincrement())
+  last4           String
+  brand           String
+  expiration      String
+  paymentMethodId String?
+  userId          Int
+  user            User    @relation(fields: [userId], references: [id])
+}
+
+model Pack {
+  id     Int    @id @default(autoincrement())
+  name   String
+  points Int
+  price  Float
 }
 
 model Community {
@@ -110,7 +128,7 @@ model PostM {
   id          Int       @id @default(autoincrement())
   title       String
   price       Float
-  image       String
+  image       String[]
   description String
   reviews     ReviewM[]
   skill       String

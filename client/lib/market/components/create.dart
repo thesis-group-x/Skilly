@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:client/market/market.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -56,7 +57,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         'title': _titleController.text,
         'description': _descriptionController.text,
         'skill': _skillController.text,
-        'userId': int.parse('1'),
+        'userId': int.parse('2'),
         'image': imageUrl,
       };
 
@@ -86,7 +87,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           onPressed: () {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => CreatePostScreen()),
+              MaterialPageRoute(builder: (context) => HomeScreen()),
               (route) => false,
             );
           },

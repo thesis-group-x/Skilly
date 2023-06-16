@@ -18,16 +18,20 @@ const prisma = new PrismaClient();
 
 
 export const createPost = async (req: Request, res: Response): Promise<void> => {
-  const { price, title, description, skill, image } = req.body;
-const userId=1
-console.log(req.body)
+  const { price, title, userId, description, skill, images } = req.body;
+
   try {
-    const result = await cloudinary.uploader.upload(image, { upload_preset: 'kusldcry' });
+    const uploadPromises = images.map((image: string) => {
+      return cloudinary.uploader.upload(image, { upload_preset: 'kusldcry' });
+    });
+
+    const uploadedImages = await Promise.all(uploadPromises);
+    const imageUrls = uploadedImages.map((result: any) => result.secure_url);
 
     const post = await prisma.postM.create({
       data: {
         price,
-        image: result.secure_url,
+        image: { set: imageUrls }, 
         title,
         description,
         skill,
@@ -35,12 +39,25 @@ console.log(req.body)
       },
     });
 
-    res.json(post);
+    // Extra 20 points
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        points: {
+          increment: 20,
+        },
+      },
+    });
+
+    res.json({ post, user: updatedUser });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Error creating post' });
   }
 };
+
 
 
 //---------------------------------------------------------feed gigs
@@ -126,7 +143,19 @@ export const createReview = async (req: Request, res: Response): Promise<void> =
           userId,
         },
       });
-      res.json(review);
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          points: {
+            increment: 5,
+          },
+        },
+      });
+  
+  
+      res.json({review,user: updatedUser });
     } catch (error) {
       res.status(500).json({ error: 'Error creating review' });
     }

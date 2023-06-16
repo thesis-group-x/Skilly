@@ -33,15 +33,21 @@ class _ProductsState extends State<Products> {
         if (jsonData is List) {
           List<Map<String, dynamic>> productList = [];
           for (var item in jsonData) {
+            int id = item['id'];
             String image = item['image'];
             String title = item['title'];
             int price = item['price'];
             String skill = item['skill'];
+            int userId = item['userId'];
+            String description = item['description'];
             Map<String, dynamic> productData = {
+              'id': id,
               'image': image,
               'title': title,
               'price': price,
               'skill': skill,
+              'userId': userId,
+              'description': description,
             };
             productList.add(productData);
           }
@@ -108,15 +114,15 @@ class HorizontalProductItem extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     Productsi productObject = Productsi(
-                      id: product['id'] ?? 8,
-                      image: product['image'] ?? '',
-                      title: product['title'] ?? '',
-                      description: product['description'] ?? '',
-                      skill: product['skill'] ?? '',
+                      id: product['id'],
+                      image: product['image'],
+                      title: product['title'],
+                      description: product['description'],
+                      skill: product['skill'],
                       price: product['price'] != null
                           ? product['price'].toDouble()
                           : 0.0,
-                      userId: product['userId'] ?? 8,
+                      userId: product['userId'],
                     );
 
                     Navigator.push(
