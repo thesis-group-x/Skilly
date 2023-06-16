@@ -8,6 +8,7 @@ import '../models/post.dart';
 import '../services/post_service.dart';
 import '../../market/market.dart';
 import '../../bottom_navigation.dart';
+import '../../other_profile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -98,6 +99,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+ void navigateToUserProfile(int userId) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => UserProfileWidget(userId: userId)),
+  );
+}
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,7 +140,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         centerTitle: true,
-       
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -306,13 +314,33 @@ class _HomePageState extends State<HomePage> {
                                             Positioned(
                                               top: 20,
                                               left: 60,
-                                              child: Text(
-                                                posts[index].user.name,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
+                                              
+                                              child: 
+                                              GestureDetector(
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UserProfileWidget(userId: posts[index].user.id)),
+    );
+  },
+  child: Text(
+    posts[index].user.name,
+    style: const TextStyle(
+      color: Colors.white,
+      fontSize: 16,
+    ),
+  ),
+),
+ 
+                                              //  Text(
+                                                
+                                                
+                                              //   posts[index].user.name,
+                                              //   style: const TextStyle(
+                                              //     color: Colors.white,
+                                              //     fontSize: 16,
+                                              //   ),
+                                              // ),
                                             ),
                                             Align(
                                               alignment: Alignment.topRight,
@@ -464,12 +492,12 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-       bottomNavigationBar: CustomBottomNavigation(
-          currentIndex: 0,
-          onTabSelected: (index) {
-            // Add your logic here based on the selected index
-          },
-        ),
+      bottomNavigationBar: CustomBottomNavigation(
+        currentIndex: 0,
+        onTabSelected: (index) {
+          // Add your logic here based on the selected index
+        },
+      ),
     );
   }
 

@@ -4,6 +4,7 @@ import pgPromise from 'pg-promise';
 import routerMarket from './routes/market';
 import routerInterests from './routes/interests'
 import routerFeed from './routes/feed';
+import routerOther from './routes/other';
 
 import routerAuthentication from './routes/authenticaion';
 import routerfc from './routes/feedComments';
@@ -34,6 +35,7 @@ app.use('/api', routerInterests);
 app.use('/feed', routerFeed);
 app.use('/up',routerProfile);
 app.use('/user', routerAuthentication);
+app.use('/other',routerOther)
 
 app.get('/', (req, res) => {
   res.send('Hello, 9lewi');
