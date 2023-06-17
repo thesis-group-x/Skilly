@@ -16,18 +16,29 @@ const prisma = new PrismaClient();
 
 //---------------------------------------------------------creation of gig
 
-
 export const createPost = async (req: Request, res: Response): Promise<void> => {
+<<<<<<< HEAD
+  const { price, title, userId, description, skill, image } = req.body;
+
+=======
   const { price, title, description, skill, image } = req.body;
 const userId=3
 console.log(req.body)
+>>>>>>> c251bb8c064869d615d22b55eacc3b028b9eee0e
   try {
-    const result = await cloudinary.uploader.upload(image, { upload_preset: 'kusldcry' });
+    if (!Array.isArray(image)) {
+      // Handle the case when images are not provided or not an array
+      res.status(400).json({ error: 'Invalid images data' });
+      return;
+    }
+
+    // Use the provided image URLs directly
+    const imageUrls = image;
 
     const post = await prisma.postM.create({
       data: {
         price,
-        image: result.secure_url,
+        image: { set: imageUrls }, 
         title,
         description,
         skill,
@@ -35,12 +46,26 @@ console.log(req.body)
       },
     });
 
-    res.json(post);
+    // Extra 20 points
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        points: {
+          increment: 20,
+        },
+      },
+    });
+
+    res.json({ post, user: updatedUser });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Error creating post' });
   }
 };
+
+
 
 
 //---------------------------------------------------------feed gigs
@@ -126,7 +151,19 @@ export const createReview = async (req: Request, res: Response): Promise<void> =
           userId,
         },
       });
-      res.json(review);
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          points: {
+            increment: 5,
+          },
+        },
+      });
+  
+  
+      res.json({review,user: updatedUser });
     } catch (error) {
       res.status(500).json({ error: 'Error creating review' });
     }

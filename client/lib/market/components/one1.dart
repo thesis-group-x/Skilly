@@ -1,11 +1,10 @@
 import 'package:client/market/components/products.dart';
+import 'package:client/market/components/reviews1.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'api.dart';
-
-import 'reviews.dart';
 
 class Details1 extends StatefulWidget {
   final Productsi product;
@@ -71,8 +70,8 @@ class _Details1State extends State<Details1> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Reviews(
-                            review: Div(
+                          builder: (context) => Reviews1(
+                            review: Div1(
                               comment: '',
                               rating: finalRating,
                               postId: widget.product.id,
@@ -210,14 +209,24 @@ class _Details1State extends State<Details1> {
     return Container(
       padding: EdgeInsets.only(left: 10, right: 10),
       height: 250.0,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10.0),
-        child: Image.network(
-          widget.product.image,
-          height: 250.0,
-          width: 300 - 40.0,
-          fit: BoxFit.cover,
-        ),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: widget.product.images.length,
+        itemBuilder: (BuildContext context, int index) {
+          final imageUrl = widget.product.images[index];
+          return Container(
+            margin: EdgeInsets.only(right: 10),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.network(
+                imageUrl,
+                height: 250.0,
+                width: 300 - 40.0,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -230,8 +239,8 @@ class _Details1State extends State<Details1> {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        List<Review> reviews = List<Review>.from(
-          data.map((review) => Review.fromJson(review)),
+        List<Reviewi> reviews = List<Reviewi>.from(
+          data.map((review) => Reviewi.fromJson(review)),
         );
 
         setState(() {
@@ -245,7 +254,7 @@ class _Details1State extends State<Details1> {
     }
   }
 
-  int calculateFinalRating(List<Review> reviews) {
+  int calculateFinalRating(List<Reviewi> reviews) {
     if (reviews.isEmpty) {
       return 0;
     }
@@ -260,20 +269,20 @@ class _Details1State extends State<Details1> {
   }
 }
 
-class Review {
+class Reviewi {
   late final String comment;
   late final int rating;
   final int userId;
   final int postId;
 
-  Review(
+  Reviewi(
       {required this.comment,
       required this.rating,
       required this.postId,
       required this.userId});
 
-  factory Review.fromJson(Map<String, dynamic> json) {
-    return Review(
+  factory Reviewi.fromJson(Map<String, dynamic> json) {
+    return Reviewi(
       comment: json['comment'],
       rating: json['rating'],
       postId: json['postId'],

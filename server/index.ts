@@ -4,7 +4,8 @@ import pgPromise from 'pg-promise';
 import routerMarket from './routes/market';
 import routerInterests from './routes/interests'
 import routerFeed from './routes/feed';
-
+import routerBuy from './routes/buy'
+import routerStripe from './routes/points'
 import routerAuthentication from './routes/authenticaion';
 import routerfc from './routes/feedComments';
 import cors from 'cors';
@@ -30,6 +31,8 @@ app.use(express.json());
 app.use(cors()); 
 app.use('/feedCom', routerfc)
 app.use('/Market', routerMarket);
+app.use('/Market',routerBuy)//buying 
+app.use('/stripe',routerStripe)//points
 app.use('/api', routerInterests);
 app.use('/feed', routerFeed);
 app.use('/up',routerProfile);

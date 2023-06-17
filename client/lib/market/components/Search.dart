@@ -1,3 +1,4 @@
+import 'package:client/market/components/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -8,6 +9,14 @@ class HeaderWithSearchBox extends StatelessWidget {
   }) : super(key: key);
 
   final Size size;
+
+  // void navigateToHomeScreen(BuildContext context) {
+  //   Navigator.pushAndRemoveUntil(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => PacksListWidget()),
+  //     (route) => false,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +48,12 @@ class HeaderWithSearchBox extends StatelessWidget {
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
                 Spacer(),
-                Image.asset("assets/images/logo.png")
+                GestureDetector(
+                  // onTap: () {
+                  //   navigateToHomeScreen(context);
+                  // },
+                  child: Image.asset("assets/images/logo.png"),
+                ),
               ],
             ),
           ),

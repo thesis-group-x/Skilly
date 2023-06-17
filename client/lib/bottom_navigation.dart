@@ -3,6 +3,7 @@ import 'feed/feed.dart';
 import './market/market.dart';
 import 'market/components/create.dart';
 // import 'feed/create_feed.dart';
+import 'market/components/payment.dart';
 import 'user-profile.dart';
 import 'package:client/chat pages/home.dart';
 
@@ -90,7 +91,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
               widget.onTabSelected(3);
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => UserProfilePage()),
+                MaterialPageRoute(builder: (context) => PacksListWidget()),
                 (route) => false,
               );
             },

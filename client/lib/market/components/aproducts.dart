@@ -23,10 +23,11 @@ class _AproductsState extends State<Aproducts> {
     fetchData();
   }
 
-//getting data of the post
+  // Getting data of the post
   Future<void> fetchData() async {
     final response =
         await http.get(Uri.parse('http://${localhost}:3001/Market/posts'));
+    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       setState(() {
@@ -40,12 +41,11 @@ class _AproductsState extends State<Aproducts> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal, //scroll horiz
-      //widget of the product
+      scrollDirection: Axis.horizontal, // Scroll horizontally
       child: Row(
         children: products.map((product) {
           return FeaturePlantCard(
-            image: product.image,
+            image: product.image[0], // Display the first image
             press: () {
               Navigator.push(
                 context,
@@ -98,7 +98,7 @@ class FeaturePlantCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           image: DecorationImage(
             fit: BoxFit.cover,
-            image: NetworkImage(image),
+            image: NetworkImage(image), // Display the first image
           ),
         ),
         child: Column(
@@ -158,31 +158,33 @@ const kDefaultPadding = 20.0;
 
 class Product {
   final int id;
-  final String image;
+  final List<String> image; // Array of images
   final String title;
   final String description;
   final String skill;
   final double price;
   final int userId;
 
-  Product(
-      {required this.id,
-      required this.image,
-      required this.title,
-      required this.description,
-      required this.skill,
-      required this.price,
-      required this.userId});
+  Product({
+    required this.id,
+    required this.image,
+    required this.title,
+    required this.description,
+    required this.skill,
+    required this.price,
+    required this.userId,
+  });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-        id: json['id'],
-        image: json['image'],
-        title: json['title'],
-        description: json['description'],
-        skill: json['skill'],
-        price: json['price'].toDouble(),
-        userId: json['userId']);
+      id: json['id'],
+      image: List<String>.from(json['image']),
+      title: json['title'],
+      description: json['description'],
+      skill: json['skill'],
+      price: json['price'].toDouble(),
+      userId: json['userId'],
+    );
   }
 }
 
