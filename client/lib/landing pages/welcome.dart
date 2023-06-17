@@ -18,7 +18,7 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void startTimer() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 4));
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const SecondPage()),
@@ -32,7 +32,7 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/images/skilly2.png'),
+            Image.asset('assets/images/skilly1.png'),
             const SizedBox(height: 20.0),
             const CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF284855)),

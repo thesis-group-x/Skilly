@@ -8,6 +8,12 @@ import '../models/post.dart';
 import '../services/post_service.dart';
 import '../../market/market.dart';
 import '../../bottom_navigation.dart';
+import 'search.dart';
+import 'categories/web.dart';
+import 'categories/des.dart';
+import 'categories/gaming.dart';
+import 'categories/art.dart';
+import 'report.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   bool isLoading = false;
   bool isSocialMediaVisible = false;
   Map<int, bool> likedPosts = {};
+  bool isDarkModeEnabled = false;
 
   @override
   void initState() {
@@ -98,20 +105,35 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void navigateToSearchPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SearchPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(244, 243, 243, 1),
+      backgroundColor: isDarkModeEnabled
+          ? const Color.fromARGB(255, 40, 40, 40)
+          : const Color.fromRGBO(244, 243, 243, 1),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.menu,
-            color: Colors.black87,
-          ),
-          onPressed: () {},
+        leading: Switch(
+          value: isDarkModeEnabled,
+          onChanged: (value) {
+            setState(() {
+              isDarkModeEnabled = value;
+            });
+          },
+          activeColor: isDarkModeEnabled
+              ? Colors.white
+              : Color.fromARGB(255, 23, 23, 23),
         ),
+        backgroundColor: isDarkModeEnabled
+            ? const Color.fromARGB(255, 40, 40, 40)
+            : const Color.fromRGBO(244, 243, 243, 1),
+        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(
@@ -122,16 +144,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        title: const Text(
-          'Skilly',
-          style: TextStyle(
-            color: Color(0xFF284855),
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-          ),
+        title: Image.asset(
+          'assets/images/skilly1.png',
+          height: 150,
         ),
         centerTitle: true,
-       
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -140,8 +157,10 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               Container(
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: isDarkModeEnabled
+                      ? const Color.fromARGB(255, 40, 40, 40)
+                      : const Color.fromRGBO(244, 243, 243, 1),
                   borderRadius:
                       BorderRadius.vertical(bottom: Radius.circular(30)),
                 ),
@@ -153,19 +172,33 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: const Color.fromRGBO(244, 243, 243, 1),
+                        color: isDarkModeEnabled
+                            ? Colors.white
+                            : Color.fromARGB(255, 23, 23, 23),
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: const TextField(
+                      child: TextField(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SearchPage()),
+                          );
+                        },
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           prefixIcon: Icon(
                             Icons.search,
-                            color: Colors.black87,
+                            color: isDarkModeEnabled
+                                ? Color.fromARGB(255, 23, 23, 23)
+                                : Colors.white,
                           ),
                           hintText: "Search you're looking for",
-                          hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 15),
+                          hintStyle: TextStyle(
+                              color: isDarkModeEnabled
+                                  ? Color.fromARGB(255, 23, 23, 23)
+                                  : Colors.white,
+                              fontSize: 15),
                         ),
                       ),
                     ),
@@ -179,10 +212,14 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    const Text(
+                    Text(
                       'Popular',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: isDarkModeEnabled
+                              ? Colors.white
+                              : Color(0xFF284855),
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 15),
                     Container(
@@ -191,11 +228,49 @@ class _HomePageState extends State<HomePage> {
                         scrollDirection: Axis.horizontal,
                         children: <Widget>[
                           promoCard(
-                              'assets/images/webD.jpg', 'Web Development'),
+                            'assets/images/webD.jpg',
+                            'Web Development',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => WebPage()),
+                              );
+                            },
+                          ),
                           promoCard(
-                              'assets/images/GraphicD.jpg', 'Graphic Design'),
-                          promoCard('assets/images/gaming.png', 'Gaming'),
-                          promoCard('assets/images/webD.jpg', 'Web Dev'),
+                            'assets/images/GraphicD.jpg',
+                            'Graphic Design',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DesPage()),
+                              );
+                            },
+                          ),
+                          promoCard(
+                            'assets/images/gaming.png',
+                            'Gaming',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GamingPage()),
+                              );
+                            },
+                          ),
+                          promoCard(
+                            'assets/images/art1.jpg',
+                            'ArtWorks',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ArtPage()),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -252,10 +327,14 @@ class _HomePageState extends State<HomePage> {
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'Explore',
                                 style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
+                                    color: isDarkModeEnabled
+                                        ? Colors.white
+                                        : Color(0xFF284855),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 15),
                               ListView.builder(
@@ -319,8 +398,60 @@ class _HomePageState extends State<HomePage> {
                                               child: IconButton(
                                                 icon:
                                                     const Icon(Icons.more_vert),
+                                                color: Colors.white,
                                                 onPressed: () {
-                                                  print('Clicked');
+                                                  showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: const Text(
+                                                            'Options'),
+                                                        content: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                // Handle "Not Interested" option
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                                print(
+                                                                    'Not Interested');
+                                                              },
+                                                              child: const Text(
+                                                                  'Not Interested'),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return ReportDialog(
+                                                                      onSend:
+                                                                          (selectedOptions) {
+                                                                        print(
+                                                                            selectedOptions);
+                                                                      },
+                                                                    );
+                                                                  },
+                                                                );
+                                                              },
+                                                              child: const Text(
+                                                                  'Report'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
                                                 },
                                               ),
                                             ),
@@ -353,6 +484,13 @@ class _HomePageState extends State<HomePage> {
                                                       ),
                                                     ),
                                                     const SizedBox(height: 10),
+                                                    Text(
+                                                      'Skill: ${posts[index].skill}',
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
                                                     Row(
                                                       children: [
                                                         IconButton(
@@ -464,42 +602,45 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-       bottomNavigationBar: CustomBottomNavigation(
-          currentIndex: 0,
-          onTabSelected: (index) {
-            // Add your logic here based on the selected index
-          },
-        ),
+      bottomNavigationBar: CustomBottomNavigation(
+        currentIndex: 0,
+        onTabSelected: (index) {
+          // Add your logic here based on the selected index
+        },
+      ),
     );
   }
 
-  Widget promoCard(image, label) {
+  Widget promoCard(image, label, {VoidCallback? onTap}) {
     return AspectRatio(
       aspectRatio: 2.62 / 3,
-      child: Container(
-        margin: const EdgeInsets.only(right: 15.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          image: DecorationImage(fit: BoxFit.cover, image: AssetImage(image)),
-        ),
+      child: GestureDetector(
+        onTap: onTap,
         child: Container(
+          margin: const EdgeInsets.only(right: 15.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(begin: Alignment.bottomRight, colors: [
-              Colors.black.withOpacity(.8),
-              Colors.black.withOpacity(.2),
-            ]),
+            image: DecorationImage(fit: BoxFit.cover, image: AssetImage(image)),
           ),
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(begin: Alignment.bottomRight, colors: [
+                Colors.black.withOpacity(.8),
+                Colors.black.withOpacity(.2),
+              ]),
+            ),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
