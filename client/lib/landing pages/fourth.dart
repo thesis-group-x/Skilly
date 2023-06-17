@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../Signup_page.dart';
+import 'package:lottie/lottie.dart';
 
 class FourthPage extends StatelessWidget {
   const FourthPage({Key? key}) : super(key: key);
@@ -13,10 +14,18 @@ class FourthPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/images/chat.png'),
-            const SizedBox(height: 20.0),
+             SizedBox(
+              width: 200,  
+              height: 200, 
+              child: Lottie.network(
+                'https://lottie.host/6f36ceea-4e63-4bd7-972a-b81a56a3996f/o5nBfYUWp8.json',
+                repeat: true,
+                reverse: true,
+                animate: true,
+              ),
+            ),
             const Text(
-              "Connect with Like-Minded Individuals: Let's Forge Meaningful Connections on Skilly!",
+              "Connect with Like-Minded Individuals! \n Let's Forge Meaningful Connections on Skilly!",
               style: TextStyle(
                 fontSize: 20.0,
               ),
@@ -35,20 +44,8 @@ class FourthPage extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF284855),
-                  ),
-                  child: const Text('Skip'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignUpPage()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
                     primary:
-                        const Color(0xFF284855), // Change button color here
+                        const Color(0xFF284855), 
                   ),
                   child: const Text('Next'),
                 ),
@@ -61,7 +58,7 @@ class FourthPage extends StatelessWidget {
               children: [
                 CircleAvatar(
                   backgroundColor:
-                      const Color(0xFF284855), // Change circle color here
+                      const Color(0xFF284855),
                   radius: 6.0,
                 ),
                 SizedBox(width: 5.0),

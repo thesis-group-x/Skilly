@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'fourth.dart';
 
 class ThirdPage extends StatelessWidget {
@@ -13,10 +14,19 @@ class ThirdPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/images/market2.png'),
+            SizedBox(
+           width: 400,
+              height: 400,
+              child: Lottie.network(
+                'https://lottie.host/21613352-eff0-427d-bc3c-03fed0858263/mEssrnpS3W.json',
+                repeat: true,
+                reverse: true,
+                animate: true,
+              ),
+            ),
             const SizedBox(height: 20.0),
             const Text(
-              "Monetize Your Skills: Enter Skilly's Thriving Marketplace!",
+              "Monetize Your Skills ! \n Enter Skilly's Thriving Marketplace",
               style: TextStyle(
                 fontSize: 20.0,
               ),
@@ -29,22 +39,13 @@ class ThirdPage extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: const Color(0xFF284855), 
-                  ),
-                  child: const Text('Skip'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const FourthPage()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: const Color(0xFF284855), // Change button color here
+                    primary: const Color(0xFF284855), 
                   ),
                   child: const Text('Next'),
                 ),

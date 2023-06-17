@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'third.dart';
 
 class SecondPage extends StatelessWidget {
@@ -13,10 +14,19 @@ class SecondPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/images/feed2.png'),
+            SizedBox(
+              width: 500,  
+              height: 500, 
+              child: Lottie.network(
+                'https://lottie.host/3b52bb60-aa99-455b-96d6-e7d8691e8b2e/fpz3FXUTpu.json',
+                repeat: true,
+                reverse: true,
+                animate: true,
+              ),
+            ),
             const SizedBox(height: 20.0),
             const Text(
-              "Ignite Your Inspiration: Explore Skilly's Dynamic Feed!",
+              "Ignite Your Inspiration \n Explore Skilly's Dynamic Feed!",
               style: TextStyle(
                 fontSize: 20.0,
               ),

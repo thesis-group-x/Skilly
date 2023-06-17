@@ -19,7 +19,7 @@ const prisma = new PrismaClient();
 
 export const createPost = async (req: Request, res: Response): Promise<void> => {
   const { price, title, description, skill, image } = req.body;
-const userId=1
+const userId=3
 console.log(req.body)
   try {
     const result = await cloudinary.uploader.upload(image, { upload_preset: 'kusldcry' });

@@ -261,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                             },
                           ),
                           promoCard(
-                            'assets/images/webD.jpg',
+                            'assets/images/art1.jpg',
                             'ArtWorks',
                             onTap: () {
                               Navigator.push(

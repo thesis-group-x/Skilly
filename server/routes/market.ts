@@ -19,7 +19,7 @@ router.post('/posts', createPost);
 router.put('/posts/:id', updatePost);
 router.get('/posts/search', searchPostsBySkill);
 router.post('/reviews', createReview);
-router.get('/reviews/:id', getReviews);
+router.get('/reviews', getReviews);
 router.put('/reviews/:id', updateReview);
 router.delete('/reviews/:id', deleteReview);
 router.delete('/posts/:id', deletePost);
