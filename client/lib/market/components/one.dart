@@ -42,7 +42,10 @@ class _DetailsState extends State<Details> {
       body: ListView(
         children: <Widget>[
           SizedBox(height: 10.0),
-          buildSlider(),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal, // Scroll horizontally
+            child: buildSlider(),
+          ),
           SizedBox(height: 20),
           ListView(
             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -211,11 +214,17 @@ class _DetailsState extends State<Details> {
       height: 250.0,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10.0),
-        child: Image.network(
-          widget.product.image,
-          height: 250.0,
-          width: 300 - 40.0,
-          fit: BoxFit.cover,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: widget.product.image.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Image.network(
+              widget.product.image[index],
+              height: 250.0,
+              width: 300 - 40.0,
+              fit: BoxFit.cover,
+            );
+          },
         ),
       ),
     );

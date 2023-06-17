@@ -16,17 +16,18 @@ const prisma = new PrismaClient();
 
 //---------------------------------------------------------creation of gig
 
-
 export const createPost = async (req: Request, res: Response): Promise<void> => {
-  const { price, title, userId, description, skill, images } = req.body;
+  const { price, title, userId, description, skill, image } = req.body;
 
   try {
-    const uploadPromises = images.map((image: string) => {
-      return cloudinary.uploader.upload(image, { upload_preset: 'kusldcry' });
-    });
+    if (!Array.isArray(image)) {
+      // Handle the case when images are not provided or not an array
+      res.status(400).json({ error: 'Invalid images data' });
+      return;
+    }
 
-    const uploadedImages = await Promise.all(uploadPromises);
-    const imageUrls = uploadedImages.map((result: any) => result.secure_url);
+    // Use the provided image URLs directly
+    const imageUrls = image;
 
     const post = await prisma.postM.create({
       data: {
@@ -57,6 +58,7 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ error: 'Error creating post' });
   }
 };
+
 
 
 

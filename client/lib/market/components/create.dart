@@ -20,21 +20,21 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _skillController = TextEditingController();
 
-  File? _image;
+  List<File> _images = [];
 
-  Future<void> _getImage(ImageSource source) async {
+  Future<void> _getImages() async {
     final imagePicker = ImagePicker();
-    final pickedImage = await imagePicker.getImage(source: source);
 
-    if (pickedImage != null) {
-      setState(() {
-        _image = File(pickedImage.path);
-      });
-    }
+    List<XFile>? pickedImages = await imagePicker.pickMultiImage();
+
+    setState(() {
+      _images =
+          pickedImages.map((pickedImage) => File(pickedImage.path)).toList();
+    });
   }
 
   Future<void> _createPost() async {
-    if (_image == null) {
+    if (_images.isEmpty) {
       return;
     }
 
@@ -42,14 +42,19 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     final cloudinaryPreset = 'kusldcry';
 
     final dio = Dio();
-    final formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(_image!.path),
-      'upload_preset': cloudinaryPreset,
-    });
+    List<String> imageUrls = [];
 
     try {
-      final response = await dio.post(cloudinaryUrl, data: formData);
-      final imageUrl = response.data['secure_url'];
+      for (var imageFile in _images) {
+        final formData = FormData.fromMap({
+          'file': await MultipartFile.fromFile(imageFile.path),
+          'upload_preset': cloudinaryPreset,
+        });
+
+        final response = await dio.post(cloudinaryUrl, data: formData);
+        final imageUrl = response.data['secure_url'];
+        imageUrls.add(imageUrl);
+      }
 
       final postUrl = Uri.parse('http://${localhost}:3001/Market/posts');
       final data = {
@@ -57,10 +62,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         'title': _titleController.text,
         'description': _descriptionController.text,
         'skill': _skillController.text,
-        'userId': int.parse('2'),
-        'image': imageUrl,
+        'userId': int.parse('1'),
+        'image': imageUrls,
       };
-
+      print(data);
       final postResponse = await http.post(
         postUrl,
         headers: {'Content-Type': 'application/json'},
@@ -74,7 +79,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         print('Error creating post: ${postResponse.statusCode}');
       }
     } catch (error) {
-      print('Error uploading image: $error');
+      print('Error uploading images: $error');
     }
   }
 
@@ -118,15 +123,26 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             ),
             SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => _getImage(ImageSource.camera),
-              child: Text('Take Photo'),
-            ),
-            ElevatedButton(
-              onPressed: () => _getImage(ImageSource.gallery),
-              child: Text('Choose from Gallery'),
+              onPressed: _getImages,
+              child: Text('Select Photos'),
             ),
             SizedBox(height: 16),
-            if (_image != null) Image.file(_image!),
+            if (_images.isNotEmpty)
+              SizedBox(
+                height: 250.0,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _images.length,
+                  itemBuilder: (context, index) {
+                    return Image.file(
+                      _images[index],
+                      height: 250.0,
+                      width: 300 - 40.0,
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
+              ),
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: _createPost,

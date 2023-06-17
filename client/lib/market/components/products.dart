@@ -14,7 +14,7 @@ class Products extends StatefulWidget {
 
 class _ProductsState extends State<Products> {
   // States
-  List<Map<String, dynamic>> products = [];
+  List<Productsi> products = [];
   bool isLoading = true;
   String errorMessage = '';
 
@@ -31,25 +31,10 @@ class _ProductsState extends State<Products> {
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         if (jsonData is List) {
-          List<Map<String, dynamic>> productList = [];
+          List<Productsi> productList = [];
           for (var item in jsonData) {
-            int id = item['id'];
-            String image = item['image'];
-            String title = item['title'];
-            int price = item['price'];
-            String skill = item['skill'];
-            int userId = item['userId'];
-            String description = item['description'];
-            Map<String, dynamic> productData = {
-              'id': id,
-              'image': image,
-              'title': title,
-              'price': price,
-              'skill': skill,
-              'userId': userId,
-              'description': description,
-            };
-            productList.add(productData);
+            Productsi product = Productsi.fromJson(item);
+            productList.add(product);
           }
           setState(() {
             products = productList;
@@ -95,7 +80,7 @@ class _ProductsState extends State<Products> {
 }
 
 class HorizontalProductItem extends StatelessWidget {
-  final Map<String, dynamic> product;
+  final Productsi product;
 
   HorizontalProductItem({required this.product});
 
@@ -104,6 +89,14 @@ class HorizontalProductItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(right: 10.0, left: 20.0, top: 10),
       child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Details1(product: product),
+            ),
+          );
+        },
         child: Container(
           height: 230.0,
           width: 140.0,
@@ -111,33 +104,11 @@ class HorizontalProductItem extends StatelessWidget {
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: GestureDetector(
-                  onTap: () {
-                    Productsi productObject = Productsi(
-                      id: product['id'],
-                      image: product['image'],
-                      title: product['title'],
-                      description: product['description'],
-                      skill: product['skill'],
-                      price: product['price'] != null
-                          ? product['price'].toDouble()
-                          : 0.0,
-                      userId: product['userId'],
-                    );
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Details1(product: productObject),
-                      ),
-                    );
-                  },
-                  child: Image.network(
-                    product["image"],
-                    height: 160.0,
-                    width: 180.0,
-                    fit: BoxFit.cover,
-                  ),
+                child: Image.network(
+                  product.images[0], // Display the first image in the list
+                  height: 160.0,
+                  width: 180.0,
+                  fit: BoxFit.cover,
                 ),
               ),
               SizedBox(height: 7.0),
@@ -147,7 +118,7 @@ class HorizontalProductItem extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        "\$${product["price"]}",
+                        "\$${product.price}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15.0,
@@ -158,7 +129,7 @@ class HorizontalProductItem extends StatelessWidget {
                     SizedBox(width: 5.0),
                     Flexible(
                       child: Text(
-                        product["title"],
+                        product.title,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15.0,
@@ -175,7 +146,7 @@ class HorizontalProductItem extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  product["skill"].toUpperCase(),
+                  product.skill.toUpperCase(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 13.0,
@@ -195,30 +166,34 @@ class HorizontalProductItem extends StatelessWidget {
 
 class Productsi {
   final int id;
-  final String image;
+  final List<String> images;
   final String title;
   final String description;
   final String skill;
   final double price;
   final int userId;
 
-  Productsi(
-      {required this.id,
-      required this.image,
-      required this.title,
-      required this.description,
-      required this.skill,
-      required this.price,
-      required this.userId});
+  Productsi({
+    required this.id,
+    required this.images,
+    required this.title,
+    required this.description,
+    required this.skill,
+    required this.price,
+    required this.userId,
+  });
 
   factory Productsi.fromJson(Map<String, dynamic> json) {
+    List<String> imageList =
+        (json['image'] as List<dynamic>).map((e) => e.toString()).toList();
     return Productsi(
-        id: json['id'],
-        image: json['image'],
-        title: json['title'],
-        description: json['description'],
-        skill: json['skill'],
-        price: json['price'].toDouble(),
-        userId: json['userId']);
+      id: json['id'],
+      images: imageList,
+      title: json['title'],
+      description: json['description'],
+      skill: json['skill'],
+      price: json['price'].toDouble(),
+      userId: json['userId'],
+    );
   }
 }

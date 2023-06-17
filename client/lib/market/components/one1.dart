@@ -209,14 +209,24 @@ class _Details1State extends State<Details1> {
     return Container(
       padding: EdgeInsets.only(left: 10, right: 10),
       height: 250.0,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10.0),
-        child: Image.network(
-          widget.product.image,
-          height: 250.0,
-          width: 300 - 40.0,
-          fit: BoxFit.cover,
-        ),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: widget.product.images.length,
+        itemBuilder: (BuildContext context, int index) {
+          final imageUrl = widget.product.images[index];
+          return Container(
+            margin: EdgeInsets.only(right: 10),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.network(
+                imageUrl,
+                height: 250.0,
+                width: 300 - 40.0,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
