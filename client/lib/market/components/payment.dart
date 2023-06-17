@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -73,7 +72,6 @@ class _PacksListWidgetState extends State<PacksListWidget> {
           ),
           onPressed: () {},
         ),
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
         title: const Text(
           'Packs',
           style: TextStyle(
@@ -119,7 +117,7 @@ class _PacksListWidgetState extends State<PacksListWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     const Text(
-                      'Popular',
+                      'Packs',
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
@@ -131,18 +129,23 @@ class _PacksListWidgetState extends State<PacksListWidget> {
                           : ListView(
                               scrollDirection: Axis.horizontal,
                               children: [
-                                for (int i = 0; i < packs.length; i++)
+                                for (int i = 0; i < 2; i++)
                                   Padding(
                                     padding: EdgeInsets.only(
                                         right:
                                             i == packs.length - 1 ? 0.0 : 5.0),
                                     child: SizedBox(
-                                      width: 160,
+                                      width: 180,
                                       child: promoCard(i, packs[i]),
                                     ),
                                   ),
                               ],
                             ),
+                    ),
+                    const Text(
+                      'Golden',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 20),
                     GestureDetector(
@@ -191,6 +194,27 @@ class _PacksListWidgetState extends State<PacksListWidget> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 15),
+                    Container(
+                      height: 200,
+                      child: packs.isEmpty
+                          ? const Text('No packs available')
+                          : ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                for (int i = 2; packs.length > i; i++)
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        right:
+                                            i == packs.length - 1 ? 0.0 : 5.0),
+                                    child: SizedBox(
+                                      width: 160,
+                                      child: promoCard(i, packs[i]),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                    ),
                   ],
                 ),
               ),
@@ -204,7 +228,7 @@ class _PacksListWidgetState extends State<PacksListWidget> {
   Widget promoCard(int index, Pack pack) {
     return Container(
       margin: const EdgeInsets.only(right: 10.0),
-      width: 160,
+      width: 180,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
         image: DecorationImage(
