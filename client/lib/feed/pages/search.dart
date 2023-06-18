@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import '../feed.dart';
 import '../models/post.dart';
 import '../services/post_service.dart';
@@ -38,6 +39,63 @@ class _SearchPageState extends State<SearchPage> {
       context,
       MaterialPageRoute(builder: (context) => PostDetailsPage(post: post)),
     );
+  }
+
+  Widget _buildSearchResults() {
+    if (_searchResults.isEmpty && _searchController.text.isNotEmpty) {
+      // If search is performed and no results are found
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('No results found.'),
+            SizedBox(height: 20),
+            Lottie.network(
+              'https://lottie.host/3dbd1c3c-021b-4c41-8c6f-59cf1806e7e6/sjgGmohXSV.json',
+              width: 200,
+              height: 200,
+            ),
+          ],
+        ),
+      );
+    } else {
+      // If there are search results or no search is performed
+      return ListView.builder(
+        itemCount: _searchResults.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {
+              navigateToPost(_searchResults[index]);
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _searchResults[index].title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    _searchResults[index].skill,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -88,50 +146,5 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: _buildSearchResults(),
     );
-  }
-
-  Widget _buildSearchResults() {
-    if (_searchResults.isEmpty) {
-      return Center(
-        child: Text('No results found.'),
-      );
-    } else {
-      return ListView.builder(
-        itemCount: _searchResults.length,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {
-              navigateToPost(_searchResults[index]); // Navigate to post details page
-            },
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _searchResults[index].title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    _searchResults[index].skill,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  // Add any additional information or widgets you want to display
-                ],
-              ),
-            ),
-          );
-        },
-      );
-    }
   }
 }
