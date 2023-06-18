@@ -1,11 +1,14 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:client/market/components/payment/payment.dart';
-import 'package:client/market/components/payment/succ.dart';
-
+// import 'package:client/market/components/payment/succ.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 import 'animation.dart';
+import 'succ.dart';
 
 class PaymentPage extends StatefulWidget {
   final Pack pack;
@@ -25,6 +28,15 @@ class _PaymentPageState extends State<PaymentPage> {
   bool _isLoading = false;
   // ignore: unused_field
   late Timer _timer;
+  // ignore: unused_field
+  int _counter = 0;
+  void _incrementCounter() {
+    setState(() {
+      Stripe.publishableKey =
+          'pk_test_51NJi2oFuE67mowKS98uhEQ3BmNa6FLxQLoGeVaFmGOYnzTqqD9TvGeE3zg00qbE8d3aJlBzMerK47fc4ZkO6HWRb00NGxnL4o9';
+      _counter++;
+    });
+  }
 
   pay() {
     setState(() {
@@ -38,13 +50,82 @@ class _PaymentPageState extends State<PaymentPage> {
         setState(() {
           _isLoading = false;
           timer.cancel();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => PaymentSuccess()));
+          makepayment('100', "USD");
         });
       },
     );
   }
 
+  Map<String, dynamic>? paymentIntentData;
+  Future<void> makepayment(String amount, String currency) async {
+    try {
+      paymentIntentData = await createPaymentIntent(amount, currency);
+      print(paymentIntentData);
+      if (paymentIntentData != null) {
+        await Stripe.instance.initPaymentSheet(
+            paymentSheetParameters: SetupPaymentSheetParameters(
+                googlePay: PaymentSheetGooglePay(merchantCountryCode: 'IN'),
+                merchantDisplayName: "Prospects",
+                customerId: paymentIntentData!['customer'],
+                paymentIntentClientSecret: paymentIntentData!['client_secret'],
+                customerEphemeralKeySecret:
+                    paymentIntentData!['ephemeralkey']));
+        displayPaymentSheet();
+      }
+    } catch (e, s) {
+      print("EXCEPTION ===$e$s");
+    }
+  }
+
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': calculateAmount(amount),
+        'currency': currency,
+        'payment_method_types[]': 'card'
+      };
+      var response = await http.post(
+          Uri.parse("https://api.stripe.com/v1/payment_intents"),
+          body: body,
+          headers: {
+            'Authorization':
+                "Bearer sk_test_51NJi2oFuE67mowKSlRn8ryRmofwMCCUNHzSCstl2wYXQJ0lKN5ocL33v1saQtHK3j1Oncv4Bx3h95LT8PZ7UD3ME00HvxiYhq2",
+            'Content-Type': 'application/x-www-form-urlencoded'
+          });
+      print(response);
+      return jsonDecode(response.body);
+    } catch (err) {
+      print("err charging user $err");
+    }
+  }
+
+  void displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      Get.snackbar("Payment info", "Payment successful");
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              PaymentSuccess(), // Replace with your desired page
+        ),
+      );
+    } on Exception catch (e) {
+      if (e is StripeException) {
+        print("error from stripe $e");
+      } else {
+        print("Unforeseen error $e");
+      }
+    } catch (e) {
+      print("exception===$e");
+    }
+  }
+
+  calculateAmount(String amount) {
+    return amount;
+  }
+
+//payment styling
   @override
   Widget build(BuildContext context) {
     return Scaffold(
