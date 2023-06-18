@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'second.dart';
+import 'terms.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class _LandingPageState extends State<LandingPage> {
     await Future.delayed(const Duration(seconds: 4));
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const SecondPage()),
+      MaterialPageRoute(builder: (context) => const TermsPage()),
     );
   }
 

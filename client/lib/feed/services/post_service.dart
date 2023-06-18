@@ -1,8 +1,9 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import 'package:client/feed/services/user_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:client/feed/models/user.dart' as UserModel;
 import '../models/post.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -97,33 +98,30 @@ static Future<List<Post>> getPostsBySkill(String skill) async {
   }
 }
 
-  static Future<Post> createPost(String image, String title, String skill, String desc, String userId) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      throw Exception('User not authenticated');
-    }
+ static Future<Post> createPost(String image, String title, String skill, String desc) async {
+  final UserModel.User user = await UserService.fetchUserByFirebaseUid();
 
-    final postData = {
-      'image': image,
-      'title': title,
-      'skill': skill,
-      'desc': desc,
-      'userId': user.uid,
-    };
+  final postData = {
+    'image': image,
+    'title': title,
+    'skill': skill,
+    'desc': desc,
+    'userId': user.id,  
+  };
 
-    final response = await http.post(
-      Uri.parse('http://10.0.2.2:3001/feed/post'),
-      body: jsonEncode(postData),
-      headers: {'Content-Type': 'application/json'},
-    );
+  final response = await http.post(
+    Uri.parse('http://10.0.2.2:3001/feed/post'),
+    body: jsonEncode(postData),
+    headers: {'Content-Type': 'application/json'},
+  );
 
-    if (response.statusCode == 201) {
-      final jsonData = jsonDecode(response.body);
-      return Post.fromJson(jsonData);
-    } else {
-      throw Exception('Failed to create post');
-    }
+  if (response.statusCode == 201) {
+    final jsonData = jsonDecode(response.body);
+    return Post.fromJson(jsonData);
+  } else {
+    throw Exception('Failed to create post');
   }
+}
 
    static Future<List<Post>> getPostsBySkillOrTitle(String searchQuery) async {
     final response = await http.get(Uri.parse('http://10.0.2.2:3001/feed?search=$searchQuery'));

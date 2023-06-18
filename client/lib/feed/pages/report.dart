@@ -55,7 +55,7 @@ class _ReportDialogState extends State<ReportDialog> {
           onPressed: () {
             Navigator.of(context).pop();
             widget.onSend(selectedOptions);
-            _showSuccessSnackBar(context); // Show success message
+            _showSuccessSnackBar(context); 
           },
           child: const Text('Send'),
           style: ButtonStyle(

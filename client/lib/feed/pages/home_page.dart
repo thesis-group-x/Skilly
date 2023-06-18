@@ -1,5 +1,5 @@
 // ignore_for_file: library_private_types_in_public_api, sized_box_for_whitespace, avoid_print, prefer_for_elements_to_map_fromiterable
-
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'post_details_age.dart';
@@ -250,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                             },
                           ),
                           promoCard(
-                            'assets/images/gaming.png',
+                            'assets/images/Gaming.jpg',
                             'Gaming',
                             onTap: () {
                               Navigator.push(
