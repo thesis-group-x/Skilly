@@ -79,6 +79,7 @@ export const purchasePoints = async (req: Request, res: Response): Promise<void>
       res.status(500).json({ error: 'Error purchasing points' });
     }
   };
+  //testing 
   export const getPack = async (req: Request, res: Response): Promise<void> => {
     const { packId } = req.params;
   

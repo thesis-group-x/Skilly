@@ -1,9 +1,10 @@
+import 'package:client/market/components/payment/stripe.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../market.dart';
-import 'api.dart';
+import '../../market.dart';
+import '../utils/api.dart';
 
 void main() {
   runApp(MyApp());
@@ -45,7 +46,7 @@ class _PacksListWidgetState extends State<PacksListWidget> {
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       final List<dynamic> packData = responseData['packs'];
-      print('eee');
+
       setState(() {
         packs = packData.map((data) => Pack.fromJson(data)).toList();
         isLoading = false;
@@ -147,6 +148,27 @@ class _PacksListWidgetState extends State<PacksListWidget> {
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
+                    const SizedBox(height: 15),
+                    Container(
+                      height: 200,
+                      child: packs.isEmpty
+                          ? const Text('No packs available')
+                          : ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                for (int i = 2; packs.length > i; i++)
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        right:
+                                            i == packs.length - 1 ? 0.0 : 5.0),
+                                    child: SizedBox(
+                                      width: 180,
+                                      child: promoCard(i, packs[i]),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                    ),
                     const SizedBox(height: 20),
                     GestureDetector(
                       onTap: () {
@@ -194,27 +216,6 @@ class _PacksListWidgetState extends State<PacksListWidget> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 15),
-                    Container(
-                      height: 200,
-                      child: packs.isEmpty
-                          ? const Text('No packs available')
-                          : ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: [
-                                for (int i = 2; packs.length > i; i++)
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        right:
-                                            i == packs.length - 1 ? 0.0 : 5.0),
-                                    child: SizedBox(
-                                      width: 160,
-                                      child: promoCard(i, packs[i]),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                    ),
                   ],
                 ),
               ),
@@ -231,9 +232,17 @@ class _PacksListWidgetState extends State<PacksListWidget> {
       width: 180,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: AssetImage("assets/images/GraphicD.jpg"),
+          image: AssetImage("assets/images/chat.png"),
         ),
       ),
       child: Container(
@@ -241,10 +250,11 @@ class _PacksListWidgetState extends State<PacksListWidget> {
           borderRadius: BorderRadius.circular(20.0),
           gradient: LinearGradient(
             begin: Alignment.bottomRight,
-            stops: const [0.1, 0.9],
+            end: Alignment.topLeft,
             colors: [
-              Colors.black.withOpacity(.8),
-              Colors.black.withOpacity(.1),
+              Colors.black.withOpacity(0.8),
+              Colors.black.withOpacity(0.4),
+              Colors.black.withOpacity(0.1),
             ],
           ),
         ),
@@ -258,23 +268,30 @@ class _PacksListWidgetState extends State<PacksListWidget> {
               children: [
                 Text(
                   pack.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        blurRadius: 2,
+                        offset: const Offset(1, 1),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 5),
                 Text(
                   'Price: \$${pack.price.toStringAsFixed(2)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                   ),
                 ),
                 Text(
                   'Points: ${pack.points}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                   ),
@@ -282,9 +299,30 @@ class _PacksListWidgetState extends State<PacksListWidget> {
                 const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () {
-                    // Add your button functionality here
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PaymentPage(pack: pack, packId: pack.id.toString()),
+                      ),
+                      (route) => false,
+                    );
                   },
-                  child: const Text('Buy'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.orange,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'Buy',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -296,11 +334,13 @@ class _PacksListWidgetState extends State<PacksListWidget> {
 }
 
 class Pack {
+  final int id;
   final String name;
   final double price;
   final int points;
 
   Pack({
+    required this.id,
     required this.name,
     required this.price,
     required this.points,
@@ -308,6 +348,7 @@ class Pack {
 
   factory Pack.fromJson(Map<String, dynamic> json) {
     return Pack(
+      id: json['id'],
       name: json['name'],
       price: json['price'].toDouble(),
       points: json['points'],

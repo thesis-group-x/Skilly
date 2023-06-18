@@ -27,13 +27,17 @@ dependencies:
   intl: ^0.17.0
   permission_handler: ^10.3.0
   firebase_storage: ^11.2.2
-  google_sign_in: ^6.1.4  
+  google_sign_in: ^6.1.4
   iconly: ^1.0.1
   cloudinary_flutter: ^0.9.0
   flutter_webrtc: ^0.9.33
   image_picker: ^0.8.8
   dio: ^5.2.1+1
-  lottie: ^1.2.0  
+  lottie: ^1.2.0
+  simple_animations: ^5.0.2
+  flutter_dotenv: ^5.1.0
+  flutter_stripe: ^9.2.2
+  get: ^4.6.5
 
 dev_dependencies:
   flutter_test:

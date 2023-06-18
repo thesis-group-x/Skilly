@@ -1,10 +1,10 @@
-import 'package:client/market/components/products.dart';
-import 'package:client/market/components/reviews1.dart';
+import 'package:client/market/components/pages/products.dart';
+import 'package:client/market/components/screens/reviews1.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'api.dart';
+import '../utils/api.dart';
 
 class Details1 extends StatefulWidget {
   final Productsi product;
