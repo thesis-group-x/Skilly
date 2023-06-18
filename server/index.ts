@@ -11,6 +11,8 @@ import routerfc from './routes/feedComments';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import routerProfile  from './routes/profile';
+import routerOther from './routes/other';
+
 
 
 
@@ -31,11 +33,12 @@ app.use(express.json());
 app.use(cors()); 
 app.use('/feedCom', routerfc)
 app.use('/Market', routerMarket);
-app.use('/Market',routerBuy)//buying 
-app.use('/stripe',routerStripe)//points
+app.use('/Market',routerBuy);
+app.use('/stripe',routerStripe);
 app.use('/api', routerInterests);
 app.use('/feed', routerFeed);
 app.use('/up',routerProfile);
+app.use('/other',routerOther)
 app.use('/user', routerAuthentication);
 
 app.get('/', (req, res) => {
