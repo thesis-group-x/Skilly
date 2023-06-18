@@ -1,4 +1,4 @@
-import 'package:client/market/components/payment.dart';
+// import 'package:client/market/components/payment/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -43,7 +43,7 @@ class HeaderWithSearchBox extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Text(
-                  'What you are ?',
+                  'MarketPlace ?',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),

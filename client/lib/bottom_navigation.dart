@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'feed/feed.dart';
 import './market/market.dart';
-import 'market/components/create.dart';
+import 'market/components/utils/create.dart';
 // import 'feed/create_feed.dart';
-import 'market/components/payment.dart';
+import 'market/components/payment/payment.dart';
 import 'user-profile.dart';
 import 'package:client/chat pages/home.dart';
 

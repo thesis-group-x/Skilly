@@ -17,9 +17,8 @@ const prisma = new PrismaClient();
 //---------------------------------------------------------creation of gig
 
 export const createPost = async (req: Request, res: Response): Promise<void> => {
-  const { price, title, description, skill, image } = req.body;
-const userId=1;
-console.log(req.body)
+  const { price, title, userId, description, skill, image } = req.body;
+
   try {
     if (!Array.isArray(image)) {
       // Handle the case when images are not provided or not an array

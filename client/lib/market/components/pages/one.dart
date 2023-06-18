@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'api.dart';
+import '../utils/api.dart';
+
+import '../screens/reviews.dart';
 import 'aproducts.dart';
-import 'reviews.dart';
 
 class Details extends StatefulWidget {
   final Product product;

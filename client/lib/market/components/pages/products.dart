@@ -1,9 +1,9 @@
-import 'package:client/market/components/one1.dart';
+import 'package:client/market/components/pages/one1.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'api.dart';
+import '../utils/api.dart';
 
 class Products extends StatefulWidget {
   const Products({Key? key}) : super(key: key);

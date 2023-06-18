@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'One.dart';
-import 'api.dart';
+import '../pages/one.dart';
+import '../utils/api.dart';
 
 class Reviews1 extends StatefulWidget {
   final Div1 review;

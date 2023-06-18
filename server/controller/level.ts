@@ -50,7 +50,7 @@ const updateBadge = async (userId: number, level: number): Promise<void> => {
       console.log(error);
     }}
 //update kol nhar 
-setInterval(updateAllBadges, 86400000*2);
+setInterval(updateAllBadges, 86400000);
 
 
 

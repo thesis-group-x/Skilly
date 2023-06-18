@@ -1,7 +1,8 @@
-import 'package:client/market/components/Button.dart';
-import 'package:client/market/components/Search.dart';
-import 'package:client/market/components/aproducts.dart';
-import 'package:client/market/components/products.dart';
+import 'package:client/market/components/pages/aproducts.dart';
+import 'package:client/market/components/screens/Button.dart';
+import 'package:client/market/components/screens/Search.dart';
+
+import 'package:client/market/components/pages/products.dart';
 import 'package:flutter/material.dart';
 
 class MyWidget extends StatelessWidget {
