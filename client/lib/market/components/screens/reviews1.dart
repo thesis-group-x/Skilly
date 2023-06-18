@@ -15,7 +15,7 @@ class Reviews1 extends StatefulWidget {
 }
 
 class _ReviewsState extends State<Reviews1> {
-  List<Review> reviews = [];
+  List<Reviewi> reviews = [];
   int selectedRating = 0;
 
   @override
@@ -116,8 +116,8 @@ class _ReviewsState extends State<Reviews1> {
           'http://${localhost}:3001/Market/reviews/${widget.review.postId}'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        List<Review> fetchedReviews =
-            List<Review>.from(data.map((review) => Review.fromJson(review)));
+        List<Reviewi> fetchedReviews =
+            List<Reviewi>.from(data.map((review) => Reviewi.fromJson(review)));
         setState(() {
           reviews = fetchedReviews;
         });

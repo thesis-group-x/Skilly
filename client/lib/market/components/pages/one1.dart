@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../utils/api.dart';
+import 'succ-creation.dart';
 
 class Details1 extends StatefulWidget {
   final Productsi product;
@@ -157,6 +158,13 @@ class _Details1State extends State<Details1> {
                 ),
               ),
               SizedBox(height: 10.0),
+              //buyiiiiiing
+              ElevatedButton(
+                onPressed: () {
+                  _buyProduct();
+                },
+                child: Text('Buy'),
+              ),
             ],
           ),
         ],
@@ -205,6 +213,64 @@ class _Details1State extends State<Details1> {
     );
   }
 
+//buyiiing
+  void _buyProduct() async {
+    final url = 'http://${localhost}:3001/Market/posts/buy';
+    final body = {
+      "postId": widget.product.id,
+      "buyerId": widget.product.userId,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      if (response.statusCode == 200) {
+        // Handle success
+        // final data = json.decode(response.body);
+        // Update UI or show a success message
+
+        // Navigate to the new screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderSuccessScreen(),
+          ),
+        );
+      } else if (response.statusCode == 400) {
+        // Handle insufficient funds error
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Insufficient Funds'),
+              content:
+                  Text('Your funds are not sufficient to buy this product.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        // Handle other errors
+        print('Failed to buy product. Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle error
+      print('Failed to buy product. Error: $error');
+    }
+  }
+
   buildSlider() {
     return Container(
       padding: EdgeInsets.only(left: 10, right: 10),
@@ -221,7 +287,7 @@ class _Details1State extends State<Details1> {
               child: Image.network(
                 imageUrl,
                 height: 250.0,
-                width: 300 - 40.0,
+                width: 300 - 40,
                 fit: BoxFit.cover,
               ),
             ),

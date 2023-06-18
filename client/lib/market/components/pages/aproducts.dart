@@ -16,7 +16,7 @@ class Aproducts extends StatefulWidget {
 }
 
 class _AproductsState extends State<Aproducts> {
-  List<Product> products = [];
+  List<P> products = [];
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _AproductsState extends State<Aproducts> {
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       setState(() {
-        products = data.map((item) => Product.fromJson(item)).toList();
+        products = data.map((item) => P.fromJson(item)).toList();
       });
     } else {
       print('Failed to fetch data from API');
@@ -157,16 +157,16 @@ class FeaturePlantCard extends StatelessWidget {
 
 const kDefaultPadding = 20.0;
 
-class Product {
+class P {
   final int id;
-  final List<String> image; // Array of images
+  final List<String> image;
   final String title;
   final String description;
   final String skill;
   final double price;
   final int userId;
 
-  Product({
+  P({
     required this.id,
     required this.image,
     required this.title,
@@ -176,8 +176,8 @@ class Product {
     required this.userId,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
+  factory P.fromJson(Map<String, dynamic> json) {
+    return P(
       id: json['id'],
       image: List<String>.from(json['image']),
       title: json['title'],
