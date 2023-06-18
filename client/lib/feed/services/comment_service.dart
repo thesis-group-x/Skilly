@@ -18,29 +18,31 @@ class CommentService {
   }
 
   static Future<Comment> createComment(int postId, String text) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      throw Exception('User not authenticated');
-    }
-
-    final commentData = {
-      'postId': postId,
-      'text': text,
-      'userId': user.email,
-    };
-
-    final response = await http.post(
-      Uri.parse('http://10.0.2.2:3001/feedCom/create'),
-      body: jsonEncode(commentData),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-   if (response.statusCode == 201) {
-  final jsonData = jsonDecode(response.body);
-  return Comment.fromJson(jsonData);
-} else {
-  print('Server response: ${response.body}');
-  throw Exception('Failed to create comment');
-}
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) {
+    throw Exception('User not authenticated');
   }
+
+  final commentData = {
+    'postId': postId,
+    'text': text,
+    'userId': user.uid, // replacing email with uid
+    'userName': user.displayName, // adding userName to comment data if you need
+  };
+
+  final response = await http.post(
+    Uri.parse('http://10.0.2.2:3001/feedCom/create'),
+    body: jsonEncode(commentData),
+    headers: {'Content-Type': 'application/json'},
+  );
+
+  if (response.statusCode == 201) {
+    final jsonData = jsonDecode(response.body);
+    return Comment.fromJson(jsonData);
+  } else {
+    print('Server response: ${response.body}');
+    throw Exception('Failed to create comment');
+  }
+}
+
 }

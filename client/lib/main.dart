@@ -1,8 +1,9 @@
-// import 'package:client/landing%20pages/welcome.dart';
-import 'package:client/market/market.dart';
+// import 'package:client/market/market.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+
+import 'landing pages/welcome.dart';
 // import './landing pages/welcome.dart';
 // import 'market/market.dart';
 
@@ -25,7 +26,7 @@ class SkillyApp extends StatelessWidget {
       //   primarySwatch: Colors.deepOrange,
       // ),
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      home: const LandingPage(),
     );
   }
 }
