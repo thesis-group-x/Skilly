@@ -166,6 +166,7 @@ export const createReview = async (req: Request, res: Response): Promise<void> =
   export const getReviews = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
+    
   
       const reviews = await prisma.reviewM.findMany({
         where: {

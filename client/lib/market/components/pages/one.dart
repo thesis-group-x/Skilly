@@ -1,28 +1,54 @@
+import 'package:client/market/components/screens/reviews1.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../utils/api.dart';
-
-import '../screens/reviews.dart';
 import 'aproducts.dart';
+import 'succ-creation.dart';
 
 class Details extends StatefulWidget {
-  final Product product;
+  final P product;
 
   const Details({required this.product});
 
   @override
-  _DetailsState createState() => _DetailsState();
+  _Details1State createState() => _Details1State();
 }
 
-class _DetailsState extends State<Details> {
+class _Details1State extends State<Details> {
   int finalRating = 0;
-
+  late User user;
   @override
   void initState() {
     super.initState();
     fetchReviews(widget.product.id);
+    fetchUserDetails(widget.product.userId);
+  }
+
+  void fetchUserDetails(int userId) async {
+    final url = 'http://${localhost}:3001/user/byid/$userId';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      print(response.body);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final user = User(
+          id: data['id'],
+          name: data['name'],
+          picture: data['image'],
+        );
+
+        setState(() {
+          this.user = user;
+        });
+      } else {
+        print('Failed to fetch user details. Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Failed to fetch user details. Error: $error');
+    }
   }
 
   @override
@@ -43,10 +69,7 @@ class _DetailsState extends State<Details> {
       body: ListView(
         children: <Widget>[
           SizedBox(height: 10.0),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal, // Scroll horizontally
-            child: buildSlider(),
-          ),
+          buildSlider(),
           SizedBox(height: 20),
           ListView(
             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -74,8 +97,8 @@ class _DetailsState extends State<Details> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Reviews(
-                            review: Div(
+                          builder: (context) => Reviews1(
+                            review: Div1(
                               comment: '',
                               rating: finalRating,
                               postId: widget.product.id,
@@ -139,6 +162,32 @@ class _DetailsState extends State<Details> {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
+                  // ignore: unnecessary_null_comparison
+                  user != null ? user.name : '',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+
+// Display user's picture
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(user.picture),
+                  ),
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
                   "Details",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -161,6 +210,13 @@ class _DetailsState extends State<Details> {
                 ),
               ),
               SizedBox(height: 10.0),
+              //buyungggg
+              ElevatedButton(
+                onPressed: () {
+                  _buyProduct();
+                },
+                child: Text('Buy'),
+              ),
             ],
           ),
         ],
@@ -209,24 +265,86 @@ class _DetailsState extends State<Details> {
     );
   }
 
+//buyyyyyyyyyyyyyyyyyyyyy
+  void _buyProduct() async {
+    final url = 'http://${localhost}:3001/Market/posts/buy';
+    final body = {
+      "postId": widget.product.id,
+      "buyerId": widget.product.userId,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      if (response.statusCode == 200) {
+        // Handle success
+        // final data = json.decode(response.body);
+        // Update UI or show a success message
+
+        // Navigate to the new screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderSuccessScreen(),
+          ),
+        );
+      } else if (response.statusCode == 400) {
+        // Handle insufficient funds error
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Insufficient Funds'),
+              content:
+                  Text('Your funds are not sufficient to buy this product.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        // Handle other errors
+        print('Failed to buy product. Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle error
+      print('Failed to buy product. Error: $error');
+    }
+  }
+
   buildSlider() {
     return Container(
       padding: EdgeInsets.only(left: 10, right: 10),
       height: 250.0,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10.0),
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: widget.product.image.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Image.network(
-              widget.product.image[index],
-              height: 250.0,
-              width: 300 - 40.0,
-              fit: BoxFit.cover,
-            );
-          },
-        ),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: widget.product.image.length,
+        itemBuilder: (BuildContext context, int index) {
+          final imageUrl = widget.product.image[index];
+          return Container(
+            margin: EdgeInsets.only(right: 10),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.network(
+                imageUrl,
+                height: 250.0,
+                width: 300 - 40,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -239,8 +357,8 @@ class _DetailsState extends State<Details> {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        List<Review> reviews = List<Review>.from(
-          data.map((review) => Review.fromJson(review)),
+        List<Reviewi> reviews = List<Reviewi>.from(
+          data.map((review) => Reviewi.fromJson(review)),
         );
 
         setState(() {
@@ -254,7 +372,7 @@ class _DetailsState extends State<Details> {
     }
   }
 
-  int calculateFinalRating(List<Review> reviews) {
+  int calculateFinalRating(List<Reviewi> reviews) {
     if (reviews.isEmpty) {
       return 0;
     }
@@ -269,24 +387,32 @@ class _DetailsState extends State<Details> {
   }
 }
 
-class Review {
+class Reviewi {
   late final String comment;
   late final int rating;
   final int userId;
   final int postId;
 
-  Review(
+  Reviewi(
       {required this.comment,
       required this.rating,
       required this.postId,
       required this.userId});
 
-  factory Review.fromJson(Map<String, dynamic> json) {
-    return Review(
+  factory Reviewi.fromJson(Map<String, dynamic> json) {
+    return Reviewi(
       comment: json['comment'],
       rating: json['rating'],
       postId: json['postId'],
       userId: json['userId'],
     );
   }
+}
+
+class User {
+  final int id;
+  final String name;
+  final String picture;
+
+  User({required this.id, required this.name, required this.picture});
 }

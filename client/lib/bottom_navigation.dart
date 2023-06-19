@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'feed/feed.dart';
-import './market/market.dart';
+
+import 'market/components/pages/welcome.dart';
 import 'market/components/utils/create.dart';
-// import 'feed/create_feed.dart';
-import 'market/components/payment/payment.dart';
+
 import 'user-profile.dart';
 import 'package:client/chat pages/home.dart';
 
@@ -61,7 +61,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
               widget.onTabSelected(1);
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                MaterialPageRoute(builder: (context) => WelcomePage()),
                 (route) => false,
               );
             },
@@ -91,7 +91,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
               widget.onTabSelected(3);
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => PacksListWidget()),
+                MaterialPageRoute(builder: (context) => UserProfilePage()),
                 (route) => false,
               );
             },
