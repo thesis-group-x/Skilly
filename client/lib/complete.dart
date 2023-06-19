@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import './feed/pages/home_page.dart';
 import 'package:dio/dio.dart';
+import 'loading.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -188,320 +189,198 @@ class _CompleteState extends State<Complete> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-              child: GestureDetector(
-                onTap: pickImage,
-                child: CircleAvatar(
-                  backgroundColor: Colors.black,
-                  radius: 50,
-                  backgroundImage: _selectedImage != null
-                      ? FileImage(_selectedImage!)
-                      : null,
-                  child: _selectedImage == null
-                      ? Icon(Icons.person, color: Colors.white)
-                      : null,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(flex: 1, child: Container()),
+                Flexible(
+                  flex: 2,
+                  child: GestureDetector(
+                    onTap: pickImage,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black,
+                      radius: 50,
+                      backgroundImage: _selectedImage != null
+                          ? FileImage(_selectedImage!)
+                          : null,
+                      child: _selectedImage == null
+                          ? Icon(Icons.person, color: Colors.white)
+                          : null,
+                    ),
+                  ),
                 ),
-              ),
+                Flexible(flex: 1, child: Container()),
+              ],
             ),
+            SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.transparent, // Set the text field color
-                  prefixIcon: Icon(
-                    Icons.person,
-                    color: Colors.black,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFAFAFA),
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(
+                    color: Color(0xFF284855),
+                    width: 0.5,
                   ),
-                  hintText: 'username',
-                  hintStyle: TextStyle(color: Colors.black),
+                ),
+                child: TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Colors.black,
+                    ),
+                    hintText: 'Username',
+                    hintStyle: TextStyle(color: Colors.black),
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
             ),
             SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: TextField(
-                controller: ageController,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.transparent, // Set the text field color
-                  prefixIcon: Icon(
-                    Icons.calendar_month,
-                    color: Colors.black,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFAFAFA),
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(
+                    color: Color(0xFF284855),
+                    width: 0.5,
                   ),
-                  hintText: ' age',
-                  hintStyle: TextStyle(color: Colors.black),
+                ),
+                child: TextField(
+                  controller: ageController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.calendar_month,
+                      color: Colors.black,
+                    ),
+                    hintText: 'Age',
+                    hintStyle: TextStyle(color: Colors.black),
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
             ),
             SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.transparent, // Set the dropdown color
-                  prefixIcon: Icon(
-                    Icons.group,
-                    color: Colors.black,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFAFAFA),
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(
+                    color: Color(0xFF284855),
+                    width: 0.5,
                   ),
-                  hintText: 'Select your gender',
-                  hintStyle: TextStyle(color: Colors.grey),
                 ),
-                value: _selectedGender,
-                items: <String>['Gender', 'Male', 'Female', 'Other']
-                    .map<DropdownMenuItem<String>>(
-                      (String value) => DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedGender = newValue ?? '';
-                  });
-                },
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.group,
+                      color: Colors.black,
+                    ),
+                    hintText: 'Select your gender',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                  ),
+                  value: _selectedGender,
+                  items: <String>['Gender', 'Male', 'Female', 'Other']
+                      .map<DropdownMenuItem<String>>(
+                        (String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedGender = newValue ?? '';
+                    });
+                  },
+                ),
               ),
             ),
             SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.transparent, // Set the dropdown color
-                  prefixIcon: Icon(
-                    Icons.location_on,
-                    color: Colors.black,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFAFAFA),
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(
+                    color: Color(0xFF284855),
+                    width: 0.5,
                   ),
-                  hintText: 'Select your location',
-                  hintStyle: TextStyle(color: Colors.grey),
                 ),
-                value: _selectedLocation,
-                items: <String>[
-                  'Location', // Add a default value if needed
-                  '🇦🇫 Afghanistan',
-                  '🇦🇱 Albania',
-                  '🇩🇿 Algeria',
-                  '🇦🇩 Andorra',
-                  '🇦🇴 Angola',
-                  '🇦🇬 Antigua and Barbuda',
-                  '🇦🇷 Argentina',
-                  '🇦🇲 Armenia',
-                  '🇦🇺 Australia',
-                  '🇦🇹 Austria',
-                  '🇦🇿 Azerbaijan',
-                  '🇧🇸 Bahamas',
-                  '🇧🇭 Bahrain',
-                  '🇧🇩 Bangladesh',
-                  '🇧🇧 Barbados',
-                  '🇧🇾 Belarus',
-                  '🇧🇪 Belgium',
-                  '🇧🇿 Belize',
-                  '🇧🇯 Benin',
-                  '🇧🇹 Bhutan',
-                  '🇧🇴 Bolivia',
-                  '🇧🇦 Bosnia and Herzegovina',
-                  '🇧🇼 Botswana',
-                  '🇧🇷 Brazil',
-                  '🇧🇳 Brunei',
-                  '🇧🇬 Bulgaria',
-                  '🇧🇫 Burkina Faso',
-                  '🇧🇮 Burundi',
-                  '🇨🇻 Cape Verde',
-                  '🇰🇭 Cambodia',
-                  '🇨🇲 Cameroon',
-                  '🇨🇦 Canada',
-                  '🇨🇫 Central African Republic',
-                  '🇹🇩 Chad',
-                  '🇨🇱 Chile',
-                  '🇨🇳 China',
-                  '🇨🇴 Colombia',
-                  '🇰🇲 Comoros',
-                  '🇨🇩 Congo ',
-                  '🇨🇷 Costa Rica',
-                  '🇭🇷 Croatia',
-                  '🇨🇺 Cuba',
-                  '🇨🇾 Cyprus',
-                  '🇨🇿 Czech Republic',
-                  '🇩🇰 Denmark',
-                  '🇩🇯 Djibouti',
-                  '🇩🇲 Dominica',
-                  '🇩🇴 Dominican Republic',
-                  '🇪🇨 Ecuador',
-                  '🇪🇬 Egypt',
-                  '🇸🇻 El Salvador',
-                  '🇬🇶 Equatorial Guinea',
-                  '🇪🇷 Eritrea',
-                  '🇪🇪 Estonia',
-                  '🇪🇹 Ethiopia',
-                  '🇫🇯 Fiji',
-                  '🇫🇮 Finland',
-                  '🇫🇷 France',
-                  '🇬🇦 Gabon',
-                  '🇬🇲 Gambia',
-                  '🇬🇪 Georgia',
-                  '🇩🇪 Germany',
-                  '🇬🇭 Ghana',
-                  '🇬🇷 Greece',
-                  '🇬🇩 Grenada',
-                  '🇬🇹 Guatemala',
-                  '🇬🇳 Guinea',
-                  '🇬🇼 Guinea-Bissau',
-                  '🇬🇾 Guyana',
-                  '🇭🇹 Haiti',
-                  '🇭🇳 Honduras',
-                  '🇭🇺 Hungary',
-                  '🇮🇸 Iceland',
-                  '🇮🇳 India',
-                  '🇮🇩 Indonesia',
-                  '🇮🇷 Iran',
-                  '🇮🇶 Iraq',
-                  '🇮🇪 Ireland',
-                  '🇮🇱 Israel',
-                  '🇮🇹 Italy',
-                  '🇯🇲 Jamaica',
-                  '🇯🇵 Japan',
-                  '🇯🇴 Jordan',
-                  '🇰🇿 Kazakhstan',
-                  '🇰🇪 Kenya',
-                  '🇰🇮 Kiribati',
-                  '🇰🇵 North Korea',
-                  '🇰🇷 South Korea',
-                  '🇰🇼 Kuwait',
-                  '🇰🇬 Kyrgyzstan',
-                  '🇱🇦 Laos',
-                  '🇱🇻 Latvia',
-                  '🇱🇧 Lebanon',
-                  '🇱🇸 Lesotho',
-                  '🇱🇷 Liberia',
-                  '🇱🇾 Libya',
-                  '🇱🇮 Liechtenstein',
-                  '🇱🇹 Lithuania',
-                  '🇱🇺 Luxembourg',
-                  '🇲🇰 North Macedonia',
-                  '🇲🇬 Madagascar',
-                  '🇲🇼 Malawi',
-                  '🇲🇾 Malaysia',
-                  '🇲🇻 Maldives',
-                  '🇲🇱 Mali',
-                  '🇲🇹 Malta',
-                  '🇲🇭 Marshall Islands',
-                  '🇲🇷 Mauritania',
-                  '🇲🇺 Mauritius',
-                  '🇲🇽 Mexico',
-                  '🇫🇲 Micronesia',
-                  '🇲🇩 Moldova',
-                  '🇲🇨 Monaco',
-                  '🇲🇳 Mongolia',
-                  '🇲🇪 Montenegro',
-                  '🇲🇦 Morocco',
-                  '🇲🇿 Mozambique',
-                  '🇲🇲 Myanmar',
-                  '🇳🇦 Namibia',
-                  '🇳🇷 Nauru',
-                  '🇳🇵 Nepal',
-                  '🇳🇱 Netherlands',
-                  '🇳🇿 New Zealand',
-                  '🇳🇮 Nicaragua',
-                  '🇳🇪 Niger',
-                  '🇳🇬 Nigeria',
-                  '🇳🇴 Norway',
-                  '🇴🇲 Oman',
-                  '🇵🇰 Pakistan',
-                  '🇵🇼 Palau',
-                  '🇵🇸 Palestine',
-                  '🇵🇦 Panama',
-                  '🇵🇬 Papua New Guinea',
-                  '🇵🇾 Paraguay',
-                  '🇵🇪 Peru',
-                  '🇵🇭 Philippines',
-                  '🇵🇱 Poland',
-                  '🇵🇹 Portugal',
-                  '🇶🇦 Qatar',
-                  '🇷🇴 Romania',
-                  '🇷🇺 Russia',
-                  '🇷🇼 Rwanda',
-                  '🇰🇳 Saint Kitts and Nevis',
-                  '🇱🇨 Saint Lucia',
-                  '🇻🇨 Saint Vincent and the Grenadines',
-                  '🇼🇸 Samoa',
-                  '🇸🇲 San Marino',
-                  '🇸🇹 Sao Tome and Principe',
-                  '🇸🇦 Saudi Arabia',
-                  '🇸🇳 Senegal',
-                  '🇷🇸 Serbia',
-                  '🇸🇨 Seychelles',
-                  '🇸🇱 Sierra Leone',
-                  '🇸🇬 Singapore',
-                  '🇸🇰 Slovakia',
-                  '🇸🇮 Slovenia',
-                  '🇸🇧 Solomon Islands',
-                  '🇸🇴 Somalia',
-                  '🇿🇦 South Africa',
-                  '🇸🇸 South Sudan',
-                  '🇪🇸 Spain',
-                  '🇱🇰 Sri Lanka',
-                  '🇸🇩 Sudan',
-                  '🇸🇷 Suriname',
-                  '🇸🇪 Sweden',
-                  '🇨🇭 Switzerland',
-                  '🇸🇾 Syria',
-                  '🇹🇼 Taiwan',
-                  '🇹🇯 Tajikistan',
-                  '🇹🇿 Tanzania',
-                  '🇹🇭 Thailand',
-                  '🇹🇱 Timor-Leste',
-                  '🇹🇬 Togo',
-                  '🇹🇴 Tonga',
-                  '🇹🇹 Trinidad and Tobago',
-                  '🇹🇳 Tunisia',
-                  '🇹🇷 Turkey',
-                  '🇹🇲 Turkmenistan',
-                  '🇹🇻 Tuvalu',
-                  '🇺🇬 Uganda',
-                  '🇺🇦 Ukraine',
-                  '🇦🇪 United Arab Emirates',
-                  '🇬🇧 United Kingdom',
-                  '🇺🇸 United States',
-                  '🇺🇾 Uruguay',
-                  '🇺🇿 Uzbekistan',
-                  '🇻🇺 Vanuatu',
-                  '🇻🇪 Venezuela',
-                  '🇻🇳 Vietnam',
-                  '🇾🇪 Yemen',
-                  '🇿🇲 Zambia',
-                  '🇿🇼 Zimbabwe',
-                ]
-                    .map<DropdownMenuItem<String>>(
-                      (String value) => DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedLocation = newValue ?? '';
-                  });
-                },
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.location_on,
+                      color: Colors.black,
+                    ),
+                    hintText: 'Select your location',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                  ),
+                  value: _selectedLocation,
+                  items: <String>[
+                    'Location', // Add a default value if needed
+                    '🇦🇫 Afghanistan',
+                    '🇦🇱 Albania',
+                    // Add more locations here
+                    '🇻🇳 Vietnam',
+                    '🇾🇪 Yemen',
+                    '🇿🇲 Zambia',
+                    '🇿🇼 Zimbabwe',
+                  ]
+                      .map<DropdownMenuItem<String>>(
+                        (String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedLocation = newValue ?? '';
+                    });
+                  },
+                ),
               ),
             ),
             SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: TextField(
-                controller: detailsController,
-                maxLines: 5,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.transparent, // Set the text field color
-                  hintText: ' bio',
-                  hintStyle: TextStyle(color: Colors.black),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFAFAFA),
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(
+                    color: Color(0xFF284855),
+                    width: 0.5,
+                  ),
+                ),
+                child: TextField(
+                  controller: detailsController,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    hintText: 'Bio',
+                    hintStyle: TextStyle(color: Colors.black),
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
             ),
@@ -511,80 +390,21 @@ class _CompleteState extends State<Complete> {
               child: Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        title: const Text('Confirmation'),
-                        content: const Text(
-                            'Are you sure you want to finish your profile?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pop(); // Close the confirmation dialog
-                              sendUpdateRequest(); // Send the update request
-                            },
-                            child: const Text('Yes'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pop(); // Close the confirmation dialog
-                            },
-                            child: const Text('No'),
-                          ),
-                        ],
-                      ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProfileSetupPage()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF284855), // Set the button color
+                    primary: Color(0xFF284855),
                   ),
-                  child: const Text('Finish'),
+                  child: const Text('Complete'),
                 ),
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class DropdownDialog extends StatelessWidget {
-  final String value;
-  final List<String> items;
-  final ValueChanged<String?> onChanged;
-
-  const DropdownDialog({
-    required this.value,
-    required this.items,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final item = items[index];
-                return ListTile(
-                  title: Text(item),
-                  onTap: () {
-                    onChanged(item);
-                  },
-                );
-              },
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -1,7 +1,7 @@
-import 'package:client/market/components/pages/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'landing pages/welcome.dart';
 
 void main() async {
   Stripe.publishableKey =
@@ -16,10 +16,10 @@ class SkillyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Skilly',
       debugShowCheckedModeBanner: false,
-      home: WelcomePage(),
+      home: LandingPage(),
     );
   }
 }

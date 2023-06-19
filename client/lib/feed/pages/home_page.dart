@@ -2,6 +2,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:client/other_users.dart';
 import 'post_details_age.dart';
 import 'create_post.dart';
 import '../models/post.dart';
@@ -109,6 +110,14 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SearchPage()),
+    );
+  }
+
+  void navigateToUserProfile(int userId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => UserProfileWidget(userId: userId)),
     );
   }
 
@@ -382,16 +391,33 @@ class _HomePageState extends State<HomePage> {
                                                         .profileImage),
                                               ),
                                             ),
-                                            Positioned(
-                                              top: 20,
-                                              left: 60,
-                                              child: Text(
-                                                posts[index].user.name,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          UserProfileWidget(
+                                                              userId:
+                                                                  posts[index]
+                                                                      .user
+                                                                      .id)),
+                                                );
+                                              },
+                                              child: Align(
+  alignment: Alignment.topLeft, // Aligns the child at the top left
+  child: Padding(
+    padding: EdgeInsets.only(top: 20, left: 60), // Adjust the left padding to move the text to the left
+    child: Text(
+      posts[index].user.name,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 16,
+      ),
+    ),
+  ),
+),
+
                                             ),
                                             Align(
                                               alignment: Alignment.topRight,

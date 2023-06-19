@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'bottom_navigation.dart';
 
 class UserProfileWidget extends StatefulWidget {
   final int userId;
@@ -82,9 +83,20 @@ class _UserProfileWidgetState extends State<UserProfileWidget> {
 
 Widget buildProfileInfo() {
   return Scaffold(
+        appBar: AppBar(
+           backgroundColor: Colors.transparent,
+      elevation: 0.0,
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        color: Colors.black,
+        onPressed: () {
+          Navigator.pop(context); // Pops the current context
+        },
+      ),
+    ),
     body: SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(16),
+         padding: EdgeInsets.only(top: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -101,7 +113,7 @@ Widget buildProfileInfo() {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
-                      color: Colors.green,
+                      color: const Color.fromARGB(255, 0, 0, 0),
                     ),
                   ),
                   SizedBox(height: 1),
@@ -279,7 +291,13 @@ Widget buildProfileInfo() {
         alignment: Alignment.topCenter,
         child: buildProfileInfo(),
       ),
+      bottomNavigationBar: CustomBottomNavigation(
+        currentIndex: 0,
+        onTabSelected: (index) {
+        },
+      ),
     );
+    
   }
 }
 
