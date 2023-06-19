@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../market.dart';
 import '../payment/animation.dart';
+import '../payment/payment.dart';
 
 class WelcomePage extends StatefulWidget {
-  static String get routeName => '@routes/welcome-page';
+  // static String get routeName => '@routes/welcome-page';
 
   @override
   _WelcomePageState createState() => _WelcomePageState();
@@ -12,7 +13,7 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage>
     with TickerProviderStateMixin {
-  static String get routeName => '@routes/home-page';
+  // static String get routeName => '@routes/home-page';
   // ignore: unused_field
   late AnimationController _scaleController;
 
@@ -32,7 +33,8 @@ class _WelcomePageState extends State<WelcomePage>
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/market.png'),
+            image: NetworkImage(
+                'https://i.pinimg.com/originals/49/42/ab/4942ab41a3358d14cded6d951fad3ba6.gif'),
             fit: BoxFit.cover,
           ),
         ),
@@ -55,7 +57,7 @@ class _WelcomePageState extends State<WelcomePage>
                 FadeAnimation(
                   1,
                   Text(
-                    "New Perspective",
+                    "New Perspective to a new Skill",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 40,
@@ -69,7 +71,7 @@ class _WelcomePageState extends State<WelcomePage>
                 FadeAnimation(
                   1.3,
                   Text(
-                    "Let's share our vesions.",
+                    "Let's share our vesion.",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -112,18 +114,27 @@ class _WelcomePageState extends State<WelcomePage>
                 ),
                 FadeAnimation(
                   1.7,
-                  Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "See Packs",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PacksListWidget()),
+                      );
+                    },
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "See Packs",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),

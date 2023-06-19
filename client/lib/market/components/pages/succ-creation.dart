@@ -1,5 +1,6 @@
+import 'package:client/market/market.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:ui';
 
 class OrderSuccessScreen extends StatelessWidget {
@@ -20,16 +21,18 @@ class OrderSuccessScreen extends StatelessWidget {
                 children: [
                   Center(
                     child: Container(
-                      width: 200,
-                      height: 200,
-                      child: SvgPicture.asset('assets/images/Skilly.png'),
+                      width: 300,
+                      height: 300,
+                      //hedhi heya l animation
+                      child: Image.network(
+                          "https://cdn.dribbble.com/users/1138069/screenshots/8974973/media/2b32ae97856da7406151c6ae6ea086cc.gif"),
                     ),
                   ),
                   SizedBox(
                     height: 25,
                   ),
                   Text(
-                    "Success!",
+                    "Success !",
                     style: AppFont.bold.copyWith(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -39,7 +42,7 @@ class OrderSuccessScreen extends StatelessWidget {
                     height: 15,
                   ),
                   Text(
-                    "Your order will be delivered soon.\n Thank you for choosing our app!!",
+                    "Your order will be delivered soon.\n Thank you for choosing SKILLY!!",
                     style: AppFont.regular.copyWith(
                       fontSize: 15,
                       height: 1.3,
@@ -63,8 +66,14 @@ class OrderSuccessScreen extends StatelessWidget {
                     fontWeight: FontWeight.normal,
                   ),
                 ),
-                onPressed: () {},
-                child: Text('Continue Skilling'.toUpperCase()),
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                    (route) => false,
+                  );
+                },
+                child: Text('Thanks skiller'.toUpperCase()),
               ),
             ),
           ],

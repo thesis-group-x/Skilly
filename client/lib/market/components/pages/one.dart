@@ -18,11 +18,37 @@ class Details extends StatefulWidget {
 
 class _Details1State extends State<Details> {
   int finalRating = 0;
-
+  late User user;
   @override
   void initState() {
     super.initState();
     fetchReviews(widget.product.id);
+    fetchUserDetails(widget.product.userId);
+  }
+
+  void fetchUserDetails(int userId) async {
+    final url = 'http://${localhost}:3001/user/byid/$userId';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      print(response.body);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final user = User(
+          id: data['id'],
+          name: data['name'],
+          picture: data['image'],
+        );
+
+        setState(() {
+          this.user = user;
+        });
+      } else {
+        print('Failed to fetch user details. Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Failed to fetch user details. Error: $error');
+    }
   }
 
   @override
@@ -133,6 +159,32 @@ class _Details1State extends State<Details> {
                 ),
               ),
               SizedBox(height: 40),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  // ignore: unnecessary_null_comparison
+                  user != null ? user.name : '',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+
+// Display user's picture
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(user.picture),
+                  ),
+                ),
+              ),
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -355,4 +407,12 @@ class Reviewi {
       userId: json['userId'],
     );
   }
+}
+
+class User {
+  final int id;
+  final String name;
+  final String picture;
+
+  User({required this.id, required this.name, required this.picture});
 }
