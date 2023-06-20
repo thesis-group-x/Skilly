@@ -123,6 +123,13 @@ class FeaturePlantCard extends StatelessWidget {
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10),
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      blurRadius: 5,
+                      spreadRadius: 2,
+                    ),
+                  ],
                 ),
                 child: Text(
                   title,

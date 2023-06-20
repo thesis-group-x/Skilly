@@ -62,7 +62,7 @@ class _InterestsPageState extends State<InterestsPage> {
     print(FirebaseAuth.instance.currentUser);
     if (user != null) {
       final userId = user.email;
-
+      print(userId);
       final interestsData = {
         'hobbies': chosenHobbiesInterests,
         'skills': chosenSkillsInterests,

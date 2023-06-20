@@ -1,4 +1,5 @@
 import 'package:client/market/components/screens/reviews1.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -37,7 +38,7 @@ class _Details1State extends State<Details> {
         final user = User(
           id: data['id'],
           name: data['name'],
-          picture: data['image'],
+          image: data['profileImage'],
         );
 
         setState(() {
@@ -173,7 +174,7 @@ class _Details1State extends State<Details> {
                 ),
               ),
 
-// Display user's picture
+// Display user's image
               Container(
                 width: 50,
                 height: 50,
@@ -181,7 +182,7 @@ class _Details1State extends State<Details> {
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: NetworkImage(user.picture),
+                    image: NetworkImage(user.image),
                   ),
                 ),
               ),
@@ -267,10 +268,11 @@ class _Details1State extends State<Details> {
 
 //buyyyyyyyyyyyyyyyyyyyyy
   void _buyProduct() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
     final url = 'http://${localhost}:3001/Market/posts/buy';
     final body = {
       "postId": widget.product.id,
-      "buyerId": widget.product.userId,
+      "buyerId": uid,
     };
 
     try {
@@ -412,7 +414,7 @@ class Reviewi {
 class User {
   final int id;
   final String name;
-  final String picture;
+  final String image;
 
-  User({required this.id, required this.name, required this.picture});
+  User({required this.id, required this.name, required this.image});
 }
