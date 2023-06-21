@@ -21,6 +21,44 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _showPassword = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
+
+  void getUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final uid = user.uid;
+
+      try {
+        final response = await http.get(
+          Uri.parse('http://10.0.2.2:3001/user/uid/$uid'),
+          headers: {'Content-Type': 'application/json'},
+        );
+
+        if (response.statusCode == 200) {
+          final userData = json.decode(response.body);
+          _nameController.text = userData['name'] ?? '';
+          _emailController.text = userData['email'] ?? '';
+          _addressController.text = userData['address'] ?? '';
+          _phoneNumberController.text = userData['phoneNumber'] ?? '';
+          _isLoading = false;
+        } else {
+          // Handle error case
+          // Show an error message or perform any other necessary action
+          print('Error fetching user data: ${response.body}');
+        }
+      } catch (error) {
+        // Handle error case
+        // Show an error message or perform any other necessary action
+        print('Error fetching user data: $error');
+      }
+    }
+  }
 
   void updateUser() async {
     // Check if any field is updated

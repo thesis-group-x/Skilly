@@ -13,11 +13,11 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 5), () {
+    Future.delayed(Duration(seconds: 7), () {
       setState(() {
         showFirstAnimation = false;
       });
-      Future.delayed(Duration(seconds: 3), () {
+      Future.delayed(Duration(seconds: 5), () {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Feed()),
