@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -15,7 +16,7 @@ class Reviews1 extends StatefulWidget {
 }
 
 class _ReviewsState extends State<Reviews1> {
-  List<Review> reviews = [];
+  List<Reviewi> reviews = [];
   int selectedRating = 0;
 
   @override
@@ -36,20 +37,43 @@ class _ReviewsState extends State<Reviews1> {
             child: ListView.builder(
               itemCount: reviews.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(reviews[index].comment),
-                  subtitle: Row(
-                    children: [
-                      Text('Rating:'),
-                      SizedBox(width: 5),
-                      Row(
-                        children: List.generate(
-                          reviews[index].rating,
-                          (index) => Icon(Icons.star, color: Colors.yellow),
-                        ),
+                final review = reviews[index];
+                return FutureBuilder<User>(
+                  future: fetchUser(review.userId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+                    if (snapshot.hasError) {
+                      return Text('Failed to load user data');
+                    }
+                    final user = snapshot.data;
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(user?.image ?? ''),
                       ),
-                    ],
-                  ),
+                      title: Text(user?.name ?? ''),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text('Rating:'),
+                              SizedBox(width: 5),
+                              Row(
+                                children: List.generate(
+                                  review.rating,
+                                  (index) =>
+                                      Icon(Icons.star, color: Colors.yellow),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(review.comment),
+                        ],
+                      ),
+                    );
+                  },
                 );
               },
             ),
@@ -116,8 +140,8 @@ class _ReviewsState extends State<Reviews1> {
           'http://${localhost}:3001/Market/reviews/${widget.review.postId}'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        List<Review> fetchedReviews =
-            List<Review>.from(data.map((review) => Review.fromJson(review)));
+        List<Reviewi> fetchedReviews =
+            List<Reviewi>.from(data.map((review) => Reviewi.fromJson(review)));
         setState(() {
           reviews = fetchedReviews;
         });
@@ -131,16 +155,22 @@ class _ReviewsState extends State<Reviews1> {
 
   Future<void> postReview(String comment, int rating) async {
     try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        return;
+      }
+
       final response = await http.post(
         Uri.parse('http://${localhost}:3001/Market/reviews'),
         body: json.encode({
-          'userId': widget.review.userId,
+          'userId': currentUser.uid,
           'postId': widget.review.postId,
           'comment': comment,
           'rating': rating,
         }),
         headers: {'Content-Type': 'application/json'},
       );
+
       if (response.statusCode == 201) {
         fetchReviews();
 
@@ -175,5 +205,34 @@ class Div1 {
       comment: json['comment'],
       rating: json['rating'],
     );
+  }
+}
+
+class User {
+  final String name;
+  final String image;
+
+  User({
+    required this.name,
+    required this.image,
+  });
+}
+
+Future<User> fetchUser(int userId) async {
+  try {
+    final response =
+        await http.get(Uri.parse('http://${localhost}:3001/user/uid/$userId'));
+    if (response.statusCode == 200) {
+      final userData = jsonDecode(response.body);
+      final user = User(
+        name: userData['name'],
+        image: userData['image'],
+      );
+      return user;
+    } else {
+      throw Exception('Failed to fetch user data');
+    }
+  } catch (error) {
+    throw Exception('Failed to fetch user data: $error');
   }
 }

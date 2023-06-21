@@ -2,7 +2,7 @@ import 'package:client/market/components/pages/one1.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:transparent_image/transparent_image.dart';
 import '../utils/api.dart';
 
 class Products extends StatefulWidget {
@@ -78,6 +78,7 @@ class _ProductsState extends State<Products> {
     }
   }
 }
+//the display
 
 class HorizontalProductItem extends StatelessWidget {
   final Productsi product;
@@ -104,11 +105,25 @@ class HorizontalProductItem extends StatelessWidget {
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  product.images[0], // Display the first image in the list
-                  height: 160.0,
-                  width: 180.0,
-                  fit: BoxFit.cover,
+                child: FutureBuilder(
+                  future: Future.delayed(Duration(milliseconds: 500)),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        color: Colors.grey[300],
+                        height: 160.0,
+                        width: 180.0,
+                      );
+                    } else {
+                      return FadeInImage.memoryNetwork(
+                        placeholder: kTransparentImage,
+                        image: product.images[0],
+                        height: 160.0,
+                        width: 180.0,
+                        fit: BoxFit.cover,
+                      );
+                    }
+                  },
                 ),
               ),
               SizedBox(height: 7.0),
@@ -118,7 +133,7 @@ class HorizontalProductItem extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        "\$${product.price}",
+                        '${product.price.toStringAsFixed(0)} Pts ',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15.0,
@@ -127,18 +142,18 @@ class HorizontalProductItem extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 5.0),
-                    Flexible(
-                      child: Text(
-                        product.title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15.0,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
+                    // Flexible(
+                    //   child: Text(
+                    //     product.title,
+                    //     style: TextStyle(
+                    //       fontWeight: FontWeight.bold,
+                    //       fontSize: 15.0,
+                    //     ),
+                    //     maxLines: 2,
+                    //     overflow: TextOverflow.ellipsis,
+                    //     textAlign: TextAlign.right,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

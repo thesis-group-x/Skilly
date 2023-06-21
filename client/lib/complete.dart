@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'market/components/utils/api.dart';
 import 'user-profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -88,7 +89,7 @@ class _CompleteState extends State<Complete> {
       }
 
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:3001/up/updateuser/$userId'),
+        Uri.parse('http://$localhost:3001/up/updateuser/$userId'),
         body: json.encode(requestBody),
         headers: {'Content-Type': 'application/json'},
       );

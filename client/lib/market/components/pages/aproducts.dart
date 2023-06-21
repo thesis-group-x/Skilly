@@ -16,7 +16,7 @@ class Aproducts extends StatefulWidget {
 }
 
 class _AproductsState extends State<Aproducts> {
-  List<Product> products = [];
+  List<P> products = [];
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _AproductsState extends State<Aproducts> {
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       setState(() {
-        products = data.map((item) => Product.fromJson(item)).toList();
+        products = data.map((item) => P.fromJson(item)).toList();
       });
     } else {
       print('Failed to fetch data from API');
@@ -99,53 +99,75 @@ class FeaturePlantCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           image: DecorationImage(
             fit: BoxFit.cover,
-            image: NetworkImage(image), // Display the first image
+            image: NetworkImage(image),
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: kDefaultPadding / 2,
-                vertical: kDefaultPadding / 2,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: kDefaultPadding / 2,
+                  vertical: kDefaultPadding / 2,
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.8),
+                      Colors.transparent,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      blurRadius: 5,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: kDefaultPadding / 2,
+                  vertical: kDefaultPadding / 2,
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.8),
+                    ],
                   ),
-                  SizedBox(height: 5),
-                  Text(
-                    'Skill: $skill',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white,
-                    ),
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(10),
                   ),
-                  SizedBox(height: 5),
-                  Text(
-                    'Price: \$${price.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white,
-                    ),
+                ),
+                child: Text(
+                  '${price.toStringAsFixed(0)} Pts ',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
                   ),
-                ],
+                ),
               ),
             ),
           ],
@@ -157,16 +179,16 @@ class FeaturePlantCard extends StatelessWidget {
 
 const kDefaultPadding = 20.0;
 
-class Product {
+class P {
   final int id;
-  final List<String> image; // Array of images
+  final List<String> image;
   final String title;
   final String description;
   final String skill;
   final double price;
   final int userId;
 
-  Product({
+  P({
     required this.id,
     required this.image,
     required this.title,
@@ -176,8 +198,8 @@ class Product {
     required this.userId,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
+  factory P.fromJson(Map<String, dynamic> json) {
+    return P(
       id: json['id'],
       image: List<String>.from(json['image']),
       title: json['title'],

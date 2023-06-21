@@ -8,6 +8,7 @@ import 'login_page.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
 
+import 'market/components/utils/api.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,7 +75,7 @@ class _SignUpPageState extends State<SignUpPage> {
       };
 
       var response = await http.post(
-        Uri.parse('http://10.0.2.2:3001/user/adduser'),
+        Uri.parse('http://$localhost:3001/user/adduser'),
         body: jsonEncode(userData),
         headers: {'Content-Type': 'application/json'},
       );
@@ -99,33 +100,33 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
- Future<void> _showSuccessDialog() async {
-  return showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        content: SizedBox(
-          width: 200,
-          height: 200,
-          child: Lottie.network(
-            'https://assets6.lottiefiles.com/private_files/lf30_3ghvm6sn.json',
-            repeat: true,
-            reverse: true,
-            animate: true,
+  Future<void> _showSuccessDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 200,
+            height: 200,
+            child: Lottie.network(
+              'https://assets6.lottiefiles.com/private_files/lf30_3ghvm6sn.json',
+              repeat: true,
+              reverse: true,
+              animate: true,
+            ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text('OK'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> _signInWithGoogle() async {
     try {
@@ -155,7 +156,7 @@ class _SignUpPageState extends State<SignUpPage> {
           };
 
           var response = await http.post(
-            Uri.parse('http://10.0.2.2:3001/user/adduser'),
+            Uri.parse('http://$localhost:3001/user/adduser'),
             body: jsonEncode(userData),
             headers: {'Content-Type': 'application/json'},
           );
@@ -186,128 +187,128 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/signup.png',
-              width: 250.0,
-              height: 250.0,
-            ),
-            const SizedBox(height: 20.0),
-            const Text(
-              'Create your account',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 90, 90, 90),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/signup.png',
+                width: 250.0,
+                height: 250.0,
               ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.0261,
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFAFAFA),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: TextField(
-                controller: _fullNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Full Name',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                  prefixIcon: Icon(Icons.person),
+              const SizedBox(height: 20.0),
+              const Text(
+                'Create your account',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 90, 90, 90),
                 ),
               ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.0206,
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFAFAFA),
-                borderRadius: BorderRadius.circular(8.0),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.0261,
               ),
-              child: TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                  prefixIcon: Icon(Icons.email),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFAFAFA),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: TextField(
+                  controller: _fullNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Full Name',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                    prefixIcon: Icon(Icons.person),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.0206,
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFAFAFA),
-                borderRadius: BorderRadius.circular(8.0),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.0206,
               ),
-              child: TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                  prefixIcon: Icon(Icons.lock),
-                  suffixIcon: Container(
-                    width: 40,
-                    height: 40,
-                    child: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? FontAwesomeIcons.eye
-                            : FontAwesomeIcons.eyeSlash,
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFAFAFA),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: TextField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                    prefixIcon: Icon(Icons.email),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.0206,
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFAFAFA),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: TextField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                    prefixIcon: Icon(Icons.lock),
+                    suffixIcon: Container(
+                      width: 40,
+                      height: 40,
+                      child: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? FontAwesomeIcons.eye
+                              : FontAwesomeIcons.eyeSlash,
+                        ),
+                        iconSize: 20,
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
                       ),
-                      iconSize: 20,
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
                     ),
                   ),
+                  obscureText: !_isPasswordVisible,
                 ),
-                obscureText: !_isPasswordVisible,
               ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.022,
-            ),
-            SizedBox(
-              width: 211,
-              height: 46,
-              child: ElevatedButton(
-                onPressed: _registerUser,
-                style: ElevatedButton.styleFrom(
-                  primary: const Color(0xFF284855),
-                  onPrimary: Colors.white,
-                  elevation: 8,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.022,
+              ),
+              SizedBox(
+                width: 211,
+                height: 46,
+                child: ElevatedButton(
+                  onPressed: _registerUser,
+                  style: ElevatedButton.styleFrom(
+                    primary: const Color(0xFF284855),
+                    onPrimary: Colors.white,
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.zero,
                   ),
-                  padding: EdgeInsets.zero,
-                ),
-                child: Container(
-                  alignment: Alignment.center,
-                  child: const Text('Sign Up'),
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: const Text('Sign Up'),
+                  ),
                 ),
               ),
-            ),
-           SizedBox(
+              SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
               Container(
@@ -323,7 +324,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     Image.asset(
                       'assets/images/google.png',
                       width: 28.0,
-          height: 28.0,
+                      height: 28.0,
                     ),
                     SizedBox(width: 6.0),
                     Container(
@@ -333,9 +334,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: Text(
                           'Sign up with Google',
                           style: TextStyle(
-                         color: Color.fromARGB(255, 66, 66, 66),
-                            fontSize: 15 ,
-                    fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 66, 66, 66),
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -359,13 +360,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 14,
-                     
                     ),
                     children: [
                       TextSpan(
                         text: 'Sign in',
                         style: TextStyle(
-                          color:Color.fromARGB(255, 67, 120, 141),
+                          color: Color.fromARGB(255, 67, 120, 141),
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),

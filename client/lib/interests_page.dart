@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'market/components/utils/api.dart';
 import 'user-profile.dart';
 import './complete.dart';
 
@@ -62,13 +63,13 @@ class _InterestsPageState extends State<InterestsPage> {
     print(FirebaseAuth.instance.currentUser);
     if (user != null) {
       final userId = user.email;
-
+      print(userId);
       final interestsData = {
         'hobbies': chosenHobbiesInterests,
         'skills': chosenSkillsInterests,
       };
 
-      final url = Uri.parse('http://10.0.2.2:3001/api/$userId');
+      final url = Uri.parse('http://$localhost:3001/api/$userId');
       final response = await http.put(
         url,
         body: jsonEncode(interestsData),

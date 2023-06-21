@@ -1,10 +1,13 @@
-import 'package:client/market/components/pages/products.dart';
 import 'package:client/market/components/screens/reviews1.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../utils/api.dart';
+
+import 'products.dart';
+import 'succ-creation.dart';
 
 class Details1 extends StatefulWidget {
   final Productsi product;
@@ -12,16 +15,42 @@ class Details1 extends StatefulWidget {
   const Details1({required this.product});
 
   @override
-  _Details1State createState() => _Details1State();
+  _Details11State createState() => _Details11State();
 }
 
-class _Details1State extends State<Details1> {
+class _Details11State extends State<Details1> {
   int finalRating = 0;
-
+  late User user;
   @override
   void initState() {
     super.initState();
     fetchReviews(widget.product.id);
+    fetchUserDetails(widget.product.userId);
+  }
+
+  void fetchUserDetails(int userId) async {
+    final url = 'http://${localhost}:3001/user/byid/$userId';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      print(response.body);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final user = User(
+          id: data['id'],
+          name: data['name'],
+          image: data['profileImage'],
+        );
+
+        setState(() {
+          this.user = user;
+        });
+      } else {
+        print('Failed to fetch user details. Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Failed to fetch user details. Error: $error');
+    }
   }
 
   @override
@@ -135,6 +164,32 @@ class _Details1State extends State<Details1> {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
+                  // ignore: unnecessary_null_comparison
+                  user != null ? user.name : '',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+
+// Display user's image
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(user.image),
+                  ),
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
                   "Details",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -157,6 +212,13 @@ class _Details1State extends State<Details1> {
                 ),
               ),
               SizedBox(height: 10.0),
+              //buyungggg
+              ElevatedButton(
+                onPressed: () {
+                  _buyProduct();
+                },
+                child: Text('Buy'),
+              ),
             ],
           ),
         ],
@@ -205,6 +267,65 @@ class _Details1State extends State<Details1> {
     );
   }
 
+//buyyyyyyyyyyyyyyyyyyyyy
+  void _buyProduct() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final url = 'http://${localhost}:3001/Market/posts/buy';
+    final body = {
+      "postId": widget.product.id,
+      "buyerId": uid,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      if (response.statusCode == 200) {
+        // Handle success
+        // final data = json.decode(response.body);
+        // Update UI or show a success message
+
+        // Navigate to the new screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderSuccessScreen(),
+          ),
+        );
+      } else if (response.statusCode == 400) {
+        // Handle insufficient funds error
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Insufficient Funds'),
+              content:
+                  Text('Your funds are not sufficient to buy this product.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        // Handle other errors
+        print('Failed to buy product. Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle error
+      print('Failed to buy product. Error: $error');
+    }
+  }
+
   buildSlider() {
     return Container(
       padding: EdgeInsets.only(left: 10, right: 10),
@@ -221,7 +342,7 @@ class _Details1State extends State<Details1> {
               child: Image.network(
                 imageUrl,
                 height: 250.0,
-                width: 300 - 40.0,
+                width: 300 - 40,
                 fit: BoxFit.cover,
               ),
             ),
@@ -289,4 +410,12 @@ class Reviewi {
       userId: json['userId'],
     );
   }
+}
+
+class User {
+  final int id;
+  final String name;
+  final String image;
+
+  User({required this.id, required this.name, required this.image});
 }
