@@ -19,7 +19,7 @@ export const buyPost = async (req: Request, res: Response): Promise<void> => {
   
       const buyer = await prisma.user.findUnique({
         where: {
-          id: buyerId,
+          uid: buyerId,
         },
       });
   
@@ -47,7 +47,7 @@ export const buyPost = async (req: Request, res: Response): Promise<void> => {
       // tnakes point w tzid level
       const updatedBuyer = await prisma.user.update({
         where: {
-          id: buyerId,
+          uid: buyerId,
         },
         data: {
           points: buyer.points - post.price,

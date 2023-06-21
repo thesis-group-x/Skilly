@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:client/market/components/payment/payment.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:client/market/components/payment/succ.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+import '../utils/api.dart';
 import 'animation.dart';
 import 'succ.dart';
 
@@ -50,14 +52,23 @@ class _PaymentPageState extends State<PaymentPage> {
         setState(() {
           _isLoading = false;
           timer.cancel();
-          makepayment('100', "USD");
+          makepayment(widget.pack.price.toInt() * 100, "USD");
         });
       },
     );
   }
 
+  void navigateToSuccessPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentSuccess(),
+      ),
+    );
+  }
+
   Map<String, dynamic>? paymentIntentData;
-  Future<void> makepayment(String amount, String currency) async {
+  Future<void> makepayment(int amount, String currency) async {
     try {
       paymentIntentData = await createPaymentIntent(amount, currency);
       print(paymentIntentData);
@@ -70,6 +81,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 paymentIntentClientSecret: paymentIntentData!['client_secret'],
                 customerEphemeralKeySecret:
                     paymentIntentData!['ephemeralkey']));
+
         displayPaymentSheet();
       }
     } catch (e, s) {
@@ -77,10 +89,10 @@ class _PaymentPageState extends State<PaymentPage> {
     }
   }
 
-  createPaymentIntent(String amount, String currency) async {
+  createPaymentIntent(int amount, String currency) async {
     try {
       Map<String, dynamic> body = {
-        'amount': calculateAmount(amount),
+        'amount': amount.toString(),
         'currency': currency,
         'payment_method_types[]': 'card'
       };
@@ -99,17 +111,42 @@ class _PaymentPageState extends State<PaymentPage> {
     }
   }
 
+  Future<void> purchasePoints(int id, String uid) async {
+    final endpoint =
+        'http://${localhost}:3001/stripe/purchase/$uid'; // Construct the endpoint URL with the pack ID
+
+    try {
+      final response = await http.post(
+        Uri.parse(endpoint),
+        body: json.encode({
+          'packId': id,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('Points purchased successfully: ${responseData['message']}');
+      } else if (response.statusCode == 404) {
+        print('Error: Pack not found');
+      } else {
+        print('Error purchasing points');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
   void displayPaymentSheet() async {
     try {
       await Stripe.instance.presentPaymentSheet();
       Get.snackbar("Payment info", "Payment successful");
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              PaymentSuccess(), // Replace with your desired page
-        ),
-      );
+      await purchasePoints(
+          widget.pack.id, FirebaseAuth.instance.currentUser!.uid);
+      navigateToSuccessPage(); // Navigate to the success page after payment and purchase completion
     } on Exception catch (e) {
       if (e is StripeException) {
         print("error from stripe $e");
@@ -121,9 +158,7 @@ class _PaymentPageState extends State<PaymentPage> {
     }
   }
 
-  calculateAmount(String amount) {
-    return amount;
-  }
+//in cents
 
 //payment styling
   @override

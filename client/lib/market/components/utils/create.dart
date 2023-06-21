@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:client/market/market.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +26,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   Future<void> _getImages() async {
     final imagePicker = ImagePicker();
-
+    // ignore: unused_local_variable
+    final currentUser = FirebaseAuth.instance.currentUser;
     List<XFile>? pickedImages = await imagePicker.pickMultiImage();
 
     setState(() {
@@ -57,27 +59,44 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         imageUrls.add(imageUrl);
       }
 
-      final postUrl = Uri.parse('http://${localhost}:3001/Market/posts');
-      final data = {
-        'price': int.parse(_priceController.text),
-        'title': _titleController.text,
-        'description': _descriptionController.text,
-        'skill': _skillController.text,
-        'userId': int.parse('1'),
-        'image': imageUrls,
-      };
-      print(data);
-      final postResponse = await http.post(
-        postUrl,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(data),
-      );
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      final apiUrl =
+          'http://${localhost}:3001/user/uid/$uid'; // Replace with your API endpoint
 
-      if (postResponse.statusCode == 200) {
-        final decodedPostResponse = jsonDecode(postResponse.body);
-        print('Post created: $decodedPostResponse');
+      final apiResponse = await http.get(Uri.parse(apiUrl));
+      print(apiResponse.body);
+      if (apiResponse.statusCode == 200) {
+        final userData = jsonDecode(apiResponse.body);
+        // Store user data in a state or variable
+        setState(() async {
+          // Example: Storing user data in a user variable
+          var user = userData;
+
+          final postUrl = Uri.parse('http://${localhost}:3001/Market/posts');
+          final data = {
+            'price': int.parse(_priceController.text),
+            'title': _titleController.text,
+            'description': _descriptionController.text,
+            'skill': _skillController.text,
+            'userId': user['id'],
+            'image': imageUrls,
+          };
+
+          final postResponse = await http.post(
+            postUrl,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(data),
+          );
+
+          if (postResponse.statusCode == 200) {
+            final decodedPostResponse = jsonDecode(postResponse.body);
+            print('Post created: $decodedPostResponse');
+          } else {
+            print('Error creating post: ${postResponse.statusCode}');
+          }
+        });
       } else {
-        print('Error creating post: ${postResponse.statusCode}');
+        // Handle API error
       }
     } catch (error) {
       print('Error uploading images: $error');
