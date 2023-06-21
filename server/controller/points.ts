@@ -21,8 +21,8 @@ export const purchasePoints = async (req: Request, res: Response): Promise<void>
 
     const user = await prisma.user.findUnique({
       where: {
-        uid,
-      },
+      uid,
+      }
     });
 
     if (!user) {

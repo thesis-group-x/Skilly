@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'bottom_navigation.dart';
 import 'edit_profile.dart';
+import 'market/components/utils/api.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -40,7 +41,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       final uid = currentUser.uid;
       print('Fetching user: $uid');
       final response =
-          await http.get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid'));
+          await http.get(Uri.parse('http://$localhost:3001/user/uid/$uid'));
       if (response.statusCode == 200) {
         setState(() {
           user = json.decode(response.body);
@@ -59,7 +60,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     if (currentUser != null) {
       final uid = currentUser.uid;
       final response = await http
-          .get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid/feed/posts'));
+          .get(Uri.parse('http://$localhost:3001/user/uid/$uid/feed/posts'));
       if (response.statusCode == 200) {
         setState(() {
           feedPosts = json.decode(response.body);
@@ -75,7 +76,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     if (currentUser != null) {
       final uid = currentUser.uid;
       final response = await http
-          .get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid/market/posts'));
+          .get(Uri.parse('http://$localhost:3001/user/uid/$uid/market/posts'));
       if (response.statusCode == 200) {
         setState(() {
           marketPosts = json.decode(response.body);
@@ -90,8 +91,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       final uid = currentUser.uid;
-      final response = await http
-          .get(Uri.parse('http://10.0.2.2:3001/user/$uid/$uid/market/reviews'));
+      final response = await http.get(
+          Uri.parse('http://$localhost:3001/user/$uid/$uid/market/reviews'));
       if (response.statusCode == 200) {
         setState(() {
           reviews = json.decode(response.body);
@@ -147,7 +148,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         };
 
         final updateResponse = await http.put(
-          Uri.parse('http://10.0.2.2:3001/user/upd/$uid'),
+          Uri.parse('http://$localhost:3001/user/upd/$uid'),
           body: json.encode(body),
           headers: {'Content-Type': 'application/json'},
         );

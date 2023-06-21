@@ -18,7 +18,7 @@ class _MyWidgetState extends State<MyWidget> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 20), () {
+    Timer(Duration(seconds: 2), () {
       setState(() {
         _isLoading = false;
       });
