@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:client/market/components/body.dart';
 import '../bottom_navigation.dart';
 
@@ -12,6 +11,13 @@ class HomeScreen extends StatelessWidget {
       title: 'Home Screen',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
+        appBarTheme: AppBarTheme(
+          backgroundColor:
+              Colors.white, // Set the app bar background color to white
+          iconTheme:
+              IconThemeData(color: Colors.black), // Set the icon color to black
+          elevation: 0, // Remove the app bar elevation
+        ),
       ),
       home: Scaffold(
         appBar: buildAppBar(),
@@ -26,10 +32,9 @@ class HomeScreen extends StatelessWidget {
 
   AppBar buildAppBar() {
     return AppBar(
-      elevation: 0,
       leading: IconButton(
-        icon: SvgPicture.asset(
-          'assets/icons/menu.svg',
+        icon: Icon(
+          Icons.menu, // Use the Icons.menu instead of SvgPicture.asset
         ),
         onPressed: () {
           // Add functionality for the menu button
