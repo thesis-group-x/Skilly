@@ -41,7 +41,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       final uid = currentUser.uid;
       print('Fetching user: $uid');
       final response =
-          await http.get(Uri.parse('http://$localhost:3001/user/uid/$uid'));
+         await http.get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid'));
       if (response.statusCode == 200) {
         setState(() {
           user = json.decode(response.body);
@@ -59,8 +59,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       final uid = currentUser.uid;
-      final response = await http
-          .get(Uri.parse('http://$localhost:3001/user/uid/$uid/feed/posts'));
+  final response = await http.get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid/feed/posts'));
       if (response.statusCode == 200) {
         setState(() {
           feedPosts = json.decode(response.body);
@@ -75,8 +74,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       final uid = currentUser.uid;
-      final response = await http
-          .get(Uri.parse('http://$localhost:3001/user/uid/$uid/market/posts'));
+      final response = await http.get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid/market/posts'));
       if (response.statusCode == 200) {
         setState(() {
           marketPosts = json.decode(response.body);
@@ -91,8 +89,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       final uid = currentUser.uid;
-      final response = await http.get(
-          Uri.parse('http://$localhost:3001/user/$uid/$uid/market/reviews'));
+     final response = await http.get(Uri.parse('http://10.0.2.2:3001/user/$uid/$uid/market/reviews'));
       if (response.statusCode == 200) {
         setState(() {
           reviews = json.decode(response.body);
@@ -270,7 +267,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ],
       ),
       bottomNavigationBar: CustomBottomNavigation(
-        currentIndex: 3,
+        currentIndex: 4,
         onTabSelected: (index) {
           // Add your logic here based on the selected index
         },

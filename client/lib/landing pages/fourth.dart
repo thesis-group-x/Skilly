@@ -17,8 +17,8 @@ class FourthPage extends StatelessWidget {
              SizedBox(
               width: 200,  
               height: 200, 
-              child: Lottie.network(
-                'https://lottie.host/6f36ceea-4e63-4bd7-972a-b81a56a3996f/o5nBfYUWp8.json',
+              child: Lottie.asset(
+                'assets/animations/chat.json',
                 repeat: true,
                 reverse: true,
                 animate: true,

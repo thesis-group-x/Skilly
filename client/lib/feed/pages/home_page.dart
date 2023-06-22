@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api, sized_box_for_whitespace, avoid_print, prefer_for_elements_to_map_fromiterable
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:client/other_users.dart';
@@ -10,11 +8,11 @@ import '../services/post_service.dart';
 import '../../market/market.dart';
 import '../../bottom_navigation.dart';
 import 'search.dart';
-import 'categories/web.dart';
 import 'categories/des.dart';
 import 'categories/gaming.dart';
 import 'categories/art.dart';
 import 'report.dart';
+import 'categories/webanimation.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -102,7 +100,7 @@ class _HomePageState extends State<HomePage> {
   void navigateToCreatePage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CreatePostScreen()),
+      MaterialPageRoute(builder: (context) => CreatePostFeed()),
     );
   }
 
@@ -243,7 +241,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => WebPage()),
+                                    builder: (context) => WebAnimation()),
                               );
                             },
                           ),
@@ -405,19 +403,19 @@ class _HomePageState extends State<HomePage> {
                                                 );
                                               },
                                               child: Align(
-  alignment: Alignment.topLeft, // Aligns the child at the top left
-  child: Padding(
-    padding: EdgeInsets.only(top: 20, left: 60), // Adjust the left padding to move the text to the left
-    child: Text(
-      posts[index].user.name,
-      style: const TextStyle(
-        color: Colors.white,
-        fontSize: 16,
-      ),
-    ),
-  ),
-),
-
+                                                alignment: Alignment.topLeft,
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: 20, left: 60),
+                                                  child: Text(
+                                                    posts[index].user.name,
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                             Align(
                                               alignment: Alignment.topRight,
@@ -442,18 +440,6 @@ class _HomePageState extends State<HomePage> {
                                                           children: [
                                                             TextButton(
                                                               onPressed: () {
-                                                                // Handle "Not Interested" option
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                                print(
-                                                                    'Not Interested');
-                                                              },
-                                                              child: const Text(
-                                                                  'Not Interested'),
-                                                            ),
-                                                            TextButton(
-                                                              onPressed: () {
                                                                 showDialog(
                                                                   context:
                                                                       context,
@@ -471,7 +457,13 @@ class _HomePageState extends State<HomePage> {
                                                                 );
                                                               },
                                                               child: const Text(
-                                                                  'Report'),
+                                                                '🏴Report',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Color(
+                                                                      0xFF284855),
+                                                                ),
+                                                              ),
                                                             ),
                                                           ],
                                                         ),
@@ -564,47 +556,9 @@ class _HomePageState extends State<HomePage> {
                                                             color: Colors.white,
                                                           ),
                                                           onPressed: () {
-                                                            // Handle comments action
+                                                            navigateToPost(
+                                                                posts[index]);
                                                           },
-                                                        ),
-                                                        Positioned(
-                                                          bottom: 10,
-                                                          left: 2000,
-                                                          child: IconButton(
-                                                            icon: const Icon(
-                                                              Icons.share,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                isSocialMediaVisible =
-                                                                    !isSocialMediaVisible;
-                                                              });
-                                                            },
-                                                          ),
-                                                        ),
-                                                        Visibility(
-                                                          visible:
-                                                              isSocialMediaVisible,
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              IconButton(
-                                                                icon:
-                                                                    const Icon(
-                                                                  Icons
-                                                                      .facebook,
-                                                                  color: Colors
-                                                                      .white,
-                                                                ),
-                                                                onPressed:
-                                                                    () {},
-                                                              )
-                                                            ],
-                                                          ),
                                                         ),
                                                       ],
                                                     ),
@@ -630,9 +584,7 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: CustomBottomNavigation(
         currentIndex: 0,
-        onTabSelected: (index) {
-          // Add your logic here based on the selected index
-        },
+        onTabSelected: (index) {},
       ),
     );
   }

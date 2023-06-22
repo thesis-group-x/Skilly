@@ -17,8 +17,8 @@ class ThirdPage extends StatelessWidget {
             SizedBox(
            width: 400,
               height: 400,
-              child: Lottie.network(
-                'https://lottie.host/21613352-eff0-427d-bc3c-03fed0858263/mEssrnpS3W.json',
+              child: Lottie.asset(
+                'assets/animations/mp.json',
                 repeat: true,
                 reverse: true,
                 animate: true,

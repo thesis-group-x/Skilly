@@ -5,21 +5,33 @@ const prisma = new PrismaClient();
 
 export const createComment = async (req: Request, res: Response): Promise<void> => {
   const { text, postId, userId } = req.body;
-  
+
   try {
-    const comment: Comment = await prisma.comment.create({
+    const comment = await prisma.comment.create({
       data: {
         text,
         postId,
         userId,
       },
     });
-  
-    res.status(201).json(comment);
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        points: {
+          increment: 5,
+        },
+      },
+    });
+
+    res.json({ comment, user: updatedUser });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create comment.' });
+    res.status(500).json({ error: 'Error creating comment' });
   }
 };
+
 
 export const getCommentsByPostId = async (req: Request, res: Response): Promise<void> => {
     const { postId } = req.params;

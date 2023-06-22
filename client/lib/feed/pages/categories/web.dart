@@ -4,6 +4,7 @@ import '../../models/post.dart';
 import '../../services/post_service.dart';
 import '../../feed.dart';
 import '../post_details_age.dart';
+import '../../../bottom_navigation.dart';
 
 void main() => runApp(MaterialApp(
       home: WebPage(),
@@ -32,7 +33,7 @@ class _WebPageState extends State<WebPage> {
 
   Future<void> fetchRandomWebPosts() async {
     try {
-      final List<Post> allPosts = await PostService.getPostsBySkill("Web Developement");
+      final List<Post> allPosts = await PostService.getPostsBySkill("🎮 Web");
       final random = Random();
       final randomPosts = List<Post>.generate(
         3,
@@ -48,7 +49,7 @@ class _WebPageState extends State<WebPage> {
 
   Future<void> fetchWebPosts() async {
     try {
-      final List<Post> posts = await PostService.getPostsBySkill("Web Developement");
+      final List<Post> posts = await PostService.getPostsBySkill("🌐 Web Development");
       setState(() {
         favouriteWebPosts = posts;
       });
@@ -59,7 +60,6 @@ class _WebPageState extends State<WebPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool isSocialMediaVisible = false;
     void navigateToPost(Post post) {
       Navigator.push(
         context,
@@ -81,23 +81,11 @@ class _WebPageState extends State<WebPage> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(
-                  left: 12.0, right: 12.0, top: 30.0, bottom: 8.0),
+                  left: 12.0, right: 12.0, top: 70.0, bottom: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Color(0xFF284855),
-                      size: 30.0,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Feed()),
-                      );
-                    },
-                  ),
+                 
                 ],
               ),
             ),
@@ -109,20 +97,10 @@ class _WebPageState extends State<WebPage> {
                   const Text(
                     "Trending",
                     style: TextStyle(
-                      color: Color(0xFF284855),
-                      fontSize: 46.0,
-                      fontFamily: "Calibre-Semibold",
-                      letterSpacing: 1.0,
-                    ),
+                                color : Color(0xFF284855),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
                   ),
-                  IconButton(
-                    icon: const Icon(
-                      CustomIcons.option,
-                      size: 12.0,
-                      color: Color(0xFF284855),
-                    ),
-                    onPressed: () {},
-                  )
                 ],
               ),
             ),
@@ -160,22 +138,12 @@ class _WebPageState extends State<WebPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   const Text(
-                    "Favourite",
+                    "Explore",
                     style: TextStyle(
-                      color: Color(0xFF284855),
-                      fontSize: 46.0,
-                      fontFamily: "Calibre-Semibold",
-                      letterSpacing: 1.0,
-                    ),
+                                color : Color(0xFF284855),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
                   ),
-                  IconButton(
-                    icon: const Icon(
-                      CustomIcons.option,
-                      size: 12.0,
-                      color: Color(0xFF284855),
-                    ),
-                    onPressed: () {},
-                  )
                 ],
               ),
             ),
@@ -330,38 +298,6 @@ class _WebPageState extends State<WebPage> {
                                               // Handle comments action
                                             },
                                           ),
-                                          Positioned(
-                                            bottom: 10,
-                                            left: 2000,
-                                            child: IconButton(
-                                              icon: Icon(
-                                                Icons.share,
-                                                color: Colors.white,
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  isSocialMediaVisible =
-                                                      !isSocialMediaVisible;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          Visibility(
-                                            visible: isSocialMediaVisible,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                IconButton(
-                                                  icon: Icon(
-                                                    Icons.facebook,
-                                                    color: Colors.white,
-                                                  ),
-                                                  onPressed: () {},
-                                                )
-                                              ],
-                                            ),
-                                          ),
                                         ],
                                       ),
                                     ],
@@ -379,6 +315,10 @@ class _WebPageState extends State<WebPage> {
             ),
           ],
         ),
+      ),
+        bottomNavigationBar: CustomBottomNavigation(
+        currentIndex: 0,
+        onTabSelected: (index) {},
       ),
     );
   }
@@ -462,13 +402,13 @@ class CardScrollWidget extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 22.0, vertical: 6.0),
                                 decoration: BoxDecoration(
-                                  color: Colors.blueAccent,
+                                  color: Color(0xFF284855),
                                   borderRadius: BorderRadius.circular(20.0),
                                 ),
                                 child: GestureDetector(
                                   onTap: () {},
                                   child: Text(
-                                    "Read Later",
+                                    "Show more",
                                     style: const TextStyle(
                                       color: Colors.white,
                                     ),
@@ -493,10 +433,6 @@ class CardScrollWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-class CustomIcons {
-  static const IconData option = IconData(0xe900, fontFamily: "CustomIcons");
 }
 
 const List<String> images = [
