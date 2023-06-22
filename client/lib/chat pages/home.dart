@@ -218,8 +218,10 @@ class _UserListPageState extends State<UserListPage> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       bottomNavigationBar: CustomBottomNavigation(
-        currentIndex: 2,
-        onTabSelected: (index) {},
+        currentIndex: 3,
+        onTabSelected: (index) {
+          // Add your logic here based on the selected index
+        },
       ),
     );
   }

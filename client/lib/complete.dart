@@ -13,6 +13,7 @@ import 'loading.dart';
 void main() {
   runApp(MaterialApp(
     home: Complete(),
+    debugShowCheckedModeBanner: false,
   ));
 }
 

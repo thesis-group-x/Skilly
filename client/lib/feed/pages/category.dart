@@ -75,7 +75,7 @@ class _MyAppState extends State<MyApp> {
                     icon: const Icon(
                       CustomIcons.option,
                       size: 12.0,
-                      color: Color(0xFF284855), // Set the icon color
+                      color: Color(0xFF284855), 
                     ),
                     onPressed: () {},
                   )
@@ -114,7 +114,7 @@ class _MyAppState extends State<MyApp> {
                 children: <Widget>[
                   const Text("Favourite",
                       style: TextStyle(
-                        color: Color(0xFF284855), // Set the text color
+                        color: Color(0xFF284855), 
                         fontSize: 46.0,
                         fontFamily: "Calibre-Semibold",
                         letterSpacing: 1.0,
@@ -123,7 +123,7 @@ class _MyAppState extends State<MyApp> {
                     icon: const Icon(
                       CustomIcons.option,
                       size: 12.0,
-                      color: Color(0xFF284855), // Set the icon color
+                      color: Color(0xFF284855), 
                     ),
                     onPressed: () {},
                   )

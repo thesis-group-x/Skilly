@@ -13,11 +13,11 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 5), () {
+    Future.delayed(Duration(seconds: 7), () {
       setState(() {
         showFirstAnimation = false;
       });
-      Future.delayed(Duration(seconds: 3), () {
+      Future.delayed(Duration(seconds: 5), () {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Feed()),
@@ -34,16 +34,16 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (showFirstAnimation)
-              Lottie.network(
-                'https://lottie.host/3730cd1a-809c-4fe8-a699-25f4372454d4/gyaqRk3Xpa.json',
+              Lottie.asset(
+                'assets/animations/w8.json',
                 width: 500,
                 height: 500,
                 fit: BoxFit.contain,
                 repeat: true,
               )
             else
-              Lottie.network(
-                'https://lottie.host/6014f0a3-3313-4af9-aca2-b77bbea01d88/KXQq3C2yUE.json',
+              Lottie.asset(
+                'assets/animations/success.json',
                 width: 500,
                 height: 500,
                 fit: BoxFit.contain,

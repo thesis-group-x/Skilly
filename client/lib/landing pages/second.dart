@@ -17,8 +17,8 @@ class SecondPage extends StatelessWidget {
             SizedBox(
               width: 500,  
               height: 500, 
-              child: Lottie.network(
-                'https://lottie.host/3b52bb60-aa99-455b-96d6-e7d8691e8b2e/fpz3FXUTpu.json',
+              child: Lottie.asset(
+                'assets/animations/feed.json',
                 repeat: true,
                 reverse: true,
                 animate: true,

@@ -35,21 +35,22 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
     }
   }
 
-  Future<void> createComment() async {
-    final String commentText = commentController.text.trim();
-    if (commentText.isNotEmpty) {
-      try {
-        final Comment newComment =
-            await CommentService.createComment(widget.post.id, commentText);
-        setState(() {
-          comments.add(newComment);
-        });
-        commentController.clear();
-      } catch (error) {
-        print('Error creating comment: $error');
-      }
+Future<void> createComment() async {
+  final String commentText = commentController.text.trim();
+  if (commentText.isNotEmpty) {
+    try {
+      final Comment newComment = await CommentService().createComment(widget.post.id, commentText);
+      setState(() {
+        comments.add(newComment);
+      });
+      commentController.clear();
+    } catch (error) {
+      print('Error creating comment: $error');
     }
   }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -130,19 +131,32 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                   const SizedBox(height: 8),
                   Expanded(
                     child: ListView.separated(
-                      itemCount: comments.length,
-                      separatorBuilder: (context, index) => Divider(
-                        color: const Color.fromARGB(255, 211, 211, 211),
-                        thickness: 1.0,
-                      ),
-                      itemBuilder: (context, index) {
-                        final comment = comments[index];
-                        return ListTile(
-                          title: Text(comment.text),
-                          subtitle: Text('User: ${comment.userId}'),
-                        );
-                      },
-                    ),
+  itemCount: comments.length,
+  separatorBuilder: (context, index) => Divider(
+    color: const Color.fromARGB(255, 211, 211, 211),
+    thickness: 1.0,
+  ),
+  itemBuilder: (context, index) {
+    final comment = comments[index];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          comment.user!.name,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        ListTile(
+          title: Text(comment.text),
+          subtitle: Text('${comment.userId}'),
+        ),
+      ],
+    );
+  },
+),
+
                   ),
                   const SizedBox(height: 16),
                   Row(
