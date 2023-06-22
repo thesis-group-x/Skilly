@@ -19,37 +19,37 @@ class HeaderWithSearchBox extends StatefulWidget {
 }
 
 class _HeaderWithSearchBoxState extends State<HeaderWithSearchBox> {
-  late User? _user;
-  int _points = 0;
-  int _level = 0;
-  String _badge = '';
+  // late User? _user;
+  // int _points = 0;
+  // int _level = 0;
+  // String _badge = '';
 
   @override
   void initState() {
     super.initState();
-    _user = FirebaseAuth.instance.currentUser;
-    _fetchUserData(_user!.uid); // Fetch user data from API
+    // _user = FirebaseAuth.instance.currentUser;
+    // _fetchUserData(_user!.uid); // Fetch user data from API
   }
 
-  Future<void> _fetchUserData(String uid) async {
-    try {
-      final response =
-          await http.get(Uri.parse('http://${localhost}:3001/user/uid/$uid'));
-      if (response.statusCode == 200) {
-        final userData = json.decode(response.body);
-        setState(() {
-          _points = userData['points'];
-          _level = userData['level'];
-          _badge = userData['budge'];
-        });
-        print('thi siss $_badge');
-      } else {
-        print('Failed to fetch user data');
-      }
-    } catch (error) {
-      print('Error: $error');
-    }
-  }
+  // Future<void> _fetchUserData(String uid) async {
+  //   try {
+  //     final response =
+  //         await http.get(Uri.parse('http://${localhost}:3001/user/uid/$uid'));
+  //     if (response.statusCode == 200) {
+  //       final userData = json.decode(response.body);
+  //       setState(() {
+  //         _points = userData['points'];
+  //         _level = userData['level'];
+  //         _badge = userData['budge'];
+  //       });
+  //       print('thi siss $_badge');
+  //     } else {
+  //       print('Failed to fetch user data');
+  //     }
+  //   } catch (error) {
+  //     print('Error: $error');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class _HeaderWithSearchBoxState extends State<HeaderWithSearchBox> {
               right: kDefaultPadding,
               bottom: 20 + kDefaultPadding,
             ),
-            height: widget.size.height * 0.2 - 47,
+            height: widget.size.height * 0.2 - 107,
             decoration: BoxDecoration(
               color: kPrimaryColor,
               borderRadius: BorderRadius.only(
@@ -78,29 +78,12 @@ class _HeaderWithSearchBoxState extends State<HeaderWithSearchBox> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'Level $_level',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      'Points: $_points',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
           ),
           Positioned(
-            bottom: 0,
+            bottom: 80,
             left: 0,
             right: 0,
             child: Container(
@@ -109,7 +92,7 @@ class _HeaderWithSearchBoxState extends State<HeaderWithSearchBox> {
               padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
               height: 54,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color.fromARGB(255, 255, 255, 255),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
@@ -126,17 +109,7 @@ class _HeaderWithSearchBoxState extends State<HeaderWithSearchBox> {
                       onChanged: (value) {},
                       decoration: InputDecoration(
                         hintText: "Search",
-                        hintStyle: TextStyle(foreground: Paint()
-                            // ..shader = LinearGradient(
-                            //   // colors: [
-                            //   //   Colors.orange,
-                            //   //   Colors.yellow.shade800,
-                            //   //   Colors.yellow.shade900,
-                            //   // ],
-                            //   begin: Alignment.topLeft,
-                            //   end: Alignment.bottomRight,
-                            // ).createShader(Rect.fromLTWH(0, 0, 200, 70)),
-                            ),
+                        hintStyle: TextStyle(foreground: Paint()),
                       ),
                     ),
                   ),
