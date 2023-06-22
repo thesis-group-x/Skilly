@@ -256,7 +256,7 @@ class HorizontalProductItem extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 child: Text(
-                  product.skill.toUpperCase(),
+                  '${product.price.toStringAsFixed(0)} pts',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14.0,

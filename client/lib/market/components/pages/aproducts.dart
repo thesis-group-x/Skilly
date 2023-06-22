@@ -114,6 +114,14 @@ class _AproductsState extends State<Aproducts> {
     return double.parse(averageRating.toStringAsFixed(1));
   }
 
+  List<P> filterProductsByRating(double minRating) {
+    return products
+        .where((product) =>
+            productAverageRatings[product.id] != null &&
+            productAverageRatings[product.id]! >= minRating)
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -121,10 +129,11 @@ class _AproductsState extends State<Aproducts> {
     } else if (errorMessage.isNotEmpty) {
       return Text(errorMessage);
     } else {
+      List<P> filteredProducts = filterProductsByRating(3.0);
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: products.reversed.map((product) {
+          children: filteredProducts.reversed.map((product) {
             int totalReviews = postReviews.containsKey(product.id)
                 ? postReviews[product.id]!.length
                 : 0;
@@ -211,7 +220,7 @@ class HorizontalProductItem extends StatelessWidget {
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           vertical: 5.0,
-                          horizontal: 10.0,
+                          horizontal: 8.0,
                         ),
                         decoration: BoxDecoration(
                           color: Colors.orange,
@@ -257,7 +266,7 @@ class HorizontalProductItem extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 child: Text(
-                  product.skill.toUpperCase(),
+                  '${product.price.toStringAsFixed(0)} pts',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14.0,
