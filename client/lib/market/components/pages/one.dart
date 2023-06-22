@@ -174,7 +174,6 @@ class _Details1State extends State<Details> {
                 ),
               ),
 
-// Display user's image
               Container(
                 width: 50,
                 height: 50,
@@ -340,7 +339,7 @@ class _Details1State extends State<Details> {
               borderRadius: BorderRadius.circular(10.0),
               child: Image.network(
                 imageUrl,
-                height: 250.0,
+                height: 450.0,
                 width: 300 - 40,
                 fit: BoxFit.cover,
               ),

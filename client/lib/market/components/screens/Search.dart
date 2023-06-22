@@ -1,8 +1,12 @@
-// import 'package:client/market/components/payment/payment.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class HeaderWithSearchBox extends StatelessWidget {
+import '../utils/api.dart';
+
+class HeaderWithSearchBox extends StatefulWidget {
   const HeaderWithSearchBox({
     Key? key,
     required this.size,
@@ -10,29 +14,57 @@ class HeaderWithSearchBox extends StatelessWidget {
 
   final Size size;
 
-  // void navigateToHomeScreen(BuildContext context) {
-  //   Navigator.pushAndRemoveUntil(
-  //     context,
-  //     MaterialPageRoute(builder: (context) => PacksListWidget()),
-  //     (route) => false,
-  //   );
+  @override
+  _HeaderWithSearchBoxState createState() => _HeaderWithSearchBoxState();
+}
+
+class _HeaderWithSearchBoxState extends State<HeaderWithSearchBox> {
+  // late User? _user;
+  // int _points = 0;
+  // int _level = 0;
+  // String _badge = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // _user = FirebaseAuth.instance.currentUser;
+    // _fetchUserData(_user!.uid); // Fetch user data from API
+  }
+
+  // Future<void> _fetchUserData(String uid) async {
+  //   try {
+  //     final response =
+  //         await http.get(Uri.parse('http://${localhost}:3001/user/uid/$uid'));
+  //     if (response.statusCode == 200) {
+  //       final userData = json.decode(response.body);
+  //       setState(() {
+  //         _points = userData['points'];
+  //         _level = userData['level'];
+  //         _badge = userData['budge'];
+  //       });
+  //       print('thi siss $_badge');
+  //     } else {
+  //       print('Failed to fetch user data');
+  //     }
+  //   } catch (error) {
+  //     print('Error: $error');
+  //   }
   // }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: kDefaultPadding * 2.5),
-      //20%
-      height: size.height * 0.2,
+      height: widget.size.height * 0.2,
       child: Stack(
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(
               left: kDefaultPadding,
               right: kDefaultPadding,
-              bottom: 36 + kDefaultPadding,
+              bottom: 20 + kDefaultPadding,
             ),
-            height: size.height * 0.2 - 27,
+            height: widget.size.height * 0.2 - 107,
             decoration: BoxDecoration(
               color: kPrimaryColor,
               borderRadius: BorderRadius.only(
@@ -41,24 +73,17 @@ class HeaderWithSearchBox extends StatelessWidget {
               ),
             ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(
-                  'MarketPlace',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-                Spacer(),
-                GestureDetector(
-                  // onTap: () {
-                  //   navigateToHomeScreen(context);
-                  // },
-                  child: Image.asset("assets/images/logo.png"),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                 ),
               ],
             ),
           ),
           Positioned(
-            bottom: 0,
+            bottom: 80,
             left: 0,
             right: 0,
             child: Container(
@@ -67,7 +92,7 @@ class HeaderWithSearchBox extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
               height: 54,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color.fromARGB(255, 255, 255, 255),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
@@ -84,11 +109,7 @@ class HeaderWithSearchBox extends StatelessWidget {
                       onChanged: (value) {},
                       decoration: InputDecoration(
                         hintText: "Search",
-                        hintStyle: TextStyle(
-                          color: kPrimaryColor.withOpacity(0.5),
-                        ),
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
+                        hintStyle: TextStyle(foreground: Paint()),
                       ),
                     ),
                   ),
