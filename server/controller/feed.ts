@@ -54,6 +54,7 @@ export const getPostsByTitle = async (req: Request, res: Response): Promise<void
 
 export const createPost = async (req: Request, res: Response): Promise<void> => {
   const { image, title, skill, desc, userId } = req.body;
+
   try {
     const post = await prisma.post.create({
       data: {
@@ -65,7 +66,19 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
         userId,
       },
     });
-    res.json(post);
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        points: {
+          increment: 10,
+        },
+      },
+    });
+
+    res.json({ post, user: updatedUser });
   } catch (error) {
     res.status(500).json({ error: 'Error creating post' });
   }

@@ -50,8 +50,8 @@ class _SearchPageState extends State<SearchPage> {
           children: [
             Text('No results found.'),
             SizedBox(height: 20),
-            Lottie.network(
-              'https://lottie.host/3dbd1c3c-021b-4c41-8c6f-59cf1806e7e6/sjgGmohXSV.json',
+            Lottie.asset(
+              'assets/animations/search.json',
               width: 200,
               height: 200,
             ),
