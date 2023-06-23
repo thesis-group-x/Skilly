@@ -33,7 +33,7 @@ class _WebPageState extends State<WebPage> {
 
   Future<void> fetchRandomWebPosts() async {
     try {
-      final List<Post> allPosts = await PostService.getPostsBySkill("🎮 Web");
+      final List<Post> allPosts = await PostService.getPostsBySkill("🌐 Web Development");
       final random = Random();
       final randomPosts = List<Post>.generate(
         3,
@@ -43,7 +43,7 @@ class _WebPageState extends State<WebPage> {
         trendingWebPosts = randomPosts;
       });
     } catch (error) {
-      print("Failed to fetch trending Des posts: $error");
+      print("Failed to fetch trending Web posts: $error");
     }
   }
 
@@ -54,7 +54,7 @@ class _WebPageState extends State<WebPage> {
         favouriteWebPosts = posts;
       });
     } catch (error) {
-      print("Failed to fetch favourite Des posts: $error");
+      print("Failed to fetch favourite Web posts: $error");
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../models/post.dart';
 import '../models/comment.dart';
 import '../services/comment_service.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 class PostDetailsPage extends StatefulWidget {
   final Post post;
@@ -34,21 +35,22 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
       print('Error retrieving comments: $error');
     }
   }
+    Future<void> createComment() async {
+    final text = commentController.text.trim();
+    if (text.isEmpty) {
+      return;
+    }
 
-Future<void> createComment() async {
-  final String commentText = commentController.text.trim();
-  if (commentText.isNotEmpty) {
     try {
-      final Comment newComment = await CommentService().createComment(widget.post.id, commentText);
-      setState(() {
-        comments.add(newComment);
-      });
+      await CommentService.createComment(text, widget.post.id);
       commentController.clear();
+      // Refresh comments
+      fetchComments();
     } catch (error) {
       print('Error creating comment: $error');
     }
   }
-}
+
 
 
 
@@ -129,34 +131,34 @@ Future<void> createComment() async {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Expanded(
-                    child: ListView.separated(
-  itemCount: comments.length,
-  separatorBuilder: (context, index) => Divider(
-    color: const Color.fromARGB(255, 211, 211, 211),
-    thickness: 1.0,
-  ),
-  itemBuilder: (context, index) {
-    final comment = comments[index];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
+               Expanded(
+  child: ListView.separated(
+    itemCount: comments.length,
+    separatorBuilder: (context, index) => Divider(
+      color: const Color.fromARGB(255, 211, 211, 211),
+      thickness: 1.0,
+    ),
+    itemBuilder: (context, index) {
+      final comment = comments[index];
+      return ListTile(
+        leading: CircleAvatar(
+          radius: 16,
+          backgroundImage: NetworkImage(comment.user!.profileImage),
+        ),
+        title: Text(
           comment.user!.name,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
         ),
-        ListTile(
-          title: Text(comment.text),
-          subtitle: Text('${comment.userId}'),
+        subtitle: Text(
+          comment.text,
+          style: TextStyle(fontSize: 12),
         ),
-      ],
-    );
-  },
-),
-
+      );
+    },
+  ),
                   ),
                   const SizedBox(height: 16),
                   Row(

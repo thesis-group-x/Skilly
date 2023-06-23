@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:client/other_users.dart';
@@ -13,6 +15,8 @@ import 'categories/gaming.dart';
 import 'categories/art.dart';
 import 'report.dart';
 import 'categories/webanimation.dart';
+import 'package:http/http.dart' as http;
+import 'package:client/market/matching/request.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -32,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     fetchPosts();
+    fetchFriendRequests();
   }
 
   Future<void> fetchPosts() async {
@@ -90,6 +95,30 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  int friendRequestsCount = 0;
+  Future<void> fetchFriendRequests() async {
+    try {
+      final response = await http.get(Uri.parse(
+          'http://10.0.2.2:3001/match/friendships/get/${FirebaseAuth.instance.currentUser?.uid}'));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        if (data is List<dynamic>) {
+          setState(() {
+            friendRequestsCount = data.length;
+          });
+        } else {
+          print('Invalid friend requests data');
+        }
+      } else {
+        print('Failed to fetch friend requests. Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Failed to fetch friend requests. Error: $error');
+    }
+  }
+
   void navigateToPost(Post post) {
     Navigator.push(
       context,
@@ -143,11 +172,14 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.add,
-              color: Colors.black87,
-            ),
-            onPressed: navigateToCreatePage,
+            icon: Icon(Icons.notifications),
+            color: isDarkModeEnabled ? Colors.white : Color.fromARGB(255, 40, 40, 40),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FriendRequestsPage()),
+              );
+            },
           ),
         ],
         systemOverlayStyle: SystemUiOverlayStyle.dark,

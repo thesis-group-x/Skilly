@@ -28,7 +28,7 @@ export const createComment = async (req: Request, res: Response): Promise<void> 
 
     res.json({ comment, user: updatedUser });
   } catch (error) {
-    res.status(500).json({ error: 'Error creating comment' });
+    res.status(500).json({ error: error });
   }
 };
 

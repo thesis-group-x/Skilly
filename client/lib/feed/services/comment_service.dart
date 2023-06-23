@@ -38,31 +38,35 @@ class CommentService {
     }
   }
 
-  Future<Comment> createComment(int postId, String text) async {
-    final currentUser = firebase_auth.FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      throw Exception('User not authenticated');
+  static Future<void> createComment(String text, int postId) async {
+    final user = firebase_auth.FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception('User not logged in');
     }
 
-    final uid = currentUser.uid;
-
-    final commentData = {
-      'postId': postId,
-      'text': text,
-      'userId': uid,
-    };
+    final userId = user.uid;
+    final token = await user.getIdToken();
 
     final response = await http.post(
       Uri.parse('http://10.0.2.2:3001/feedCom/create'),
-      body: jsonEncode(commentData),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token', // Include the user token in the headers
+      },
+      body: jsonEncode({
+        'text': text,
+        'postId': postId,
+        'userId': userId,
+      }),
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      return Comment.fromJson(jsonData);
+      final comment = Comment.fromJson(jsonData['comment']);
+      final updatedUser = local_user.User.fromJson(jsonData['user']);
+      comment.setUser(updatedUser);
+      // Handle the created comment and updated user as required
     } else {
-      print('Server response: ${response.body}');
       throw Exception('Failed to create comment');
     }
   }
