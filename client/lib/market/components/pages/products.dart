@@ -77,10 +77,10 @@ class _ProductsState extends State<Products> {
     try {
       final response = await http
           .get(Uri.parse('http://${localhost}:3001/Market/reviews/$id'));
-      print(response.body);
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print(data);
+
         if (data != null && data is List<dynamic>) {
           List<Reviewi> fetchedReviews =
               data.map((review) => Reviewi.fromJson(review)).toList();

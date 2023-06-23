@@ -32,7 +32,7 @@ class _MyWidgetState extends State<MyWidget> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          // HeaderWithSearchBox(size: size),
+          HeaderWithSearchBox(size: size),
           //for the text
           Container(
             margin: EdgeInsets.only(left: 20.0),
