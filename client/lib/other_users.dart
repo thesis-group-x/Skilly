@@ -81,156 +81,107 @@ class _UserProfileWidgetState extends State<UserProfileWidget> {
     }
   }
 
-Widget buildProfileInfo() {
-  return Scaffold(
-        appBar: AppBar(
-           backgroundColor: Colors.transparent,
-      elevation: 0.0,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back),
-        color: Colors.black,
-        onPressed: () {
-          Navigator.pop(context); // Pops the current context
-        },
+  Widget buildProfileInfo() {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.black,
+          onPressed: () {
+            Navigator.pop(context); // Pops the current context
+          },
+        ),
       ),
-    ),
-    body: SingleChildScrollView(
-      child: Container(
-         padding: EdgeInsets.only(top: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              child: Column(
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.only(top: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 64,
+                      backgroundImage: NetworkImage(imagePath),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                      ),
+                    ),
+                    SizedBox(height: 1),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              'Posts',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                            SizedBox(height: 1),
+                            Text(
+                              '${posts.length}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 16),
+                        Column(
+                          children: [
+                            Text(
+                              'Level',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                            SizedBox(height: 1),
+                            Text(
+                              level,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 79),
+              Column(
                 children: [
-                  CircleAvatar(
-                    radius: 64,
-                    backgroundImage: NetworkImage(imagePath),
-                  ),
-                  SizedBox(height: 16),
                   Text(
-                    name,
+                    'Posts',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: const Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 20,
                     ),
                   ),
                   SizedBox(height: 1),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'Posts',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          SizedBox(height: 1),
-                          Text(
-                            '${posts.length}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(width: 16),
-                      Column(
-                        children: [
-                          Text(
-                            'Level',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          SizedBox(height: 1),
-                          Text(
-                            level,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 79),
-            Column(
-              children: [
-                Text(
-                  'Posts',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                SizedBox(height: 1),
-                Container(
-                  height: 300,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: posts.length,
-                    itemBuilder: (context, index) {
-                      final post = posts[index];
-                      return Container(
-                        width: 300,
-                        padding: EdgeInsets.all(16),
-                        margin: EdgeInsets.only(right: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              post['title'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Image.network(
-                              post['image'],
-                              height: 200,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                            SizedBox(height: 8),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Column(
-              children: [
-                Text(
-                  'Market Posts',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                SizedBox(height: 1),
-                Container(
-                  height: 300,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: marketPosts.map<Widget>((marketPost) {
+                  Container(
+                    height: 300,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: posts.length,
+                      itemBuilder: (context, index) {
+                        final post = posts[index];
                         return Container(
                           width: 300,
                           padding: EdgeInsets.all(16),
@@ -243,46 +194,88 @@ Widget buildProfileInfo() {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                marketPost['title'],
+                                post['title'],
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Image.network(
-                                marketPost['image'],
+                                post['image'],
                                 height: 200,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
                               ),
                               SizedBox(height: 8),
-                              Text(
-                                'Price: \$${marketPost['price']}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
                             ],
                           ),
                         );
-                      }).toList(),
+                      },
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+              SizedBox(height: 20),
+              Column(
+                children: [
+                  Text(
+                    'Market Posts',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  SizedBox(height: 1),
+                  Container(
+                    height: 300,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: marketPosts.map<Widget>((marketPost) {
+                          return Container(
+                            width: 300,
+                            padding: EdgeInsets.all(16),
+                            margin: EdgeInsets.only(right: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  marketPost['title'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Image.network(
+                                  marketPost['image'],
+                                  height: 200,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Price: \$${marketPost['price']}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
-
-
-
-
-
-
-
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -293,11 +286,9 @@ Widget buildProfileInfo() {
       ),
       bottomNavigationBar: CustomBottomNavigation(
         currentIndex: 0,
-        onTabSelected: (index) {
-        },
+        onTabSelected: (index) {},
       ),
     );
-    
   }
 }
 

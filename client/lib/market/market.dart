@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:client/market/components/body.dart';
 import '../bottom_navigation.dart';
+import 'matching/request.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,15 +13,13 @@ class HomeScreen extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
         appBarTheme: AppBarTheme(
-          backgroundColor:
-              Colors.white, // Set the app bar background color to white
-          iconTheme:
-              IconThemeData(color: Colors.black), // Set the icon color to black
-          elevation: 0, // Remove the app bar elevation
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.black),
+          elevation: 0,
         ),
       ),
       home: Scaffold(
-        appBar: buildAppBar(),
+        appBar: buildAppBar(context),
         body: MyWidget(),
         bottomNavigationBar: CustomBottomNavigation(
           currentIndex: 1,
@@ -30,16 +29,25 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  AppBar buildAppBar() {
+  AppBar buildAppBar(BuildContext context) {
     return AppBar(
       leading: IconButton(
         icon: Icon(
-          Icons.menu, // Use the Icons.menu instead of SvgPicture.asset
+          Icons.menu,
         ),
-        onPressed: () {
-          // Add functionality for the menu button
-        },
+        onPressed: () {},
       ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.notifications),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FriendRequestsPage()),
+            );
+          },
+        ),
+      ],
     );
   }
 }

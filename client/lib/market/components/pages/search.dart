@@ -161,32 +161,46 @@ class _SearchPageState extends State<SearchPage> {
                   SizedBox(width: 10),
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           post.title,
-                          style: const TextStyle(
-                            fontSize: 14,
+                          style: TextStyle(
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         SizedBox(height: 5),
                         Text(
                           post.skill,
-                          style: const TextStyle(fontSize: 14),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
                         ),
                         SizedBox(height: 5),
                         Row(
                           children: [
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                              size: 16,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              'Rating: ${averageRating.toStringAsFixed(1)}',
-                              style: const TextStyle(fontSize: 13),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.yellow,
+                                    size: 16,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    'Rating: ${averageRating.toStringAsFixed(1)}',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey[600],
+                                    ),
+                                    textAlign: TextAlign.right,
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

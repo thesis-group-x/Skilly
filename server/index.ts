@@ -7,6 +7,7 @@ import routerFeed from './routes/feed';
 import routerBuy from './routes/buy'
 import routerStripe from './routes/points'
 import routerAuthentication from './routes/authenticaion';
+import routerMatching from './routes/matching';
 import routerfc from './routes/feedComments';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
@@ -40,6 +41,7 @@ app.use('/feed', routerFeed);
 app.use('/up',routerProfile);
 app.use('/other',routerOther)
 app.use('/user', routerAuthentication);
+app.use('/match',routerMatching)
 
 app.get('/', (req, res) => {
   res.send('Hello, 9lewi');
