@@ -255,7 +255,7 @@ class _ArtPageState extends State<ArtPage> {
                                             children: [
                                               TextButton(
                                                 onPressed: () {
-                                                  // Handle "Not Interested" option
+                                                  
                                                   Navigator.of(context).pop();
                                                   print('Not Interested');
                                                 },
@@ -263,7 +263,7 @@ class _ArtPageState extends State<ArtPage> {
                                               ),
                                               TextButton(
                                                 onPressed: () {
-                                                  // Handle "Report" option
+                                                  
                                                   Navigator.of(context).pop();
                                                   print('Report');
                                                 },
@@ -311,7 +311,7 @@ class _ArtPageState extends State<ArtPage> {
                                               color: Colors.white,
                                             ),
                                             onPressed: () {
-                                              // Handle like button action
+                                              
                                             },
                                           ),
                                           Text(
@@ -327,7 +327,7 @@ class _ArtPageState extends State<ArtPage> {
                                               color: Colors.white,
                                             ),
                                             onPressed: () {
-                                              // Handle comments action
+                                              
                                             },
                                           ),
                                           Positioned(
@@ -500,9 +500,9 @@ class CustomIcons {
 }
 
 const List<String> images = [
-  "https://example.com/image1.jpg",
-  "https://example.com/image2.jpg",
-  "https://example.com/image3.jpg",
+  "https:aaaaaa"
+  "https:aaa"
+  "https:aaaa"
 ];
 
 const double padding = 20.0;

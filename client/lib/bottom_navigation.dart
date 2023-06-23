@@ -32,16 +32,18 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return CurvedNavigationBar(
-      backgroundColor: Color(0xFF284855),
-      index: _currentIndex,
-      items: <Widget>[
-        Icon(Icons.home_outlined, size: 30),
-        Icon(Icons.shopping_cart_outlined, size: 30),
-        Icon(Icons.add, size: 30),
-        Icon(Icons.message_outlined, size: 30),
-        Icon(Icons.person_2_outlined, size: 30),
-      ],
+  return Container(
+        
+      child: CurvedNavigationBar(
+        backgroundColor: Color(0xFF284855),
+        index: _currentIndex,
+        items: <Widget>[
+          Icon(Icons.home_outlined, size: 30),
+          Icon(Icons.shopping_cart_outlined, size: 30),
+          Icon(Icons.add, size: 30),
+          Icon(Icons.message_outlined, size: 30),
+          Icon(Icons.person_2_outlined, size: 30),
+        ],
       onTap: (index) {
         setState(() {
           _currentIndex = index;
@@ -87,6 +89,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
             break;
         }
       },
+    ),
     );
   }
 

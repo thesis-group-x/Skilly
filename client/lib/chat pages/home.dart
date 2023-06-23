@@ -220,7 +220,6 @@ class _UserListPageState extends State<UserListPage> {
       bottomNavigationBar: CustomBottomNavigation(
         currentIndex: 3,
         onTabSelected: (index) {
-          // Add your logic here based on the selected index
         },
       ),
     );
