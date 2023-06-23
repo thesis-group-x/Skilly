@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 import '../components/utils/api.dart';
 
@@ -147,6 +148,12 @@ class _FriendRequestsPageState extends State<FriendRequestsPage> {
                         break;
                     }
 
+                    DateTime createdAt =
+                        DateTime.parse(friendRequest['createdAt']);
+
+                    String createdAtString =
+                        DateFormat.yMd().add_jm().format(createdAt);
+
                     return Card(
                       elevation: 2,
                       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -174,6 +181,7 @@ class _FriendRequestsPageState extends State<FriendRequestsPage> {
                               width: 24,
                               height: 24,
                             ),
+                            Text('Sent at: $createdAtString'),
                           ],
                         ),
                         trailing: Row(

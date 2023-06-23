@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
         // Login successful, navigate to InterestsPage
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Feed()),
+          MaterialPageRoute(builder: (context) => InterestsPage()),
         );
       } else {
         print('User is null');
@@ -168,82 +168,77 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-         
               SizedBox(height: 14.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                 GestureDetector(
-  onTap: _signInWithGoogle,
-  child: Container(
-    decoration: BoxDecoration(
-      color: Color.fromARGB(255, 207, 207, 207),
-      borderRadius: BorderRadius.circular(8.0),
-    ),
-    padding: EdgeInsets.all(10.0),
-    child: Row(
-      children: [
-        Image.asset(
-          'assets/images/google.png',
-          width: 28.0,
-          height: 28.0,
-        ),
-SizedBox(
-  width: 12.0,
-  height: 6.0,
-),
-
-
-         Container(
-              margin: EdgeInsets.only(right: 27.0),
-             child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'Sign in with Google',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 66, 66, 66),
-                    fontSize: 15 ,
-                    fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-         )
-      ],
-    ),
-  ),
-),
-
+                  GestureDetector(
+                    onTap: _signInWithGoogle,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 207, 207, 207),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      padding: EdgeInsets.all(10.0),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/google.png',
+                            width: 28.0,
+                            height: 28.0,
+                          ),
+                          SizedBox(
+                            width: 12.0,
+                            height: 6.0,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(right: 27.0),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                'Sign in with Google',
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 66, 66, 66),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            const SizedBox(height: 8.0),
-TextButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => SignUpPage()),
-    );
-  },
-  child: RichText(
-    text: TextSpan(
-      children: [
-        TextSpan(
-          text: "Don't have an account? ",
-          style: TextStyle(
-            color: Colors.black, 
-          ),
-        ),
-        TextSpan(
-          text: "Sign up",
-          style: TextStyle(
-            color:  Color.fromARGB(255, 67, 120, 141), 
-             fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    ),
-  ),
-),
-
+              const SizedBox(height: 8.0),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignUpPage()),
+                  );
+                },
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "Don't have an account? ",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                      TextSpan(
+                        text: "Sign up",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 67, 120, 141),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
