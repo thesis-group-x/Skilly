@@ -76,10 +76,9 @@ class _PacksListWidgetState extends State<PacksListWidget> {
         title: const Text(
           'Packs',
           style: TextStyle(
-            color: Color(0xFF284855),
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-          ),
+              color: Color(0xFF284855),
+              fontSize: 25,
+              fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -95,7 +94,7 @@ class _PacksListWidgetState extends State<PacksListWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     const Text(
-                      'Packs',
+                      'Silver Packs',
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
@@ -121,7 +120,7 @@ class _PacksListWidgetState extends State<PacksListWidget> {
                             ),
                     ),
                     const Text(
-                      'Golden',
+                      'Golden Packs',
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
@@ -235,75 +234,73 @@ class _PacksListWidgetState extends State<PacksListWidget> {
             ],
           ),
         ),
-        child: Align(
-          alignment: Alignment.bottomLeft,
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  pack.name,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black,
-                        blurRadius: 2,
-                        offset: const Offset(1, 1),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  'Price: \$${pack.price.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-                Text(
-                  'Points: ${pack.points}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PaymentPage(pack: pack, packId: pack.id.toString()),
-                      ),
-                      (route) => false,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.orange,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                pack.name,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      blurRadius: 2,
+                      offset: const Offset(1, 1),
                     ),
-                  ),
-                  child: const Text(
-                    'Buy',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+            Spacer(),
+            Text(
+              'Pay \$ ${pack.price.toStringAsFixed(0)}',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+            Text(
+              ' for ${pack.points} Pts',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        PaymentPage(pack: pack, packId: pack.id.toString()),
+                  ),
+                  (route) => false,
+                );
+              },
+              style: TextButton.styleFrom(
+                primary: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'Buy',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -341,75 +338,73 @@ class _PacksListWidgetState extends State<PacksListWidget> {
             ],
           ),
         ),
-        child: Align(
-          alignment: Alignment.bottomLeft,
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  pack.name,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black,
-                        blurRadius: 2,
-                        offset: const Offset(1, 1),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  'Price: \$${pack.price.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-                Text(
-                  'Points: ${pack.points}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PaymentPage(pack: pack, packId: pack.id.toString()),
-                      ),
-                      (route) => false,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.orange,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                pack.name,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      blurRadius: 2,
+                      offset: const Offset(1, 1),
                     ),
-                  ),
-                  child: const Text(
-                    'Buy',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+            Spacer(),
+            Text(
+              ' \ ${pack.price.toStringAsFixed(0)} USDT ',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+            Text(
+              '  ${pack.points} Pts',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        PaymentPage(pack: pack, packId: pack.id.toString()),
+                  ),
+                  (route) => false,
+                );
+              },
+              style: TextButton.styleFrom(
+                primary: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'GET IT',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

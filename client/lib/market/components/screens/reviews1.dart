@@ -95,7 +95,7 @@ class _ReviewsState extends State<Reviews1> {
                 SizedBox(width: 10),
                 Row(
                   children: [
-                    Text('Rating:'),
+                    // Text('Rating:'),
                     SizedBox(width: 5),
                     Row(
                       children: List.generate(
@@ -120,9 +120,16 @@ class _ReviewsState extends State<Reviews1> {
                 ),
                 SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () {
-                    // Post the review
-                    postReview(widget.review.comment, widget.review.rating);
+                  onPressed: () async {
+                    // Get the currently logged-in user's ID
+                    final user1 = await fetchUser1();
+                    if (user1 == null) {
+                      return;
+                    }
+
+                    // Post the review using the user's ID
+                    postReview(
+                        widget.review.comment, widget.review.rating, user1.id);
                   },
                   child: Text('Post Review'),
                 ),
@@ -153,17 +160,12 @@ class _ReviewsState extends State<Reviews1> {
     }
   }
 
-  Future<void> postReview(String comment, int rating) async {
+  Future<void> postReview(String comment, int rating, int userId) async {
     try {
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser == null) {
-        return;
-      }
-
       final response = await http.post(
         Uri.parse('http://${localhost}:3001/Market/reviews'),
         body: json.encode({
-          'userId': currentUser.uid,
+          'userId': userId,
           'postId': widget.review.postId,
           'comment': comment,
           'rating': rating,
@@ -218,15 +220,47 @@ class User {
   });
 }
 
+class User1 {
+  final int id;
+  final String name;
+  final String image;
+
+  User1({
+    required this.id,
+    required this.name,
+    required this.image,
+  });
+}
+
+Future<User1> fetchUser1() async {
+  try {
+    final response = await http.get(Uri.parse(
+        'http://${localhost}:3001/user/uid/${FirebaseAuth.instance.currentUser?.uid}'));
+    if (response.statusCode == 200) {
+      final userData = jsonDecode(response.body);
+      final user1 = User1(
+        id: userData['id'],
+        name: userData['name'],
+        image: userData['profileImage'],
+      );
+      return user1;
+    } else {
+      throw Exception('Failed to fetch user data');
+    }
+  } catch (error) {
+    throw Exception('Failed to fetch user data: $error');
+  }
+}
+
 Future<User> fetchUser(int userId) async {
   try {
     final response =
-        await http.get(Uri.parse('http://${localhost}:3001/user/uid/$userId'));
+        await http.get(Uri.parse('http://${localhost}:3001/user/byid/$userId'));
     if (response.statusCode == 200) {
       final userData = jsonDecode(response.body);
       final user = User(
         name: userData['name'],
-        image: userData['image'],
+        image: userData['profileImage'],
       );
       return user;
     } else {

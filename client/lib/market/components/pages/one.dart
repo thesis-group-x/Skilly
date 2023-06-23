@@ -327,7 +327,7 @@ class _Details1State extends State<Details> {
   buildSlider() {
     return Container(
       padding: EdgeInsets.only(left: 10, right: 10),
-      height: 250.0,
+      height: 350.0,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: widget.product.image.length,
@@ -340,7 +340,7 @@ class _Details1State extends State<Details> {
               child: Image.network(
                 imageUrl,
                 height: 450.0,
-                width: 300 - 40,
+                width: 410 - 40,
                 fit: BoxFit.cover,
               ),
             ),
