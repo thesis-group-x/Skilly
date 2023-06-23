@@ -36,13 +36,14 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
         
       child: CurvedNavigationBar(
         backgroundColor: Color(0xFF284855),
+        height:50,
         index: _currentIndex,
         items: <Widget>[
-          Icon(Icons.home_outlined, size: 30),
-          Icon(Icons.shopping_cart_outlined, size: 30),
-          Icon(Icons.add, size: 30),
-          Icon(Icons.message_outlined, size: 30),
-          Icon(Icons.person_2_outlined, size: 30),
+          Icon(Icons.home_outlined, size: 35),
+          Icon(Icons.shopping_cart_outlined, size: 25),
+          Icon(Icons.add_rounded, size: 30),
+          Icon(Icons.message_outlined, size: 25),
+          Icon(Icons.person_2_outlined, size: 25),
         ],
       onTap: (index) {
         setState(() {
