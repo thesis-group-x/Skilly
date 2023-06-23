@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'bottom_navigation.dart';
+
+import 'market/components/utils/api.dart';
 
 class UserProfileWidget extends StatefulWidget {
   final int userId;
@@ -13,31 +15,24 @@ class UserProfileWidget extends StatefulWidget {
 }
 
 class _UserProfileWidgetState extends State<UserProfileWidget> {
-  String imagePath = '';
-  String name = '';
-  String level = '';
-
-  List<dynamic> posts = [];
-  List<dynamic> marketPosts = [];
+  Map<String, dynamic> userData = {};
+  int id = 0;
 
   @override
   void initState() {
     super.initState();
-    fetchUserProfile();
-    fetchUserPosts();
-    fetchUserMarketPosts();
+    fetchUserDetails();
+    fetchUser1();
   }
 
-  Future<void> fetchUserProfile() async {
+  Future<void> fetchUserDetails() async {
     try {
       final response = await http
-          .get(Uri.parse('http://10.0.2.2:3001/other/${widget.userId}'));
+          .get(Uri.parse('http://$localhost:3001/user/byid/${widget.userId}'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
-          imagePath = data['profileImage'];
-          name = data['name'];
-          level = data['level'];
+          userData = data;
         });
       } else {
         debugPrint('Error: ${response.statusCode}', wrapWidth: 1024);
@@ -47,14 +42,14 @@ class _UserProfileWidgetState extends State<UserProfileWidget> {
     }
   }
 
-  Future<void> fetchUserPosts() async {
+  Future<void> fetchUser1() async {
     try {
-      final response = await http
-          .get(Uri.parse('http://10.0.2.2:3001/other/post/${widget.userId}'));
+      final response = await http.get(Uri.parse(
+          'http://$localhost:3001/user/uid/${FirebaseAuth.instance.currentUser?.uid}'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
-          posts = data;
+          id = data['id'];
         });
       } else {
         debugPrint('Error: ${response.statusCode}', wrapWidth: 1024);
@@ -64,15 +59,25 @@ class _UserProfileWidgetState extends State<UserProfileWidget> {
     }
   }
 
-  Future<void> fetchUserMarketPosts() async {
+  Future<void> createFriendship() async {
+    final requestorId = id;
+    final respondentId = widget.userId;
+
     try {
-      final response = await http.get(
-          Uri.parse('http://10.0.2.2:3001/other/marketpost/${widget.userId}'));
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        setState(() {
-          marketPosts = data;
-        });
+      final response = await http.post(
+        Uri.parse('http://$localhost:3001/match/friendships'),
+        body: jsonEncode({
+          'requestorId': requestorId,
+          'respondentId': respondentId,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 201) {
+        // Friendship created successfully
+        // You can handle the response or perform any necessary actions
       } else {
         debugPrint('Error: ${response.statusCode}', wrapWidth: 1024);
       }
@@ -81,194 +86,122 @@ class _UserProfileWidgetState extends State<UserProfileWidget> {
     }
   }
 
-  Widget buildProfileInfo() {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
+        elevation: 0,
+        title: Text(
+          'Profile',
+          style: TextStyle(color: Colors.black87),
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.black,
+          icon: Icon(Icons.arrow_back, color: Colors.black87),
           onPressed: () {
-            Navigator.pop(context); // Pops the current context
+            Navigator.pop(context);
           },
         ),
+        backgroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
+      body: Center(
         child: Container(
-          padding: EdgeInsets.only(top: 20),
+          padding: EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 64,
-                      backgroundImage: NetworkImage(imagePath),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
-                    SizedBox(height: 1),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              'Posts',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                            SizedBox(height: 1),
-                            Text(
-                              '${posts.length}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(width: 16),
-                        Column(
-                          children: [
-                            Text(
-                              'Level',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                            SizedBox(height: 1),
-                            Text(
-                              level,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              CircleAvatar(
+                radius: 50,
+                backgroundImage: NetworkImage(userData['profileImage'] ?? ''),
+              ),
+              SizedBox(height: 20),
+              Text(
+                userData['name'] ?? '',
+                style: TextStyle(
+                  color: Colors.grey[800],
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 79),
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Posts',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
+                  IndicatorWidget(
+                    icon: Icons.email,
+                    text: userData['email'] ?? '',
                   ),
-                  SizedBox(height: 1),
-                  Container(
-                    height: 300,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: posts.length,
-                      itemBuilder: (context, index) {
-                        final post = posts[index];
-                        return Container(
-                          width: 300,
-                          padding: EdgeInsets.all(16),
-                          margin: EdgeInsets.only(right: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                post['title'],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Image.network(
-                                post['image'],
-                                height: 200,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                              SizedBox(height: 8),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                  SizedBox(width: 10),
+                  IndicatorWidget(
+                    icon: Icons.phone,
+                    text: userData['phoneNumber'].toString() ?? '',
                   ),
                 ],
               ),
               SizedBox(height: 20),
-              Column(
-                children: [
-                  Text(
-                    'Market Posts',
+              Text(
+                'Skills:',
+                style: TextStyle(
+                  color: Colors.grey[800],
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: userData['skills']?.length ?? 0,
+                itemBuilder: (BuildContext context, int index) {
+                  final skill = userData['skills'][index];
+                  return Text(
+                    '- $skill',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      color: Colors.blueGrey[400],
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                     ),
+                  );
+                },
+              ),
+              SizedBox(height: 20),
+              BadgeLevelWidget(
+                badge: userData['budge'] ?? '',
+                level: userData['level'] ?? 0,
+              ),
+              SizedBox(height: 20),
+              Container(
+                width: 150,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: Colors.blue,
+                ),
+                child: TextButton(
+                  onPressed: createFriendship,
+                  style: TextButton.styleFrom(
+                    primary: Colors.white,
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
                   ),
-                  SizedBox(height: 1),
-                  Container(
-                    height: 300,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: marketPosts.map<Widget>((marketPost) {
-                          return Container(
-                            width: 300,
-                            padding: EdgeInsets.all(16),
-                            margin: EdgeInsets.only(right: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  marketPost['title'],
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Image.network(
-                                  marketPost['image'],
-                                  height: 200,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Price: \$${marketPost['price']}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.person_add,
+                        color: Colors.white,
                       ),
-                    ),
+                      SizedBox(width: 5),
+                      Text(
+                        'Follow',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ],
           ),
@@ -276,36 +209,70 @@ class _UserProfileWidgetState extends State<UserProfileWidget> {
       ),
     );
   }
+}
+
+class IndicatorWidget extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const IndicatorWidget({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.topCenter,
-        child: buildProfileInfo(),
-      ),
-      bottomNavigationBar: CustomBottomNavigation(
-        currentIndex: 0,
-        onTabSelected: (index) {},
-      ),
+    return Row(
+      children: [
+        Icon(
+          icon,
+          color: Colors.grey[600],
+        ),
+        SizedBox(width: 5),
+        Text(
+          text,
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }
 
-// Usage example
-class OtherProfile extends StatelessWidget {
-  final int userId;
+class BadgeLevelWidget extends StatelessWidget {
+  final String badge;
+  final int level;
 
-  const OtherProfile({required this.userId});
+  const BadgeLevelWidget({required this.badge, required this.level});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: UserProfileWidget(userId: userId),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Level: ',
+          style: TextStyle(
+            color: Colors.grey[800],
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          level.toString(),
+          style: TextStyle(
+            color: Colors.blueGrey[400],
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(width: 20),
+        Image.asset(
+          badge,
+          width: 30,
+          height: 30,
+        ),
+      ],
     );
   }
-}
-
-void main() {
-  runApp(OtherProfile(userId: 1));
 }
