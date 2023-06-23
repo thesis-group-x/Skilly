@@ -1,22 +1,26 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../utils/api.dart';
 import 'one.dart';
+import 'one1.dart';
 
 class Aproducts extends StatefulWidget {
-  const Aproducts({
-    required Key key,
-  }) : super(key: key);
+  const Aproducts({Key? key}) : super(key: key);
 
   @override
   _AproductsState createState() => _AproductsState();
 }
 
 class _AproductsState extends State<Aproducts> {
+  // States
   List<P> products = [];
+  Map<int, List<Reviewi>> postReviews = {};
+  Map<int, double> productAverageRatings = {};
+  bool isLoading = true;
+  String errorMessage = '';
 
   @override
   void initState() {
@@ -24,153 +28,255 @@ class _AproductsState extends State<Aproducts> {
     fetchData();
   }
 
-  // Getting data of the post
   Future<void> fetchData() async {
-    final response =
-        await http.get(Uri.parse('http://${localhost}:3001/Market/posts'));
-    print(response.body);
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
+    try {
+      final response =
+          await http.get(Uri.parse('http://${localhost}:3001/Market/posts'));
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData is List) {
+          List<P> productList = [];
+          for (var item in jsonData) {
+            P product = P.fromJson(item);
+            productList.add(product);
+            fetchReviews(product.id);
+          }
+          setState(() {
+            products = productList;
+            isLoading = false;
+          });
+        } else {
+          setState(() {
+            isLoading = false;
+            errorMessage = 'Invalid API response';
+          });
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+          errorMessage = 'Failed to fetch product data';
+        });
+      }
+    } catch (error) {
       setState(() {
-        products = data.map((item) => P.fromJson(item)).toList();
+        isLoading = false;
+        errorMessage = 'An error occurred: $error';
       });
-    } else {
-      print('Failed to fetch data from API');
     }
   }
 
+  double calculateTotalRating(List<Reviewi> reviews) {
+    double totalRating = 0.0;
+
+    for (var review in reviews) {
+      totalRating += review.rating;
+    }
+    return totalRating;
+  }
+
+  Future<void> fetchReviews(int id) async {
+    try {
+      final response = await http
+          .get(Uri.parse('http://${localhost}:3001/Market/reviews/$id'));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        if (data != null && data is List<dynamic>) {
+          List<Reviewi> fetchedReviews =
+              data.map((review) => Reviewi.fromJson(review)).toList();
+          double averageRating = calculateAverageRating(fetchedReviews);
+          setState(() {
+            postReviews[id] = fetchedReviews;
+            productAverageRatings[id] = averageRating;
+          });
+        } else {
+          print('Invalid review data');
+        }
+      } else {
+        print('Failed to fetch reviews. Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Failed to fetch reviews. Error: $error');
+    }
+  }
+
+  double calculateAverageRating(List<Reviewi> reviews) {
+    if (reviews.isEmpty) {
+      return 0.0;
+    }
+
+    double totalRating = 0.0;
+    for (var review in reviews) {
+      totalRating += review.rating;
+    }
+    double averageRating = totalRating / reviews.length;
+    return double.parse(averageRating.toStringAsFixed(1));
+  }
+
+  List<P> filterProductsByRating(double minRating) {
+    return products
+        .where((product) =>
+            productAverageRatings[product.id] != null &&
+            productAverageRatings[product.id]! >= minRating)
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal, // Scroll horizontally
-      child: Row(
-        children: products.map((product) {
-          return FeaturePlantCard(
-            image: product.image[0], // Display the first image
-            press: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Details(product: product),
-                ),
-              );
-            },
-            key: UniqueKey(),
-            title: product.title,
-            skill: product.skill,
-            price: product.price,
-          );
-        }).toList(),
-      ),
-    );
+    if (isLoading) {
+      return CircularProgressIndicator();
+    } else if (errorMessage.isNotEmpty) {
+      return Text(errorMessage);
+    } else {
+      List<P> filteredProducts = filterProductsByRating(3.0);
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: filteredProducts.reversed.map((product) {
+            int totalReviews = postReviews.containsKey(product.id)
+                ? postReviews[product.id]!.length
+                : 0;
+            return HorizontalProductItem(
+              product: product,
+              totalReviews: totalReviews,
+              averageRating: productAverageRatings[product.id] ?? 0.0,
+            );
+          }).toList(),
+        ),
+      );
+    }
   }
 }
 
-class FeaturePlantCard extends StatelessWidget {
-  const FeaturePlantCard({
-    required Key key,
-    required this.image,
-    required this.press,
-    required this.title,
-    required this.skill,
-    required this.price,
-  }) : super(key: key);
+class HorizontalProductItem extends StatelessWidget {
+  final P product;
+  final int totalReviews;
+  final double averageRating;
 
-  final VoidCallback press;
-  final String image;
-  final String title;
-  final String skill;
-  final double price;
-
+  HorizontalProductItem({
+    required this.product,
+    required this.totalReviews,
+    required this.averageRating,
+  });
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return GestureDetector(
-      onTap: press,
-      child: Container(
-        margin: EdgeInsets.only(
-          left: kDefaultPadding,
-          top: kDefaultPadding / 2,
-          bottom: kDefaultPadding / 2,
-        ),
-        width: size.width * 0.8,
-        height: 185,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: NetworkImage(image),
+    return Padding(
+      padding: EdgeInsets.only(right: 10.0, left: 20.0, bottom: 40),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Details(product: product),
+            ),
+          );
+        },
+        child: Container(
+          height: 260.0,
+          width: 200.0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                blurRadius: 3.0,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
-        ),
-        child: Stack(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: kDefaultPadding / 2,
-                  vertical: kDefaultPadding / 2,
-                ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      Colors.black.withOpacity(0.8),
-                      Colors.transparent,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.3),
-                      blurRadius: 5,
-                      spreadRadius: 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Stack(
+                  children: [
+                    FutureBuilder(
+                      future: Future.delayed(Duration(milliseconds: 500)),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Container(
+                            color: Colors.grey[300],
+                            height: 200.0,
+                            width: double.infinity,
+                          );
+                        } else {
+                          return FadeInImage.memoryNetwork(
+                            placeholder: kTransparentImage,
+                            image: product.image[0],
+                            height: 200.0,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          );
+                        }
+                      },
+                    ),
+                    Positioned(
+                      top: 5,
+                      right: 5,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 5.0,
+                          horizontal: 8.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: Colors.white,
+                              size: 16.0,
+                            ),
+                            SizedBox(width: 5.0),
+                            Text(
+                              averageRating.toString(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
+              ),
+              SizedBox(height: 10.0),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
                 child: Text(
-                  title,
+                  product.title,
                   style: TextStyle(
-                    fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    fontSize: 16.0,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: kDefaultPadding / 2,
-                  vertical: kDefaultPadding / 2,
-                ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withOpacity(0.8),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(10),
-                  ),
-                ),
+              SizedBox(height: 5.0),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
                 child: Text(
-                  '${price.toStringAsFixed(0)} Pts ',
+                  '${product.price.toStringAsFixed(0)} pts',
                   style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.0,
+                    color: Colors.blueGrey[300],
                   ),
+                  maxLines: 1,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -211,4 +317,16 @@ class P {
   }
 }
 
-const kPrimaryColor = Colors.blue;
+class Reviewi {
+  final double rating;
+  final String title;
+
+  Reviewi({required this.rating, required this.title});
+
+  factory Reviewi.fromJson(Map<String, dynamic> json) {
+    return Reviewi(
+      rating: json['rating'].toDouble(),
+      title: json['comment'],
+    );
+  }
+}
