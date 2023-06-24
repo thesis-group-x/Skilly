@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'login_page.dart';
+import 'market/components/utils/api.dart';
 
 class EditProfilePage extends StatefulWidget {
   final Function(Map<String, dynamic>) onProfileUpdated;
@@ -36,7 +38,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       try {
         final response = await http.get(
-          Uri.parse('http://10.0.2.2:3001/user/uid/$uid'),
+          Uri.parse('http://${localhost}:3001/user/uid/$uid'),
           headers: {'Content-Type': 'application/json'},
         );
 
@@ -104,7 +106,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       try {
         final response = await http.put(
-          Uri.parse('http://10.0.2.2:3001/user/upd/$uid'),
+          Uri.parse('http://${localhost}:3001/user/upd/$uid'),
           body: json.encode(body),
           headers: {'Content-Type': 'application/json'},
         );
@@ -129,6 +131,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
+  void logoutUser(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    } catch (error) {
+      print('Error logging out user: $error');
+    }
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -140,12 +154,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF284855), // Set the app bar background color
+        backgroundColor: Color(0xFF284855),
         title: Text('Edit Profile'),
+        actions: [
+          IconButton(
+            onPressed: () => logoutUser(context),
+            icon: Icon(Icons.logout),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),

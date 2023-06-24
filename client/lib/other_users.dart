@@ -8,7 +8,7 @@ import 'market/components/utils/api.dart';
 class UserProfileWidget extends StatefulWidget {
   final int userId;
 
-  const UserProfileWidget({required this.userId});
+  const UserProfileWidget({required this.userId, required id});
 
   @override
   _UserProfileWidgetState createState() => _UserProfileWidgetState();

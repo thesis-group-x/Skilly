@@ -18,7 +18,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
         email,
         uid,
         address: '',
-        profileImage: '',
+        profileImage: 'https://media.licdn.com/dms/image/C5603AQFRSeP6oce1nw/profile-displayphoto-shrink_800_800/0/1654515790585?e=2147483647&v=beta&t=PCYS7QsVMiRsKlZtR4lPKadMdNHXotUz3bR2FFxjPCA',
         budge: 'assets/image/224724-removebg-preview.png',
         points: 0,
         age: 0,

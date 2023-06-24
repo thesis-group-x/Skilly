@@ -79,8 +79,8 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/images/login.png',
+              Image.network(
+                'https://cdn.dribbble.com/users/1466634/screenshots/5409874/dribbble-07_4x.png',
                 width: 250.0,
                 height: 250.0,
               ),

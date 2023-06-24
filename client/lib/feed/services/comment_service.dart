@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import '../../market/components/utils/api.dart';
 import '../models/comment.dart';
 import '../models/user.dart' as local_user;
 
 class CommentService {
   static Future<List<Comment>> getCommentsByPostId(int postId) async {
     final response =
-        await http.get(Uri.parse('http://10.0.2.2:3001/feedCom/$postId'));
+        await http.get(Uri.parse('http://${localhost}:3001/feedCom/$postId'));
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body) as List<dynamic>;
@@ -28,7 +29,7 @@ class CommentService {
 
   static Future<local_user.User> getUserById(int userId) async {
     final response =
-        await http.get(Uri.parse('http://10.0.2.2:3001/user/byid/$userId'));
+        await http.get(Uri.parse('http://${localhost}:3001/user/byid/$userId'));
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
@@ -48,10 +49,11 @@ class CommentService {
     final token = await user.getIdToken();
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3001/feedCom/create'),
+      Uri.parse('http://${localhost}:3001/feedCom/create'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token', // Include the user token in the headers
+        'Authorization':
+            'Bearer $token', // Include the user token in the headers
       },
       body: jsonEncode({
         'text': text,

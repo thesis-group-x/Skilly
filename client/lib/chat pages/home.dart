@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../market/components/utils/api.dart';
 import 'messages.dart';
 import '../bottom_navigation.dart';
 
@@ -54,7 +55,7 @@ class _UserListPageState extends State<UserListPage> {
 
   Future<List<String>> fetchUsers() async {
     final response =
-        await http.get(Uri.parse('http://10.0.2.2:3001/user/getuser'));
+        await http.get(Uri.parse('http://${localhost}:3001/user/getuser'));
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       final currentUser = FirebaseAuth.instance.currentUser?.displayName;
@@ -219,8 +220,7 @@ class _UserListPageState extends State<UserListPage> {
       ),
       bottomNavigationBar: CustomBottomNavigation(
         currentIndex: 3,
-        onTabSelected: (index) {
-        },
+        onTabSelected: (index) {},
       ),
     );
   }

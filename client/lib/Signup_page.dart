@@ -193,8 +193,8 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/images/signup.png',
+              Image.network(
+                'https://web.grptalk.com/assets/images/imge1.png',
                 width: 250.0,
                 height: 250.0,
               ),
