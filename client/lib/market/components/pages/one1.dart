@@ -21,6 +21,8 @@ class Details1 extends StatefulWidget {
 class _Details11State extends State<Details1> {
   int finalRating = 0;
   late User user;
+  bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -44,12 +46,19 @@ class _Details11State extends State<Details1> {
 
         setState(() {
           this.user = user;
+          isLoading = false;
         });
       } else {
         print('Failed to fetch user details. Error: ${response.statusCode}');
+        setState(() {
+          isLoading = false;
+        });
       }
     } catch (error) {
       print('Failed to fetch user details. Error: $error');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -68,161 +77,178 @@ class _Details11State extends State<Details1> {
           ),
         ],
       ),
-      body: ListView(
-        children: <Widget>[
-          SizedBox(height: 10.0),
-          buildSlider(),
-          SizedBox(height: 20),
-          ListView(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            primary: false,
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      widget.product.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                      ),
-                      maxLines: 2,
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Reviews1(
-                            review: Div1(
-                              comment: '',
-                              rating: finalRating,
-                              postId: widget.product.id,
-                              userId: widget.product.userId,
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView(
+              children: <Widget>[
+                SizedBox(height: 10.0),
+                buildSlider(),
+                SizedBox(height: 20),
+                ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  primary: false,
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            widget.product.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 20,
+                            ),
+                            maxLines: 2,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Reviews1(
+                                  review: Div1(
+                                    comment: '',
+                                    rating: finalRating,
+                                    postId: widget.product.id,
+                                    userId: widget.product.userId,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            children: List.generate(
+                              5,
+                              (index) => Icon(
+                                Icons.star,
+                                color: index < finalRating
+                                    ? Colors.yellow
+                                    : Colors.grey,
+                                size: 27,
+                              ),
                             ),
                           ),
                         ),
-                      );
-                    },
-                    child: Row(
-                      children: List.generate(
-                        5,
-                        (index) => Icon(
-                          Icons.star,
-                          color:
-                              index < finalRating ? Colors.yellow : Colors.grey,
-                          size: 27,
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.location_on,
+                          size: 14,
+                          color: Colors.blueGrey[300],
+                        ),
+                        SizedBox(width: 3),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            widget.product.skill,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              color: Colors.blueGrey[300],
+                            ),
+                            maxLines: 1,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '${widget.product.price.toStringAsFixed(0)} Points',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 40),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        user.name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(user.image),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Icon(
-                    Icons.location_on,
-                    size: 14,
-                    color: Colors.blueGrey[300],
-                  ),
-                  SizedBox(width: 3),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      widget.product.skill,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                        color: Colors.blueGrey[300],
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Details",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
                       ),
-                      maxLines: 1,
-                      textAlign: TextAlign.left,
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '${widget.product.price} Points',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
-                  ),
-                  maxLines: 1,
-                  textAlign: TextAlign.left,
+                    SizedBox(height: 10.0),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        widget.product.description,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15.0,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        _buyProduct();
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromARGB(
+                                255, 0, 0, 0)), // Set the background color
+                        foregroundColor: MaterialStateProperty.all<Color>(
+                            Colors.white), // Set the text color
+                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                            EdgeInsets.all(16)), // Set the padding
+                        textStyle: MaterialStateProperty.all<TextStyle>(
+                            TextStyle(fontSize: 18)), // Set the text style
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                8), // Set the border radius
+                          ),
+                        ),
+                      ),
+                      child: Text('Buy'),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(height: 40),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  // ignore: unnecessary_null_comparison
-                  user != null ? user.name : '',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  maxLines: 1,
-                  textAlign: TextAlign.left,
-                ),
-              ),
-
-// Display user's image
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(user.image),
-                  ),
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Details",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  maxLines: 1,
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              SizedBox(height: 10.0),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  widget.product.description,
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              SizedBox(height: 10.0),
-              //buyungggg
-              ElevatedButton(
-                onPressed: () {
-                  _buyProduct();
-                },
-                child: Text('Buy'),
-              ),
-            ],
-          ),
-        ],
-      ),
+              ],
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -267,7 +293,6 @@ class _Details11State extends State<Details1> {
     );
   }
 
-//buyyyyyyyyyyyyyyyyyyyyy
   void _buyProduct() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     final url = 'http://${localhost}:3001/Market/posts/buy';
@@ -285,11 +310,6 @@ class _Details11State extends State<Details1> {
       print('Response Status Code: ${response.statusCode}');
       print('Response Body: ${response.body}');
       if (response.statusCode == 200) {
-        // Handle success
-        // final data = json.decode(response.body);
-        // Update UI or show a success message
-
-        // Navigate to the new screen
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -297,7 +317,6 @@ class _Details11State extends State<Details1> {
           ),
         );
       } else if (response.statusCode == 400) {
-        // Handle insufficient funds error
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -317,11 +336,9 @@ class _Details11State extends State<Details1> {
           },
         );
       } else {
-        // Handle other errors
         print('Failed to buy product. Error: ${response.statusCode}');
       }
     } catch (error) {
-      // Handle error
       print('Failed to buy product. Error: $error');
     }
   }

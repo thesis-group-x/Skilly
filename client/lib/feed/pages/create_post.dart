@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
-
 class CreatePostFeed extends StatefulWidget {
   @override
   _CreatePostFeedState createState() => _CreatePostFeedState();

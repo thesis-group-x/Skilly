@@ -218,7 +218,7 @@ class _PacksListWidgetState extends State<PacksListWidget> {
         ],
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: AssetImage("assets/images/pack.jpg"),
+          image: AssetImage("assets/images/pack2.png"),
         ),
       ),
       child: Container(
@@ -240,36 +240,13 @@ class _PacksListWidgetState extends State<PacksListWidget> {
           children: [
             Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Text(
-                pack.name,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black,
-                      blurRadius: 2,
-                      offset: const Offset(1, 1),
-                    ),
-                  ],
-                ),
-              ),
             ),
             Spacer(),
             Text(
-              'Pay \$ ${pack.price.toStringAsFixed(0)}',
+              ' ${pack.points} Pts',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-            Text(
-              ' for ${pack.points} Pts',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
+                fontSize: 19,
               ),
             ),
             const SizedBox(height: 10),
@@ -293,7 +270,7 @@ class _PacksListWidgetState extends State<PacksListWidget> {
                 ),
               ),
               child: const Text(
-                'Buy',
+                '',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -322,7 +299,7 @@ class _PacksListWidgetState extends State<PacksListWidget> {
         ],
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: AssetImage("assets/images/pack1.webp"),
+          image: AssetImage("assets/images/pack3.png"),
         ),
       ),
       child: Container(
@@ -344,36 +321,13 @@ class _PacksListWidgetState extends State<PacksListWidget> {
           children: [
             Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Text(
-                pack.name,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black,
-                      blurRadius: 2,
-                      offset: const Offset(1, 1),
-                    ),
-                  ],
-                ),
-              ),
             ),
             Spacer(),
-            Text(
-              ' \ ${pack.price.toStringAsFixed(0)} USDT ',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
             Text(
               '  ${pack.points} Pts',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: 19,
               ),
             ),
             const SizedBox(height: 10),
@@ -397,7 +351,7 @@ class _PacksListWidgetState extends State<PacksListWidget> {
                 ),
               ),
               child: const Text(
-                'GET IT',
+                '',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'bottom_navigation.dart';
 import 'edit_profile.dart';
-import 'market/components/utils/api.dart';
+import 'interests_page.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -41,10 +41,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
       final uid = currentUser.uid;
       print('Fetching user: $uid');
       final response =
-         await http.get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid'));
+          await http.get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid'));
       if (response.statusCode == 200) {
         setState(() {
           user = json.decode(response.body);
+          chosenHobbiesInterests = List<String>.from(user['hobbies']);
+          chosenSkillsInterests = List<String>.from(user['skills']);
         });
         print('User fetched successfully: $user');
       } else {
@@ -59,7 +61,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       final uid = currentUser.uid;
-  final response = await http.get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid/feed/posts'));
+      final response = await http
+          .get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid/feed/posts'));
       if (response.statusCode == 200) {
         setState(() {
           feedPosts = json.decode(response.body);
@@ -74,7 +77,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       final uid = currentUser.uid;
-      final response = await http.get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid/market/posts'));
+      final response = await http
+          .get(Uri.parse('http://10.0.2.2:3001/user/uid/$uid/market/posts'));
       if (response.statusCode == 200) {
         setState(() {
           marketPosts = json.decode(response.body);
@@ -89,7 +93,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       final uid = currentUser.uid;
-     final response = await http.get(Uri.parse('http://10.0.2.2:3001/user/$uid/$uid/market/reviews'));
+      final response = await http
+          .get(Uri.parse('http://10.0.2.2:3001/user/$uid/$uid/market/reviews'));
       if (response.statusCode == 200) {
         setState(() {
           reviews = json.decode(response.body);
@@ -145,7 +150,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         };
 
         final updateResponse = await http.put(
-          Uri.parse('http://$localhost:3001/user/upd/$uid'),
+          Uri.parse('http://10.0.2.2:3001/user/upd/$uid'),
           body: json.encode(body),
           headers: {'Content-Type': 'application/json'},
         );
@@ -192,7 +197,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ],
       ),
       body: ListView(
-        physics: BouncingScrollPhysics(),
         padding: EdgeInsets.all(16),
         children: [
           Column(
@@ -202,30 +206,33 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 child: Stack(
                   alignment: Alignment.bottomRight,
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(user['profileImage'] ?? ''),
-                      radius: 64,
+                    Container(
+                      height: 120,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          width: 2,
+                          color: Colors.white,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        backgroundImage:
+                            NetworkImage(user['profileImage'] ?? ''),
+                        radius: 60,
+                      ),
                     ),
                     Container(
                       height: 30,
                       width: 30,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          width: 0,
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                        ),
                         color: Color(0xFF284855),
                       ),
-                      child: Center(
-                        child: IconButton(
-                          iconSize: 16,
-                          icon: Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ),
-                          onPressed: () => _getImage(ImageSource.gallery),
-                        ),
+                      child: Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                        size: 16,
                       ),
                     ),
                   ],
@@ -248,20 +255,48 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),
               ),
               SizedBox(height: 16),
+              Wrap(
+                spacing: 2,
+                runSpacing: 1,
+                alignment: WrapAlignment.center,
+                children: [
+                  for (var interest in chosenHobbiesInterests)
+                    Chip(
+                      label: Text(interest),
+                      backgroundColor: Color(0xFF284855),
+                      labelStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  for (var interest in chosenSkillsInterests)
+                    Chip(
+                      label: Text(interest),
+                      backgroundColor: Color(0xFF284855),
+                      labelStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                ],
+              ),
+              SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildInfoItem('Posts', getTotalPosts().toString()),
                   SizedBox(width: 24),
-                  buildInfoItem('Matches', '0'),
+                  buildInfoItem('Points', user['points'].toString()),
                   SizedBox(width: 24),
-                  buildInfoItem('Level', '1'),
+                  buildInfoItem('Level', user['level'].toString()),
                 ],
               ),
             ],
           ),
           SizedBox(height: 24),
-          buildPostsSection(),
+          buildPostsSection('Feed Posts', feedPosts),
+          SizedBox(height: 24),
+          buildPostsSection('Market Posts', marketPosts),
           SizedBox(height: 24),
           buildReviewsSection(),
         ],
@@ -282,7 +317,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           value,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 24,
+            fontSize: 19,
           ),
         ),
         SizedBox(height: 4),
@@ -290,18 +325,19 @@ class _UserProfilePageState extends State<UserProfilePage> {
           label,
           style: TextStyle(
             color: Colors.grey,
-            fontSize: 16,
+            fontSize: 20,
           ),
         ),
       ],
     );
   }
 
-  Widget buildPostsSection() {
+  Widget buildPostsSection(String title, List<dynamic> posts) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Feed Posts',
+          title,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -312,26 +348,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: List.generate(
-              feedPosts.length,
-              (index) => buildFeedPostItem(feedPosts[index]),
-            ),
-          ),
-        ),
-        SizedBox(height: 24),
-        Text(
-          'Market Posts',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        SizedBox(height: 8),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(
-              marketPosts.length,
-              (index) => buildMarketPostItem(marketPosts[index]),
+              posts.length,
+              (index) => buildPostItem(posts[index]),
             ),
           ),
         ),
@@ -339,24 +357,23 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  Widget buildFeedPostItem(dynamic post) {
+  Widget buildPostItem(dynamic post) {
     return Container(
       width: 300,
       padding: EdgeInsets.all(16),
       margin: EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
         color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(25),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (post['image'] != null)
-            Image.network(
-              post['image'],
+            Container(
               height: 200,
               width: double.infinity,
-              fit: BoxFit.cover,
+              child: buildImageWidget(post['image']),
             ),
           SizedBox(height: 8),
           Text(
@@ -368,82 +385,51 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
           SizedBox(height: 8),
           Text(
-            post['content'] ?? '',
+            post['desc'] ?? '',
             style: TextStyle(fontSize: 16),
           ),
           SizedBox(height: 8),
-          Text(
-            'Posted on ${post['createdAt'] ?? ''}',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget buildMarketPostItem(dynamic post) {
-    return Container(
-      width: 300,
-      padding: EdgeInsets.all(16),
-      margin: EdgeInsets.only(right: 16),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
+  Widget buildImageWidget(dynamic image) {
+    if (image is String) {
+      return ClipRRect(
         borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (post['image'] != null)
-            Image.network(
-              post['image'],
+        child: Image.network(
+          image,
+          height: 200,
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else if (image is List<dynamic> && image.isNotEmpty) {
+      return ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: image.length,
+        itemBuilder: (context, index) {
+          final imageUrl = image[index];
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              imageUrl,
               height: 200,
-              width: double.infinity,
+              width: 200,
               fit: BoxFit.cover,
             ),
-          SizedBox(height: 8),
-          Text(
-            post['title'] ?? '',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            post['skill'] ?? '',
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(height: 8),
-          Text(
-            post['description'] ?? '',
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Price: \$${post['price'] ?? ''}',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Posted on ${post['createdAt'] ?? ''}',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-            ),
-          ),
-        ],
-      ),
-    );
+          );
+        },
+      );
+    } else {
+      return SizedBox.shrink();
+    }
   }
 
   Widget buildReviewsSection() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Reviews',

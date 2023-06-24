@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:client/other_users.dart';
+import '../../market/components/utils/api.dart';
 import 'post_details_age.dart';
 import 'create_post.dart';
 import '../models/post.dart';
@@ -99,7 +100,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchFriendRequests() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://10.0.2.2:3001/match/friendships/get/${FirebaseAuth.instance.currentUser?.uid}'));
+          'http://${localhost}:3001/match/friendships/get/${FirebaseAuth.instance.currentUser?.uid}'));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -173,7 +174,9 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.notifications),
-            color: isDarkModeEnabled ? Colors.white : Color.fromARGB(255, 40, 40, 40),
+            color: isDarkModeEnabled
+                ? Colors.white
+                : Color.fromARGB(255, 40, 40, 40),
             onPressed: () {
               Navigator.push(
                 context,
